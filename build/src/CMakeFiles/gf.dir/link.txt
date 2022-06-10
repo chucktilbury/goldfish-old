@@ -1,0 +1,1 @@
+/usr/bin/c++ CMakeFiles/gf.dir/main.c.o CMakeFiles/gf.dir/cmdline.c.o CMakeFiles/gf.dir/symtable.c.o CMakeFiles/gf.dir/errors.c.o CMakeFiles/gf.dir/parser.c.o CMakeFiles/gf.dir/scanner.c.o -o ../../bin/gf  ../../bin/libgc-lib.a -lm 

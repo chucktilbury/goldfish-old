@@ -1,0 +1,1 @@
+/usr/bin/c++ -rdynamic CMakeFiles/realloc_test.dir/realloc_test.c.o -o realloc_test  ../libgc-lib.a 
