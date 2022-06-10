@@ -1,1 +1,0 @@
-/usr/bin/cc CMakeFiles/cpp.dir/mem.c.o CMakeFiles/cpp.dir/nhash.c.o CMakeFiles/cpp.dir/cpp.c.o CMakeFiles/cpp.dir/lexer.c.o CMakeFiles/cpp.dir/assert.c.o CMakeFiles/cpp.dir/macro.c.o CMakeFiles/cpp.dir/eval.c.o -o ../../../bin/cpp 

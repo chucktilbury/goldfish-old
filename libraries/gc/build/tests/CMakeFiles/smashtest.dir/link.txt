@@ -1,1 +1,0 @@
-/usr/bin/c++ -rdynamic CMakeFiles/smashtest.dir/smash_test.c.o -o smashtest  ../libgc-lib.a 

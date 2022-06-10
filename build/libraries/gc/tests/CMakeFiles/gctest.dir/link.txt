@@ -1,1 +1,0 @@
-/usr/bin/c++ -rdynamic CMakeFiles/gctest.dir/test.c.o -o ../../../../bin/gctest  ../../../../bin/libgc-lib.a 

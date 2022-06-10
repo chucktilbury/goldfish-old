@@ -1,1 +1,0 @@
-/usr/bin/c++ -rdynamic CMakeFiles/leaktest.dir/leak_test.c.o -o ../../../../bin/leaktest  ../../../../bin/libgc-lib.a 
