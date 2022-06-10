@@ -1,4 +1,9 @@
 out/
+bin/*
+parser.c
+parser.h
+parser.output
+scanner.c
 
 # Prerequisites
 *.d
