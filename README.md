@@ -1,8 +1,8 @@
-# goldfish
+# Goldfish
 The goldfish programming language
 
 # Compiler description
-This is a short description of an enhanced C language. The output is pure ANSI C. There is one compile module that imports everything that is needed to compile the program. (like GO does) As much as possible, the input is C and is simply passed through to the output. All operations are performed in a single pass. The normal C preprocessor is used at the source level to do things like includes.
+This is a short description of an enhanced C language. The output is pure ANSI C. There is one compile module that imports everything that is needed to compile the program. (like GOlang) As much as possible, the input is C and is simply passed through to the output. All operations are performed in a single pass. The normal C preprocessor is used at the source level to do things like includes.
 
 * Adding name spaces. All symbols are decorated with their name space, with the goal of allowing the same names to be defined in different modules with no name collisions. A name space simply unconditionally edits the name.
 
