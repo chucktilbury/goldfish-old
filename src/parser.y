@@ -91,14 +91,22 @@ import_statement
 	: IMPORT SYMBOL {}
 	;
 
+namespace_name
+	: NAMESPACE SYMBOL {}
+	;
+
 namespace_definition
-	: NAMESPACE SYMBOL '{' module_definition_list '}' {}
-	| NAMESPACE SYMBOL '{'  '}' {}
+	: namespace_name '{' module_definition_list '}' {}
+	| namespace_name '{'  '}' {}
+	;
+
+class_name
+	: CLASS SYMBOL {}
 	;
 
 class_definition
-	: CLASS SYMBOL '{' class_definition_list '}' {}
-	| CLASS SYMBOL '{' '}' {}
+	: class_name '{' class_definition_list '}' {}
+	| class_name '{' '}' {}
 	;
 
 class_definition_list
@@ -143,7 +151,7 @@ symbol_type
 	;
 
 constructor_decl
-	: CTOR '(' parameter_decl_list ')' {}
+	: CTOR {} '(' parameter_decl_list ')' {}
 	;
 
 destructor_decl
@@ -151,7 +159,7 @@ destructor_decl
 	;
 
 struct_declaration
-	: STRUCT SYMBOL '{' struct_body '}' {}
+	: STRUCT SYMBOL {} '{' struct_body '}' {}
 	;
 
 struct_body
@@ -160,18 +168,18 @@ struct_body
 	;
 
 symbol_declaration
-	: symbol_type
+	: symbol_type {}
 	| CONST symbol_type {}
 	;
 
 parameter_decl_list
 	: /* empty */
-	| symbol_type
-	| parameter_decl_list ',' symbol_type
+	| symbol_type {}
+	| parameter_decl_list ',' symbol_type {}
 	;
 
 func_declaration
-	: symbol_type '(' parameter_decl_list ')' {}
+	: symbol_type {} '(' parameter_decl_list ')' {}
 	;
 
 data_definition
@@ -179,15 +187,31 @@ data_definition
 	| symbol_declaration '=' expression {}
 	;
 
+func_definition_name
+	: type_name compound_name {}
+	;
+
+method_definition_name
+	: func_definition_name ':' SYMBOL {}
+	;
+
+ctor_definition_name
+	: compound_name ':' CTOR {}
+	;
+
+dtor_definition_name
+	: compound_name ':' DTOR {}
+	;
+
 func_definition
-	: type_name compound_name '(' parameter_decl_list ')' '{' func_body_statement_list '}' {}
-	| type_name compound_name '(' parameter_decl_list ')' '{' '}' {}
-	| type_name compound_name ':' SYMBOL '(' parameter_decl_list ')' '{' '}' {}
-	| type_name compound_name ':' SYMBOL '(' parameter_decl_list ')' '{' func_body_statement_list '}' {}
-	| compound_name ':' CTOR '(' parameter_decl_list ')' '{' '}' {}
-	| compound_name ':' CTOR '(' parameter_decl_list ')' '{' func_body_statement_list '}' {}
-	| compound_name ':' DTOR '{' '}' {}
-	| compound_name ':' DTOR '{' func_body_statement_list '}' {}
+	: func_definition_name '(' parameter_decl_list ')' '{' func_body_statement_list '}' {}
+	| func_definition_name '(' parameter_decl_list ')' '{' '}' {}
+	| method_definition_name '(' parameter_decl_list ')' '{' '}' {}
+	| method_definition_name '(' parameter_decl_list ')' '{' func_body_statement_list '}' {}
+	| ctor_definition_name '(' parameter_decl_list ')' '{' '}' {}
+	| ctor_definition_name '(' parameter_decl_list ')' '{' func_body_statement_list '}' {}
+	| dtor_definition_name '{' '}' {}
+	| dtor_definition_name '{' func_body_statement_list '}' {}
 	;
 
 func_body_statement

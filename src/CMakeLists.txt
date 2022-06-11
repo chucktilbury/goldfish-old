@@ -1,7 +1,7 @@
 
 project(gf)
+#set(CMAKE_VERBOSE_MAKEFILE ON)
 
-include_directories(${PROJECT_SOURCE_DIR}/../include)
 
 set(LEX_FILE      ${CMAKE_CURRENT_SOURCE_DIR}/scanner.l)
 set(LEX_C_SOURCE  ${CMAKE_CURRENT_SOURCE_DIR}/scanner.c)
@@ -26,6 +26,7 @@ add_custom_command(OUTPUT ${YACC_C_SOURCE} ${YACC_H}
 
 add_executable(${PROJECT_NAME}
 	main.c
+    memory.c
 	cmdline.c
 	symtable.c
     errors.c
@@ -36,6 +37,7 @@ add_executable(${PROJECT_NAME}
 target_include_directories(${PROJECT_NAME}
     PUBLIC
         ${PROJECT_SOURCE_DIR}/../include
+        ${PROJECT_SOURCE_DIR}/../libraries/gc/include
 )
 
 target_link_libraries(${PROJECT_NAME}
