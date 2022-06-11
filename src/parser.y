@@ -6,7 +6,7 @@
 
 #include "goldfish.h"
 #include "scanner.h"
-
+#include "symtable.h"
 
 FILE* outfile = NULL;
 extern const char* file_name;
@@ -38,6 +38,8 @@ extern const char* file_name;
 %token <unum> UNUM;
 %token <fnum> FNUM;
 %token <str> STRG;
+
+%type <str> namespace_name class_name
 
 %define parse.error verbose
 %locations
@@ -106,18 +108,26 @@ namespace_name
 	: NAMESPACE SYMBOL {
 		EMIT_LINE();
 		EMIT("// namespace: %s\n", $2);
+		$$ = $2;
+		pushContext($2);
 	}
 	;
 
 namespace_definition
-	: namespace_name '{' module_definition_list '}' {}
-	| namespace_name '{'  '}' {}
+	: namespace_name '{' module_definition_list '}' {
+		popContext();
+	}
+	| namespace_name '{'  '}' {
+		popContext();
+	}
 	;
 
 class_name
 	: CLASS SYMBOL {
 		EMIT_LINE();
 		EMIT("// class: %s\n", $2);
+		addSym($2, CLASS, NULL);
+		$$ = $2;
 	}
 	;
 

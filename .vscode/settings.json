@@ -1,6 +1,8 @@
 {
     "makefile.extensionOutputFolder": "./.vscode",
     "cSpell.words": [
+        "crnt",
+        "llen",
         "yyerror",
         "yyin",
         "yylex",

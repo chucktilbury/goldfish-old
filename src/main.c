@@ -3,6 +3,7 @@
 #include "goldfish.h"
 #include "parser.h"
 #include "scanner.h"
+#include "symtable.h"
 
 extern FILE* outfile;
 
@@ -23,6 +24,7 @@ int main(int argc, char** argv)
 
   yyparse();
 
+  dumpSymtab();
   close_file();
   _uninit_memory();
 

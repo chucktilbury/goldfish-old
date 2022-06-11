@@ -5,4 +5,6 @@
 #include "gc.h"
 
 #include "memory.h"
+#include "errors.h"
+
 #endif
