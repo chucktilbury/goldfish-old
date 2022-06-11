@@ -1,0 +1,13 @@
+#line 1 "namespace.g"
+ 
+
+
+namespace SomeName {
+     
+    class AClass {
+         
+
+
+    }
+    class BClass {}
+}

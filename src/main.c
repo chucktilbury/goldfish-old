@@ -1,18 +1,30 @@
 
+
 #include "goldfish.h"
 #include "parser.h"
 #include "scanner.h"
 
 extern FILE* outfile;
 
-int main()
+int main(int argc, char** argv)
 {
   outfile = stdout;
-  open_file(_copy_str("test.txt"));
+  _init_memory();
+  if(argc < 2) {
+    if(isatty(fileno(stdin))) {
+      fprintf(stderr, "Nothing to input!\n");
+      return 1;
+    }
+  }
+  else {
+    open_file(_copy_str(argv[1]));
+  }
+
 
   yyparse();
 
   close_file();
+  _uninit_memory();
 
   return 0;
 }

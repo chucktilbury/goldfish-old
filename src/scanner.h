@@ -2,7 +2,7 @@
 #define _SCANNER_H_
 
 char *get_file_name();
-int get_line_number();
+int get_line_no();
 int get_col_number();
 int open_file(const char *fname);
 void close_file();

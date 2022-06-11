@@ -1,5 +1,6 @@
 %{
 #include <stdio.h>
+#include "goldfish.h"
 #include "parser.h"
 
 #pragma GCC diagnostic push
@@ -9,6 +10,7 @@ void yyerror(const char* s);
 
 int bidx = 0;
 char buffer[1024*64];
+const char* file_name;
 
 static void __append_char(char ch)
 {
@@ -34,7 +36,7 @@ static void __append_str(const char* str)
 %option noyywrap
 
 %%
-\n              { yylineno++; }
+\n              { /*yylineno++;*/ }
 [ \t\r]         {}
 
 "break"         { return BREAK; }
@@ -81,6 +83,7 @@ static void __append_str(const char* str)
 "dtor"          { return DTOR; }
 "construct"     { return CTOR; }
 "destruct"      { return DTOR; }
+"#line"         { return MARKER; }
     /*
      * TODO: list, dict
      */
@@ -149,7 +152,7 @@ static void __append_str(const char* str)
         //yylval.literal.str = STRDUP(buffer);
         yylval.str = (char*)strdup(buffer);
         BEGIN(INITIAL);
-        return STRING;
+        return STRG;
     }
 
     /* the short rule matches before the long one does */
@@ -182,7 +185,7 @@ static void __append_str(const char* str)
         //yylval.literal.str = STRDUP(buffer);
         yylval.str = (char*)strdup(buffer);
         BEGIN(INITIAL);
-        return STRING;
+        return STRG;
     }
 
 <SQUOTES>[^\\'\n]*  { __append_str(yytext); }
@@ -193,11 +196,19 @@ static void __append_str(const char* str)
 
 %%
 
+const char* _strdup(const char* str) {
+    size_t len = strlen(str)+1;
+    char* buf = malloc(len);
+    memcpy(buf, str, len);
+    return buf;
+}
+
 int open_file(const char *fname) {
 
+    //file_name = _copy_str(fname);
     yyin = fopen(fname, "r");
     if(yyin == NULL) {
-        fprintf(stderr, "fatal error: cannot open input file: %s\n", strerror(errno));
+        fprintf(stderr, "fatal error: cannot open input file: %s: %s\n", fname, strerror(errno));
         exit(1);
     }
     return 0;
@@ -206,4 +217,12 @@ int open_file(const char *fname) {
 void close_file() {
 
     fclose(yyin);
+}
+
+int get_line_no() {
+    return yylineno;
+}
+
+const char* get_file_name() {
+    return file_name;
 }

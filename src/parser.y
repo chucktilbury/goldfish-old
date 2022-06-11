@@ -4,13 +4,15 @@
 
 %{
 
-#include <stdio.h>
-#include <stdint.h>
-
+#include "goldfish.h"
 #include "scanner.h"
 
+
 FILE* outfile = NULL;
+extern const char* file_name;
+
 #define EMIT(fmt, ...)  fprintf(outfile, fmt, ## __VA_ARGS__)
+#define EMIT_LINE() fprintf(outfile, "#line %d \"%s\"\n", get_line_no(), get_file_name())
 
 %}
 
@@ -30,7 +32,7 @@ FILE* outfile = NULL;
 %token BOOL TRUE FALSE IN YIELD EXIT
 %token EQU NEQU LORE GORE OR AND
 %token TRY EXCEPT RAISE CTOR DTOR
-%token PUBLIC PRIVATE PROTECTED
+%token PUBLIC PRIVATE PROTECTED MARKER
 %token <str> SYMBOL
 %token <inum> INUM;
 %token <unum> UNUM;
@@ -53,10 +55,11 @@ FILE* outfile = NULL;
 module
 	: {
 		// emit things before the input
-		EMIT("before everything\n");
+		EMIT("// before everything\n");
 	} module_list {
 		// emit things after the input
-		EMIT("after everything\n");
+		EMIT("// after everything\n");
+		EMIT_LINE();
 	}
 	;
 
@@ -75,11 +78,19 @@ module_definition_item
 	| data_definition
 	| func_definition
 	| namespace_definition
+	| preproc_marker
 	;
 
 module_definition_list
 	: module_definition_item
 	| module_definition_list module_definition_item
+	;
+
+preproc_marker
+	: MARKER INUM STRG {
+		EMIT("#line %d \"%s\"\n", $2, $3);
+		file_name = _copy_str($3);
+	}
 	;
 
 compound_name
@@ -92,7 +103,10 @@ import_statement
 	;
 
 namespace_name
-	: NAMESPACE SYMBOL {}
+	: NAMESPACE SYMBOL {
+		EMIT_LINE();
+		EMIT("// namespace: %s\n", $2);
+	}
 	;
 
 namespace_definition
@@ -101,7 +115,10 @@ namespace_definition
 	;
 
 class_name
-	: CLASS SYMBOL {}
+	: CLASS SYMBOL {
+		EMIT_LINE();
+		EMIT("// class: %s\n", $2);
+	}
 	;
 
 class_definition
@@ -378,5 +395,5 @@ expression_list
 
 void yyerror(const char *s)
 {
-  fprintf(stderr, "%s\n", s);
+  fprintf(stderr, "%s:%d: %s\n", get_file_name(), get_line_no(), s);
 }
