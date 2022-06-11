@@ -1,19 +1,20 @@
 #ifndef _SCANNER_H_
 #define _SCANNER_H_
 
-char *get_file_name(void);
-int get_line_number(void);
-int get_col_number(void);
+char *get_file_name();
+int get_line_number();
+int get_col_number();
 int open_file(const char *fname);
-const char *get_tok_str(void);
-int get_token(void);
+void close_file();
+const char *get_tok_str();
+int get_token();
 
 /*
  * Defined by flex. Call one time to isolate a symbol and then use the global
  * symbol struct to access the symbol.
  */
-extern int yylex(void);
-extern int yyparse(void);
+extern int yylex();
+extern int yyparse();
 extern FILE *yyin;
 
 // void yyerror(char *s, ...);
