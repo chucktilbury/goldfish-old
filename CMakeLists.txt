@@ -10,3 +10,4 @@ set_directory_properties(PROPERTIES ADDITIONAL_MAKE_CLEAN_FILES "${EXECUTABLE_OU
 #add_subdirectory(libraries)
 add_subdirectory(src)
 add_subdirectory(docs EXCLUDE_FROM_ALL)
+add_subdirectory(test EXCLUDE_FROM_ALL)
