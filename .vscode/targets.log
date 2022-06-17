@@ -6,7 +6,7 @@ make all --print-data-base --no-builtin-variables --no-builtin-rules --question
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
-# Make data base, printed on Fri Jun 10 16:00:24 2022
+# Make data base, printed on Fri Jun 17 10:30:14 2022
 
 # Variables
 
@@ -15,7 +15,7 @@ GDK_BACKEND = x11
 # environment
 LC_ALL = C
 # environment
-VSCODE_IPC_HOOK_EXTHOST = /run/user/1000/vscode-ipc-8cf589b1-2012-42a5-9928-2bcf33290ea1.sock
+VSCODE_IPC_HOOK_EXTHOST = /run/user/1000/vscode-ipc-45de6fcf-9eb5-45c3-a956-a8e52efa66ba.sock
 # environment
 VSCODE_CWD = /home/chuck
 # environment
@@ -67,7 +67,7 @@ APPLICATION_INSIGHTS_NO_DIAGNOSTIC_CHANNEL = 1
 # environment
 MFLAGS = -pqrR
 # environment
-SSH_AUTH_SOCK = /tmp/ssh-KQD4TOQneppy/agent.2345
+SSH_AUTH_SOCK = /tmp/ssh-irPlpD07zU9P/agent.2376
 # default
 .SHELLFLAGS := -c
 # environment
@@ -85,13 +85,13 @@ QT_PLATFORMTHEME = gtk2
 # environment
 VSCODE_VERBOSE_LOGGING = true
 # environment
-VSCODE_PID = 919083
+VSCODE_PID = 99529
 # environment
 XDG_SESSION_TYPE = x11
 # automatic
 ?D = $(patsubst %/,%,$(dir $?))
 # environment
-SESSION_MANAGER = local/mx:@/tmp/.ICE-unix/2345,unix/mx:/tmp/.ICE-unix/2345
+SESSION_MANAGER = local/mx:@/tmp/.ICE-unix/2376,unix/mx:/tmp/.ICE-unix/2376
 # automatic
 *F = $(notdir $*)
 # environment
@@ -99,7 +99,7 @@ QT_QPA_PLATFORMTHEME = gtk2
 # environment
 CHROME_DESKTOP = code-url-handler.desktop
 # environment
-DBUS_SESSION_BUS_ADDRESS = unix:abstract=/tmp/dbus-vyUjsBvI6x,guid=5bea04ed785619d9a762b606628cf5f1
+DBUS_SESSION_BUS_ADDRESS = unix:abstract=/tmp/dbus-3CizrKd7eb,guid=a751fca2f47a675bb2ac8f4362a9ef97
 # automatic
 <D = $(patsubst %/,%,$(dir $<))
 # environment
@@ -159,7 +159,7 @@ GTK_MODULES = canberra-gtk-module
 # default
 MAKE_VERSION := 4.3
 # environment
-SSH_AGENT_PID = 2444
+SSH_AGENT_PID = 2473
 # environment
 _ = /usr/share/code/code
 # environment
@@ -201,9 +201,9 @@ GDMSESSION = lightdm-xsession
 
 # Directories
 
-# . (device 2065, inode 54527096): 13 files, no impossibilities.
+# . (device 2065, inode 54527096): 14 files, no impossibilities.
 
-# 13 files, no impossibilities in 1 directories.
+# 14 files, no impossibilities in 1 directories.
 
 # Implicit Rules
 
@@ -253,13 +253,13 @@ GNUmakefile:
 
 # No general ('VPATH' variable) search path.
 
-# strcache buffers: 1 (0) / strings = 21 / storage = 176 B / avg = 8 B
-# current buf: size = 8162 B / used = 176 B / count = 21 / avg = 8 B
+# strcache buffers: 1 (0) / strings = 22 / storage = 182 B / avg = 8 B
+# current buf: size = 8162 B / used = 182 B / count = 22 / avg = 8 B
 
-# strcache performance: lookups = 24 / hit rate = 12%
+# strcache performance: lookups = 25 / hit rate = 12%
 # hash-table stats:
-# Load=21/8192=0%, Rehash=0, Collisions=0/24=0%
-# Finished Make data base on Fri Jun 10 16:00:24 2022
+# Load=22/8192=0%, Rehash=0, Collisions=0/25=0%
+# Finished Make data base on Fri Jun 17 10:30:14 2022
 
  
 make: *** No rule to make target 'all'.  Stop.
