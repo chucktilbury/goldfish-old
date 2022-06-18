@@ -44,21 +44,21 @@ extern VM* vm;
     int type;
     int reg;
     char* symbol;
-    char* str;
+    void* usr;
 };
 
 %token <symbol> TOK_SYMBOL
 %token <literal> TOK_UNUM
 %token <literal> TOK_INUM
 %token <literal> TOK_FNUM
-%token <literal> TOK_STR
 %token <literal> TOK_TRUE TOK_FALSE
 %type <literal> expression expression_factor expr_parameter
 %type <literal> type_name type_specifier data_declaration
 
-%token <type> TOK_UINT8 TOK_UINT16 TOK_UINT32 TOK_UINT64
-%token <type> TOK_INT8 TOK_INT16 TOK_INT32 TOK_INT64 TOK_FLOAT TOK_DOUBLE
-%token <type> TOK_ADDR TOK_LIST TOK_DICT TOK_STRING TOK_BOOL
+%token <usr> TOK_USRTYPE
+
+%token <type> TOK_INT TOK_FLOAT TOK_UINT
+%token <type> TOK_ADDR TOK_BOOL
 
 %token <opcode> TOK_ABORT TOK_EXIT TOK_NOP TOK_CALL TOK_RCALL TOK_TRAP
 %token <opcode> TOK_RETURN TOK_JMP TOK_RJMP TOK_BR TOK_RBR
@@ -355,13 +355,13 @@ class6_instr
 class7_instr
     : TOK_TRAP TOK_UNUM {
         WRITE_VM_OBJ(uint8_t, OP_TRAP);
-        Value v = castValue(UINT32, $2, true);
-        WRITE_VM_OBJ(uint32_t, v.data.unum32);
+        Value v = castValue(UINT, $2, true);
+        WRITE_VM_OBJ(uint32_t, v.data.unum);
     }
     | TOK_TRAP TOK_INUM {
         WRITE_VM_OBJ(uint8_t, OP_TRAP);
-        Value v = castValue(UINT32, $2, true);
-        WRITE_VM_OBJ(uint32_t, v.data.unum32);
+        Value v = castValue(UINT, $2, true);
+        WRITE_VM_OBJ(uint32_t, v.data.unum);
     }
     ;
 
@@ -391,42 +391,12 @@ class8_instr
     ;
 
 type_name
-    : TOK_INT8 {
+    : TOK_INT {
         Value val;
         val.type = $1;
         $$ = val;
     }
-    | TOK_INT16 {
-        Value val;
-        val.type = $1;
-        $$ = val;
-    }
-    | TOK_INT32 {
-        Value val;
-        val.type = $1;
-        $$ = val;
-    }
-    | TOK_INT64 {
-        Value val;
-        val.type = $1;
-        $$ = val;
-    }
-    | TOK_UINT8 {
-        Value val;
-        val.type = $1;
-        $$ = val;
-    }
-    | TOK_UINT16 {
-        Value val;
-        val.type = $1;
-        $$ = val;
-    }
-    | TOK_UINT32 {
-        Value val;
-        val.type = $1;
-        $$ = val;
-    }
-    | TOK_UINT64 {
+    | TOK_UINT {
         Value val;
         val.type = $1;
         $$ = val;
@@ -436,27 +406,7 @@ type_name
         val.type = $1;
         $$ = val;
     }
-    | TOK_DOUBLE {
-        Value val;
-        val.type = $1;
-        $$ = val;
-    }
     | TOK_BOOL {
-        Value val;
-        val.type = $1;
-        $$ = val;
-    }
-    | TOK_STRING {
-        Value val;
-        val.type = $1;
-        $$ = val;
-    }
-    | TOK_LIST {
-        Value val;
-        val.type = $1;
-        $$ = val;
-    }
-    | TOK_DICT {
         Value val;
         val.type = $1;
         $$ = val;
@@ -503,7 +453,7 @@ expression_factor
     : TOK_UNUM {}
     | TOK_INUM {}
     | TOK_FNUM {}
-    | TOK_STR {}
+    | TOK_USRTYPE {}
     ;
 
 expression

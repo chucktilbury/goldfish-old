@@ -21,22 +21,12 @@ void doCall(VM* vm, Value val)
     switch(val.type) {
         case ADDRESS:   idx = (int)val.data.addr;   break;
 
-        case UINT8:
-        case UINT16:
-        case UINT32:
-        case UINT64:
-        case INT8:
-        case INT16:
-        case INT32:
-        case INT64:
+        case UINT:
+        case INT:
         case ERROR:
         case NOTHING:
         case FLOAT:
-        case DOUBLE:
         case BOOL:
-        case STRING:
-        case DICT:
-        case LIST:
         case USRTYPE:
             runtimeError("cannot use type %s as a call address", valTypeToStr(val.type));
             break;
@@ -48,10 +38,10 @@ void doCall(VM* vm, Value val)
     call.ret_addr = getInstrIndex(&vm->istore);
     call.arity = popValStack(&vm->vstack);
 
-    if(call.arity.type != UINT8)
+    if(call.arity.type != UINT)
         fatalError("invalid call arity type: %s", valTypeToStr(call.arity.type));
 
-    uint8_t num = call.arity.data.unum8;
+    uint8_t num = (uint8_t)call.arity.data.unum;
     call.parameters = _alloc_ds_array(Value, num);
     for(int i = 0; i < (int)num; i++) {
         call.parameters[i] = popValStack(&vm->vstack);
@@ -66,24 +56,14 @@ void doRCall(VM* vm, Value val)
     int idx;
 
     switch(val.type) {
-        case UINT8:     idx = (int)val.data.unum8;  break;
-        case UINT16:    idx = (int)val.data.unum16; break;
-        case UINT32:    idx = (int)val.data.unum32; break;
-        case UINT64:    idx = (int)val.data.unum64; break;
-        case INT8:      idx = (int)val.data.snum8;  break;
-        case INT16:     idx = (int)val.data.snum16; break;
-        case INT32:     idx = (int)val.data.snum32; break;
-        case INT64:     idx = (int)val.data.snum64; break;
+        case UINT:     idx = (int)val.data.unum;  break;
+        case INT:      idx = (int)val.data.inum;  break;
         case ADDRESS:   idx = (int)val.data.addr;   break;
 
         case ERROR:
         case NOTHING:
         case FLOAT:
-        case DOUBLE:
         case BOOL:
-        case STRING:
-        case DICT:
-        case LIST:
         case USRTYPE:
             runtimeError("cannot use type %s as a call address offset", valTypeToStr(val.type));
             break;
@@ -95,10 +75,10 @@ void doRCall(VM* vm, Value val)
     call.ret_addr = getInstrIndex(&vm->istore);
     call.arity = popValStack(&vm->vstack);
 
-    if(call.arity.type != UINT8)
+    if(call.arity.type != UINT)
         fatalError("invalid call arity type: %s", valTypeToStr(call.arity.type));
 
-    uint8_t num = call.arity.data.unum8;
+    uint8_t num = (uint8_t)call.arity.data.unum;
     call.parameters = _alloc_ds_array(Value, num);
     for(int i = 0; i < (int)num; i++) {
         call.parameters[i] = popValStack(&vm->vstack);
@@ -115,22 +95,12 @@ void doJmp(VM* vm, Value val)
     switch(val.type) {
         case ADDRESS:   idx = (int)val.data.addr;   break;
 
-        case UINT8:
-        case UINT16:
-        case UINT32:
-        case UINT64:
-        case INT8:
-        case INT16:
-        case INT32:
-        case INT64:
+        case UINT:
+        case INT:
         case ERROR:
         case NOTHING:
         case FLOAT:
-        case DOUBLE:
         case BOOL:
-        case STRING:
-        case DICT:
-        case LIST:
         case USRTYPE:
             runtimeError("cannot use type %s as a jmp address", valTypeToStr(val.type));
             break;
@@ -146,24 +116,14 @@ void doRJmp(VM* vm, Value val)
     int idx;
 
     switch(val.type) {
-        case UINT8:     idx = (int)val.data.unum8;  break;
-        case UINT16:    idx = (int)val.data.unum16; break;
-        case UINT32:    idx = (int)val.data.unum32; break;
-        case UINT64:    idx = (int)val.data.unum64; break;
-        case INT8:      idx = (int)val.data.snum8;  break;
-        case INT16:     idx = (int)val.data.snum16; break;
-        case INT32:     idx = (int)val.data.snum32; break;
-        case INT64:     idx = (int)val.data.snum64; break;
+        case UINT:     idx = (int)val.data.unum;  break;
+        case INT:      idx = (int)val.data.inum;  break;
         case ADDRESS:   idx = (int)val.data.addr;   break;
 
         case ERROR:
         case NOTHING:
         case FLOAT:
-        case DOUBLE:
         case BOOL:
-        case STRING:
-        case DICT:
-        case LIST:
         case USRTYPE:
             runtimeError("cannot use type %s as a call address offset", valTypeToStr(val.type));
             break;
@@ -182,22 +142,12 @@ void doBr(VM* vm, Value val)
         switch(val.type) {
             case ADDRESS:   idx = (int)val.data.addr;   break;
 
-            case UINT8:
-            case UINT16:
-            case UINT32:
-            case UINT64:
-            case INT8:
-            case INT16:
-            case INT32:
-            case INT64:
+            case UINT:
+            case INT:
             case ERROR:
             case NOTHING:
             case FLOAT:
-            case DOUBLE:
             case BOOL:
-            case STRING:
-            case DICT:
-            case LIST:
             case USRTYPE:
                 runtimeError("cannot use type %s as a jmp address", valTypeToStr(val.type));
                 break;
@@ -215,24 +165,14 @@ void doRBr(VM* vm, Value val)
         int idx;
 
         switch(val.type) {
-            case UINT8:     idx = (int)val.data.unum8;  break;
-            case UINT16:    idx = (int)val.data.unum16; break;
-            case UINT32:    idx = (int)val.data.unum32; break;
-            case UINT64:    idx = (int)val.data.unum64; break;
-            case INT8:      idx = (int)val.data.snum8;  break;
-            case INT16:     idx = (int)val.data.snum16; break;
-            case INT32:     idx = (int)val.data.snum32; break;
-            case INT64:     idx = (int)val.data.snum64; break;
+            case UINT:     idx = (int)val.data.unum;  break;
+            case INT:      idx = (int)val.data.inum;  break;
             case ADDRESS:   idx = (int)val.data.addr;   break;
 
             case ERROR:
             case NOTHING:
             case FLOAT:
-            case DOUBLE:
             case BOOL:
-            case STRING:
-            case DICT:
-            case LIST:
             case USRTYPE:
                 runtimeError("cannot use type %s as a call address offset", valTypeToStr(val.type));
                 break;
@@ -247,7 +187,6 @@ void doRBr(VM* vm, Value val)
 void doReturn(VM* vm)
 {
     CallStackElem cse = popCallStack(&vm->cstack);
-    _free(cse.parameters);
     setInstrIndex(&vm->istore, cse.ret_addr);
 }
 

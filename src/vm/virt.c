@@ -9,17 +9,17 @@
 
 int main() {
 
-    _initMemory();
+    _init_memory();
 
     VM* vm = _alloc_ds(VM);
     initVM(vm);
 
-    vm->registers[0].type = UINT32;
-    vm->registers[0].data.unum32 = 0xdeadbeef;
+    vm->registers[0].type = UINT;
+    vm->registers[0].data.unum = 0xdeadbeef;
 
     Value val;
-    val.type = UINT8;
-    val.data.unum8 = 0;
+    val.type = UINT;
+    val.data.unum = 0;
     pushValStack(&vm->vstack, val);
 
     WRITE_VM_OBJ(uint8_t, OP_TRAP);
@@ -28,10 +28,7 @@ int main() {
 
     runLoop(vm);
 
-    uninitVM(vm);
-    _free(vm);
-
-    _destroyMemory();
+    _uninit_memory();
 
     return 0;
 }

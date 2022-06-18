@@ -48,12 +48,6 @@ void initVarStore(VarStore* store)
     var->val.type = ERROR;
 }
 
-void uninitVarStore(VarStore* store)
-{
-    if(store->list != NULL)
-        _free(store->list);
-}
-
 VarIdx createVar(VarStore* store, ValType type)
 {
     Value val;

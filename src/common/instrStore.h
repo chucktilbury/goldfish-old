@@ -12,7 +12,6 @@ typedef struct {
 } InstrStore;
 
 void initInstrStore(InstrStore* store);
-void uninitInstrStore(InstrStore* store);
 
 /*
 void write_u8(InstrStore* store, uint8_t val);

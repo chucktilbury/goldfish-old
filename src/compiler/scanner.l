@@ -55,15 +55,8 @@ static void __append_str(const char* str)
 "namespace"     { return NAMESPACE; }
 "class"         { return CLASS; }
 "struct"        { return STRUCT; }
-"int8"          { return INT8; }
-"int16"         { return INT16; }
-"int32"         { return INT32; }
-"int64"         { return INT64; }
-"uint8"         { return UINT8; }
-"uint16"        { return UINT16; }
-"uint32"        { return UINT32; }
-"uint64"        { return UINT64; }
-"double"        { return DOUBLE; }
+"int"           { return INT; }
+"uint"          { return UINT; }
 "float"         { return FLOAT; }
 "nothing"       { return NOTHING; }
 "string"        { return STRING; }

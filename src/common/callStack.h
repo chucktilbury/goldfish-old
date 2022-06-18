@@ -17,7 +17,7 @@ typedef struct {
 } CallStack;
 
 void initCallStack(CallStack* store);
-void uninitCallStack(CallStack* store);
+
 void pushCallStack(CallStack* store, CallStackElem cse);
 CallStackElem peekCallStack(CallStack* store);
 CallStackElem popCallStack(CallStack* store);

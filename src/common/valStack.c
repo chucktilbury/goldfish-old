@@ -7,16 +7,7 @@ void initValStack(ValStack* store)
     store->cap = 0x01 << 1;
     store->len = 0;
 
-    if(store->list != NULL)
-        _free(store->list);
-
     store->list = _alloc_ds_array(Value, store->cap);
-}
-
-void uninitValStack(ValStack* store)
-{
-    if(store->list != NULL)
-        _free(store->list);
 }
 
 void pushValStack(ValStack* store, Value value)

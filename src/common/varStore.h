@@ -25,7 +25,6 @@ typedef struct {
 } VarStore;
 
 void initVarStore(VarStore* store);
-void uninitVarStore(VarStore* store);
 
 VarIdx createVar(VarStore* store, ValType type);
 VarIdx assignVar(VarStore* store, VarIdx idx, Value val);

@@ -2,7 +2,6 @@
 project(vm)
 
 add_library(${PROJECT_NAME} STATIC
-    memory.c
     opcodes.c
     values.c
     instrStore.c

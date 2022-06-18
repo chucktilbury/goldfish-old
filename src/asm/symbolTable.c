@@ -66,17 +66,6 @@ static int comp_names(const char* left, const char* right)
     return left[llen] - right[rlen];
 }
 
-static void free_table(SymTabNode* node)
-{
-    if(node->left != NULL)
-        free_table(node->left);
-    if(node->right != NULL)
-        free_table(node->right);
-
-    _free((void*)node->key);
-    _free(node);
-}
-
 static void dump_table(SymTabNode* node)
 {
     if(node->left != NULL)
@@ -110,8 +99,6 @@ static void add_node(SymTabNode* tree, SymTabNode* node)
     }
     else {
         syntaxError("symbol \"%s\" is already defined", node->key);
-        _free((void*)node->key);
-        _free(node);
         return;
     }
 }
@@ -139,23 +126,11 @@ static SymTabNode* find_node(SymTabNode* node, const char* key)
  * Interface
  */
 
-void destroySymTab()
-{
-    free_table(symtab);
-
-    Context *crnt, *next;
-    for(crnt = first; crnt != NULL; crnt = next) {
-        next = crnt->next;
-        _free((void*)crnt->name);
-        _free(crnt);
-    }
-}
-
 // symbol definition
 void addSym(const char* key, VarIdx idx)
 {
     SymTabNode* node = _alloc_ds(SymTabNode);
-    node->key = _alloc_str(create_name(key));
+    node->key = _copy_str(create_name(key));
     node->idx = idx;
 
     if(symtab != NULL)
@@ -201,7 +176,7 @@ void dumpSymtab()
 void pushContext(const char* name)
 {
     Context* cont = _alloc_ds(Context);
-	cont->name = _alloc_str(name);
+	cont->name = _copy_str(name);
 
 	if(first != NULL) {
 		last->next = cont;
@@ -222,8 +197,6 @@ void popContext()
         last = last->prev;
         if(last != NULL) {
 			last->next = NULL;
-			_free((void*)cont->name);
-			_free(cont);
 		}
     }
 }

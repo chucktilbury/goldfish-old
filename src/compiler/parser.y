@@ -14,6 +14,10 @@ extern const char* file_name;
 #define EMIT(fmt, ...)  fprintf(outfile, fmt, ## __VA_ARGS__)
 #define EMIT_LINE() fprintf(outfile, "#line %d \"%s\"\n", get_line_no(), get_file_name())
 
+/*
+ * TODO: Add syntax for lists and dicts. Add infrastructure for strings as usrtypes.
+ */
+
 %}
 
 %union {
@@ -26,9 +30,9 @@ extern const char* file_name;
 %token BREAK CASE CONTINUE CONST DEFAULT
 %token DO ELSE FOR IF RETURN SWITCH IMPORT
 %token NAMESPACE CLASS STRUCT WHILE
-%token INT8 INT16 INT32 INT64
-%token UINT8 UINT16 UINT32 UINT64
-%token DOUBLE FLOAT NOTHING STRING
+%token INT
+%token UINT
+%token FLOAT NOTHING STRING
 %token BOOL TRUE FALSE IN YIELD EXIT
 %token EQU NEQU LORE GORE OR AND
 %token TRY EXCEPT RAISE CTOR DTOR
@@ -157,17 +161,10 @@ class_definition_item
 	;
 
 type_name
-	: INT8 {}
-	| INT16 {}
-	| INT32 {}
-	| INT64 {}
-	| UINT8 {}
-	| UINT16 {}
-	| UINT32 {}
-	| UINT64 {}
-	| DOUBLE {}
+	: INT {}
+	| UINT {}
 	| FLOAT {}
-	| STRING {}
+	| STRING { /* TODO: Make this a compound type, like a class */}
 	| BOOL {}
 	| NOTHING {}
 	| compound_name {}

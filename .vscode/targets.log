@@ -1,4 +1,6 @@
 make all --print-data-base --no-builtin-variables --no-builtin-rules --question
+make: *** No rule to make target 'all'.  Stop.
+
 # GNU Make 4.3
 # Built for x86_64-pc-linux-gnu
 # Copyright (C) 1988-2020 Free Software Foundation, Inc.
@@ -6,16 +8,18 @@ make all --print-data-base --no-builtin-variables --no-builtin-rules --question
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
-# Make data base, printed on Fri Jun 17 10:30:14 2022
+# Make data base, printed on Sat Jun 18 07:25:45 2022
 
 # Variables
 
+# environment
+JAVA_HOME = /usr/lib/jvm/jdk-17
 # environment
 GDK_BACKEND = x11
 # environment
 LC_ALL = C
 # environment
-VSCODE_IPC_HOOK_EXTHOST = /run/user/1000/vscode-ipc-45de6fcf-9eb5-45c3-a956-a8e52efa66ba.sock
+VSCODE_IPC_HOOK_EXTHOST = /run/user/1000/vscode-ipc-f9f99c90-1df2-4e73-a634-2aa4e83f30ca.sock
 # environment
 VSCODE_CWD = /home/chuck
 # environment
@@ -35,7 +39,7 @@ PWD = /home/chuck/Src/goldfish
 # automatic
 %D = $(patsubst %/,%,$(dir $%))
 # environment
-XDG_DATA_DIRS = /usr/share/xfce4:/home/chuck/.local/share/flatpak/exports/share:/var/lib/flatpak/exports/share:/usr/local/share:/usr/share:/usr/share
+XDG_DATA_DIRS = /usr/share/xfce4:/home/chuck/.local/share/flatpak/exports/share:/var/lib/flatpak/exports/share:/usr/local/share:/usr/share:/usr/share:/var/lib/snapd/desktop
 # automatic
 ^D = $(patsubst %/,%,$(dir $^))
 # environment
@@ -43,7 +47,7 @@ VSCODE_LOG_STACK = false
 # automatic
 %F = $(notdir $%)
 # environment
-VSCODE_CODE_CACHE_PATH = /home/chuck/.config/Code/CachedData/c3511e6c69bb39013c4a4b7b9566ec1ca73fc4d5
+VSCODE_CODE_CACHE_PATH = /home/chuck/.config/Code/CachedData/4af164ea3a06f701fe3e89a2bcbb421d2026b68f
 # environment
 XDG_SESSION_PATH = /org/freedesktop/DisplayManager/Session0
 # environment
@@ -67,7 +71,7 @@ APPLICATION_INSIGHTS_NO_DIAGNOSTIC_CHANNEL = 1
 # environment
 MFLAGS = -pqrR
 # environment
-SSH_AUTH_SOCK = /tmp/ssh-irPlpD07zU9P/agent.2376
+SSH_AUTH_SOCK = /tmp/ssh-oqQ1gVoFBICy/agent.4699
 # default
 .SHELLFLAGS := -c
 # environment
@@ -75,7 +79,7 @@ XDG_CONFIG_DIRS = /etc/xdg
 # automatic
 +D = $(patsubst %/,%,$(dir $+))
 # environment
-XDG_SESSION_DESKTOP = lightdm-xsession
+XDG_SESSION_DESKTOP = xfce
 # makefile
 MAKEFILE_LIST := 
 # environment
@@ -85,13 +89,13 @@ QT_PLATFORMTHEME = gtk2
 # environment
 VSCODE_VERBOSE_LOGGING = true
 # environment
-VSCODE_PID = 99529
+VSCODE_PID = 313338
 # environment
 XDG_SESSION_TYPE = x11
 # automatic
 ?D = $(patsubst %/,%,$(dir $?))
 # environment
-SESSION_MANAGER = local/mx:@/tmp/.ICE-unix/2376,unix/mx:/tmp/.ICE-unix/2376
+SESSION_MANAGER = local/mx:@/tmp/.ICE-unix/4699,unix/mx:/tmp/.ICE-unix/4699
 # automatic
 *F = $(notdir $*)
 # environment
@@ -99,7 +103,7 @@ QT_QPA_PLATFORMTHEME = gtk2
 # environment
 CHROME_DESKTOP = code-url-handler.desktop
 # environment
-DBUS_SESSION_BUS_ADDRESS = unix:abstract=/tmp/dbus-3CizrKd7eb,guid=a751fca2f47a675bb2ac8f4362a9ef97
+DBUS_SESSION_BUS_ADDRESS = unix:abstract=/tmp/dbus-Q3m7xZPOlE,guid=5fa3cad76a606282c925645462a73809
 # automatic
 <D = $(patsubst %/,%,$(dir $<))
 # environment
@@ -119,7 +123,7 @@ MAKELEVEL := 0
 # default
 MAKE = $(MAKE_COMMAND)
 # environment
-PATH = /home/chuck/bin:/usr/local/bin:/usr/bin:/bin:/usr/local/games:/usr/games:/sbin:/usr/sbin
+PATH = /home/chuck/.local/bin:/home/chuck/bin:/home/chuck/.local/bin:/home/chuck/bin:/usr/local/bin:/usr/bin:/bin:/usr/local/games:/usr/games:/snap/bin:/sbin:/usr/sbin:/usr/lib/jvm/jdk-16/bin
 # default
 MAKEFILES := 
 # automatic
@@ -139,7 +143,9 @@ LS_COLORS =
 # environment
 XDG_SEAT_PATH = /org/freedesktop/DisplayManager/Seat0
 # environment
-DESKTOP_SESSION = lightdm-xsession
+LESS = -N -R -i
+# environment
+DESKTOP_SESSION = xfce
 # environment
 ORIGINAL_XDG_CURRENT_DESKTOP = XFCE
 # 'override' directive
@@ -151,6 +157,8 @@ XDG_VTNR = 7
 # makefile
 .DEFAULT_GOAL := 
 # environment
+HISTCONTROL = ignoreboth:erasedups
+# environment
 DISPLAY = :0.0
 # environment
 USER = chuck
@@ -159,7 +167,7 @@ GTK_MODULES = canberra-gtk-module
 # default
 MAKE_VERSION := 4.3
 # environment
-SSH_AGENT_PID = 2473
+SSH_AGENT_PID = 4867
 # environment
 _ = /usr/share/code/code
 # environment
@@ -175,7 +183,7 @@ HOME = /home/chuck
 # environment
 ELECTRON_RUN_AS_NODE = 1
 # environment
-VSCODE_IPC_HOOK = /run/user/1000/vscode-24a696e4-1.67.2-main.sock
+VSCODE_IPC_HOOK = /run/user/1000/vscode-24a696e4-1.68.0-main.sock
 # environment
 XDG_SESSION_ID = 1
 # default
@@ -191,9 +199,9 @@ XDG_GREETER_DATA_DIR = /var/lib/lightdm/data/chuck
 # environment
 XDG_MENU_PREFIX = xfce-
 # environment
-GDMSESSION = lightdm-xsession
+GDMSESSION = xfce
 # variable set hash-table stats:
-# Load=91/1024=9%, Rehash=0, Collisions=5/118=4%
+# Load=94/1024=9%, Rehash=0, Collisions=6/121=5%
 
 # Pattern-specific Variable Values
 
@@ -201,9 +209,9 @@ GDMSESSION = lightdm-xsession
 
 # Directories
 
-# . (device 2065, inode 54527096): 14 files, no impossibilities.
+# . (device 2081, inode 239338425): 13 files, no impossibilities.
 
-# 14 files, no impossibilities in 1 directories.
+# 13 files, no impossibilities in 1 directories.
 
 # Implicit Rules
 
@@ -253,14 +261,12 @@ GNUmakefile:
 
 # No general ('VPATH' variable) search path.
 
-# strcache buffers: 1 (0) / strings = 22 / storage = 182 B / avg = 8 B
-# current buf: size = 8162 B / used = 182 B / count = 22 / avg = 8 B
+# strcache buffers: 1 (0) / strings = 21 / storage = 171 B / avg = 8 B
+# current buf: size = 8162 B / used = 171 B / count = 21 / avg = 8 B
 
-# strcache performance: lookups = 25 / hit rate = 12%
+# strcache performance: lookups = 24 / hit rate = 12%
 # hash-table stats:
-# Load=22/8192=0%, Rehash=0, Collisions=0/25=0%
-# Finished Make data base on Fri Jun 17 10:30:14 2022
+# Load=21/8192=0%, Rehash=0, Collisions=0/24=0%
+# Finished Make data base on Sat Jun 18 07:25:45 2022
 
  
-make: *** No rule to make target 'all'.  Stop.
-

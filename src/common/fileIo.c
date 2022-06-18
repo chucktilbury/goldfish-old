@@ -52,14 +52,6 @@ void initVM(VM* vm)
     initRegisters(vm);
 }
 
-void uninitVM(VM* vm)
-{
-    uninitVarStore(&vm->vstore);
-    uninitValStack(&vm->vstack);
-    uninitCallStack(&vm->cstack);
-    uninitInstrStore(&vm->istore);
-}
-
 void loadVM(VM* vm, const char* fname)
 {
     FILE* fp = fopen(fname, "r");
@@ -84,7 +76,6 @@ void saveVM(VM* vm, const char* fname)
 
     save_var_store(&vm->vstore, fp);
     save_instr_store(&vm->istore, fp);
-    uninitVM(vm);
     fclose(fp);
 }
 

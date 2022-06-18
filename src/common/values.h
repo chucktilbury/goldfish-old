@@ -11,8 +11,7 @@ typedef enum {
     FLOAT,
     BOOL,
     ADDRESS,
-    ARRAY,
-    USRTYPE,
+    USRTYPE, // user types are accessed using a trap
     DEFER, // used in the tables to mark deferred transformations
     EXTERN, // external function defined in external code
 } ValType;
@@ -27,8 +26,6 @@ typedef struct {
         double fnum;
         bool boolean;
         uint32_t addr;
-        // these are indexes into their respective stores...
-        int array;
         int usrtype;
     } data;
 } __attribute__((packed)) Value;
@@ -38,6 +35,16 @@ Value castValue(ValType type, Value val, bool isConst);
 // Convert the type to a string for debugging and error generation.
 const char* valTypeToStr(ValType type);
 void printVal(Value val);
+
+#define VTYPE(v) (v).type
+#define VDATA(v) (v).data
+#define TTS(v) valTypeToStr(VTYPE(v))
+#define AS_UINT(v) VDATA(v).unum
+#define AS_INT(v) VDATA(v).inum
+#define AS_FLOAT(v) VDATA(v).fnum
+#define AS_ADDR(v) VDATA(v).addr
+#define AS_BOOL(v) VDATA(v).boolean
+#define AS_USR(v) VDATA(v).usrtype
 
 #endif
 

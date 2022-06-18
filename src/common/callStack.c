@@ -7,16 +7,7 @@ void initCallStack(CallStack* store)
     store->cap = 0x01 << 1;
     store->len = 0;
 
-    if(store->list != NULL)
-        _free(store->list);
-
     store->list = _alloc_ds_array(CallStackElem, store->cap);
-}
-
-void uninitCallStack(CallStack* store)
-{
-    if(store->list != NULL)
-        _free(store->list);
 }
 
 void pushCallStack(CallStack* store, CallStackElem cse)

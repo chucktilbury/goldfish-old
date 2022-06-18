@@ -11,6 +11,7 @@
 #include "scanner.h"
 #include "opcodes.h"
 #include "registers.h"
+#include "memory.h"
 
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wimplicit-function-declaration"
@@ -49,20 +50,10 @@ static void __append_str(const char* str)
 [ \t\r]         {}
 
     /* keywords */
-"UINT8"         { yylval.type = UINT8; return TOK_UINT8; }
-"UINT16"        { yylval.type = UINT16; return TOK_UINT16; }
-"UINT32"        { yylval.type = UINT32; return TOK_UINT32; }
-"UINT64"        { yylval.type = UINT64; return TOK_UINT64; }
-"INT8"          { yylval.type = INT8; return TOK_INT8; }
-"INT16"         { yylval.type = INT16; return TOK_INT16; }
-"INT32"         { yylval.type = INT32; return TOK_INT32; }
-"INT64"         { yylval.type = INT64; return TOK_INT64; }
+"UINT"         { yylval.type = UINT; return TOK_UINT; }
+"INT"          { yylval.type = INT; return TOK_INT; }
 "FLOAT"         { yylval.type = FLOAT; return TOK_FLOAT; }
-"DOUBLE"        { yylval.type = DOUBLE; return TOK_DOUBLE; }
 "ADDRESS"       { yylval.type = ADDRESS; return TOK_ADDR; }
-"LIST"          { yylval.type = LIST; return TOK_LIST; }
-"DICT"          { yylval.type = DICT; return TOK_DICT; }
-"STRING"        { yylval.type = STRING; return TOK_STRING; }
 "BOOL"          { yylval.type = BOOL; return TOK_BOOL; }
 
 "TRUE"          { yylval.literal.type = BOOL; yylval.literal.data.boolean = true; return TOK_TRUE; }
@@ -142,22 +133,22 @@ static void __append_str(const char* str)
     }
 
 [0-9]+ {
-        yylval.literal.data.snum64 = strtol(yytext, NULL, 10);
-        yylval.literal.type = INT64;
+        yylval.literal.data.inum = strtol(yytext, NULL, 10);
+        yylval.literal.type = INT;
         return TOK_INUM;
     }
 
     /* recognize a float */
 ([0-9]*\.)?[0-9]+([Ee][-+]?[0-9]+)? {
-        yylval.literal.data.dnum = strtod(yytext, NULL);
-        yylval.literal.type = DOUBLE;
+        yylval.literal.data.fnum = strtod(yytext, NULL);
+        yylval.literal.type = FLOAT;
         //printf("number: %0.3f\n", yylval.fnum);
         return TOK_FNUM;
     }
 
 0[Xx][0-9a-fA-F]+ {
-        yylval.literal.data.unum64 = strtol(yytext, NULL, 16);
-        yylval.literal.type = UINT64;
+        yylval.literal.data.unum = strtol(yytext, NULL, 16);
+        yylval.literal.type = UINT;
         return TOK_UNUM;
     }
 
@@ -169,10 +160,10 @@ static void __append_str(const char* str)
     }
 
 <DQUOTES>\" {
-        //yylval.literal.str = STRDUP(buffer);
-        yylval.str = (char*)strdup(buffer);
+        // TODO: make this a proper USRTYPE
+        yylval.usr = _copy_str(buffer);
         BEGIN(INITIAL);
-        return TOK_STRING;
+        return TOK_USRTYPE;
     }
 
     /* the short rule matches before the long one does */
@@ -202,10 +193,10 @@ static void __append_str(const char* str)
     }
 
 <SQUOTES>\' {
-        //yylval.literal.str = STRDUP(buffer);
-        yylval.str = (char*)strdup(buffer);
+        // TODO: make this a proper USRTYPE
+        yylval.usr = _copy_str(buffer);
         BEGIN(INITIAL);
-        return TOK_STRING;
+        return TOK_USRTYPE;
     }
 
 <SQUOTES>[^\\'\n]*  { __append_str(yytext); }

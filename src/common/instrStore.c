@@ -19,20 +19,12 @@ static void expand(InstrStore* store, unsigned long size)
 
 void initInstrStore(InstrStore* store)
 {
-    if(store->buffer != NULL)
-        _free(store->buffer);
 
     store->len = 0;
     store->index = 0;
     store->cap = 0x01 << 3;
 
     store->buffer = _alloc(store->cap);
-}
-
-void uninitInstrStore(InstrStore* store)
-{
-    if(store->buffer != NULL)
-        _free(store->buffer);
 }
 
 /*

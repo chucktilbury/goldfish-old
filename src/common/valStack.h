@@ -11,7 +11,6 @@ typedef struct {
 } ValStack;
 
 void initValStack(ValStack* store);
-void uninitValStack(ValStack* store);
 
 void pushValStack(ValStack* store, Value value);
 Value peekValStack(ValStack* store, int index);

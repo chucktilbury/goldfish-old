@@ -21,20 +21,15 @@ typedef enum {
 } Register;
 
 #define REG(v)  vm->registers[v]
-#define RTYPE(v) vm->registers[v].type
-#define TTS(v) valTypeToStr(vm->registers[v].type)
-#define AS_UINT8(v) vm->registers[v].data.unum8
-#define AS_UINT16(v) vm->registers[v].data.unum16
-#define AS_UINT32(v) vm->registers[v].data.unum32
-#define AS_UINT64(v) vm->registers[v].data.unum64
-#define AS_INT8(v) vm->registers[v].data.snum8
-#define AS_INT16(v) vm->registers[v].data.snum16
-#define AS_INT32(v) vm->registers[v].data.snum32
-#define AS_INT64(v) vm->registers[v].data.snum64
-#define AS_DOUBLE(v) vm->registers[v].data.dnum
-#define AS_FLOAT(v) vm->registers[v].data.fnum
-#define AS_ADDR(v) vm->registers[v].data.addr
-#define AS_BOOL(v) vm->registers[v].data.boolean
+#define RTYPE(v) REG(v).type
+#define RDATA(v) REG(v).data
+#define RTTS(v) valTypeToStr(RTYPE(v))
+#define REG_UINT(v) RDATA(v).unum
+#define REG_INT(v) RDATA(v).inum
+#define REG_FLOAT(v) RDATA(v).fnum
+#define REG_ADDR(v) RDATA(v).addr
+#define REG_BOOL(v) RDATA(v).boolean
+#define REG_USR(v) RDATA(v).usrtype
 #define NZFLAG vm->nzero
 
 const char* regToStr(Register reg);

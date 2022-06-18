@@ -4,7 +4,7 @@
 #include "vMachine.h"
 
 void initVM(VM* vm);
-void uninitVM(VM* vm);
+
 void saveVM(VM* vm, const char* fname);
 void loadVM(VM* vm, const char* fname);
 

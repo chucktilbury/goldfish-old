@@ -1,8 +1,4 @@
-###############################################################################
-# Main source code directory.
-###############################################################################
 
-# parser library
 add_subdirectory(gc)
 add_subdirectory(ucpp)
 add_subdirectory(vm)

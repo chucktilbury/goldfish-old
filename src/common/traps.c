@@ -20,11 +20,8 @@ static void print_value(VM* vm)
 
 static void print_register(VM* vm)
 {
-// TODO: typecheck this
-    //uint8_t reg;
-    //READ_VM_OBJ(uint8_t, reg);
     Value val = popValStack(&vm->vstack);
-    printVal(vm->registers[val.data.unum8]);
+    printVal(vm->registers[val.data.unum]);
 }
 
 static void print_immediate(VM* vm)
