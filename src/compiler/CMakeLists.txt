@@ -27,7 +27,6 @@ add_custom_command(OUTPUT ${YACC_C_SOURCE} ${YACC_H}
 add_executable(${PROJECT_NAME}
 	main.c
     memory.c
-	cmdline.c
 	symtable.c
     errors.c
     parser.c

@@ -1,6 +1,8 @@
 out/
 bin/*
 build/*
+testing/build/*
+testing/bin/*
 parser.c
 parser.h
 parser.output

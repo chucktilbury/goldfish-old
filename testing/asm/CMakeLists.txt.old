@@ -1,0 +1,41 @@
+
+project(asm-test)
+
+add_executable(fake-test1
+    fake-test.c
+)
+
+add_executable(fake-test2
+    fake-test.c
+)
+
+target_link_libraries(fake-test1
+    gc-lib
+    vm
+    m
+)
+
+target_link_libraries(fake-test2
+    gc-lib
+    vm
+    m
+)
+
+add_test(
+    NAME fake-test1
+    COMMAND fake-test1
+    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/Testing
+)
+
+add_test(
+    NAME fake-test2
+    COMMAND fake-test2
+    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/Testing
+)
+
+add_custom_target(
+    asm-test ${CMAKE_CTEST_COMMAND}
+        DEPENDS
+            fake-test1
+            fake-test2
+)
