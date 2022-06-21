@@ -72,6 +72,16 @@ VarIdx assignVar(VarStore* store, VarIdx idx, Value val)
     return idx;
 }
 
+VarIdx assignVarName(VarStore* store, VarIdx vidx, StrIdx sidx)
+{
+    if(!validateIdx(store, vidx))
+        return 0;
+    else
+        store->list[vidx].name = sidx;
+
+    return vidx;
+}
+
 VarIdx addVar(VarStore* store, Value val)
 {
     VarIdx idx = find_slot(store);
@@ -97,4 +107,17 @@ void delVar(VarStore* store, VarIdx idx)
         store->list[idx].status = DELETED;
         store->free_slots ++;
     }
+}
+
+void dumpVars(VarStore* store, FILE* outf)
+{
+    fprintf(outf, "-------- Dump Variable Table ----------\n");
+
+    for(uint32_t i = 0; i < store->len; i++) {
+        fprintf(outf, "<%d>\t", i);
+        printVal(&store->list[i].val, outf);
+        fprintf(outf, "\tstatus: %s\t", store->list[i].status? "DELETED": "ACTIVE");
+        fprintf(outf, "<%d>\n", store->list[i].name);
+    }
+    fprintf(outf, "-------- end dump ----------\n\n");
 }

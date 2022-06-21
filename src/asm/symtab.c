@@ -23,16 +23,16 @@ static int comp_names(const char* left, const char* right)
     return strcmp(left, right);
 }
 
-static void dump_table(SymTabNode* node)
+static void dump_table(SymTabNode* node, FILE* outf)
 {
     if(node->left != NULL)
-        dump_table(node->left);
+        dump_table(node->left, outf);
     if(node->right != NULL)
-        dump_table(node->right);
+        dump_table(node->right, outf);
 
-    printf("    %-12s\t<%d>\t", node->key, node->idx);
-    printVal(getVar(&vm->vstore, node->idx));
-    //printf("\n");
+    fprintf(outf, "    %-12s\t<%d>\t", node->key, node->idx);
+    printVal(getVar(&vm->vstore, node->idx), outf);
+    printf("\n");
 }
 
 static void add_node(SymTabNode* tree, SymTabNode* node)
@@ -116,10 +116,8 @@ Value* symToVal(const char*key)
 
     if(node != NULL)
         val = getVar(&vm->vstore, node->idx);
-    else {
-        memset(val, 0, sizeof(Value));
-        val->type = ERROR;
-    }
+    else
+        val = getVar(&vm->vstore, 0);
 
     return val;
 }
@@ -129,13 +127,12 @@ bool symIsDefined(const char* key)
     return (find_node(symtab, key))? true: false;
 }
 
-void dumpSymtab()
+void dumpSymtab(FILE* outf)
 {
-    printf("Dump Symbol Table\n");
+    fprintf(outf, "-------- Dump Symbol Table ----------\n");
     if(symtab != NULL)
-        dump_table(symtab);
+        dump_table(symtab, outf);
     else
-        printf("    table is empty\n");
-    printf("----------- end dump -----------\n");
+        fprintf(outf, "    table is empty\n");
+    fprintf(outf, "----------- end dump -----------\n\n");
 }
-

@@ -17,6 +17,7 @@
 #include "opcodes.h"
 #include "registers.h"
 #include "scanner.h"
+#include "errors.h"
 
 // defined by flex
 extern int yylex(void);
@@ -24,7 +25,7 @@ extern int yyparse(void);
 extern FILE *yyin;
 void yyerror(const char* s)
 {
-    fprintf(stderr, "%s\n", s);
+    syntaxError("%s", s);
 }
 
 // defined in main.c
@@ -32,6 +33,8 @@ void yyerror(const char* s)
 extern int error_count;
 void syntaxError(const char*, ...);
 extern VM* vm;
+
+static bool first_flag = true;
 
 %}
 
@@ -44,6 +47,7 @@ extern VM* vm;
     int type;
     int reg;
     char* symbol;
+    char* qstr;
     void* usr;
 };
 
@@ -53,12 +57,14 @@ extern VM* vm;
 %token <literal> TOK_FNUM
 %token <literal> TOK_TRUE TOK_FALSE
 %type <literal> expression expression_factor expr_parameter
-%type <literal> type_name type_specifier data_declaration
+%type <literal> type_name type_specifier
+%type <symbol> data_declaration data_definition
 
 %token <usr> TOK_USRTYPE
+%token <qstr> TOK_QSTR
 
 %token <type> TOK_INT TOK_FLOAT TOK_UINT
-%token <type> TOK_ADDR TOK_BOOL
+%token <type> TOK_ADDR TOK_BOOL TOK_LINE
 
 %token <opcode> TOK_ABORT TOK_EXIT TOK_NOP TOK_CALL TOK_RCALL TOK_TRAP
 %token <opcode> TOK_RETURN TOK_JMP TOK_RJMP TOK_BR TOK_RBR
@@ -81,12 +87,33 @@ extern VM* vm;
 program
     :  {
         // Emit stuff at the beginning of the file.
+        Value val;
+        val.type = ADDRESS;
+        val.isAssigned = true;
+        val.data.addr = getLabelAddr(&vm->istore);
+        VarIdx vidx = addVar(&vm->vstore, val);
+        const char* str = "__start_address__";
+        StrIdx sidx = addStr(&vm->sstore, str);
+        assignVarName(&vm->vstore, vidx, sidx);
+        addSym(str, vidx);
     } module
     ;
 
 module
     : module_item_list {
         // Emit stuff at the end of the file.
+        WRITE_VM_OBJ(uint8_t, OP_NOP);
+        WRITE_VM_OBJ(uint8_t, OP_NOP);
+        Value val;
+        val.type = ADDRESS;
+        val.isAssigned = true;
+        val.data.addr = getLabelAddr(&vm->istore);
+        VarIdx vidx = addVar(&vm->vstore, val);
+        const char* str = "__end_address__";
+        StrIdx sidx = addStr(&vm->sstore, str);
+        assignVarName(&vm->vstore, vidx, sidx);
+        addSym(str, vidx);
+        WRITE_VM_OBJ(uint8_t, OP_NOP);
     }
     ;
 
@@ -104,8 +131,10 @@ module_item
             Value val;
             val.type = ADDRESS;
             val.isAssigned = true;
-            val.data.addr = getInstrLen(&vm->istore);
-            addSym($1, addVar(&vm->vstore, val));
+            val.data.addr = getLabelAddr(&vm->istore);
+            VarIdx vidx = addVar(&vm->vstore, val);
+            assignVarName(&vm->vstore, vidx, addStr(&vm->sstore, $1));
+            addSym($1, vidx);
         }
         else {
             Value* val = getVar(&vm->vstore, idx);
@@ -115,6 +144,14 @@ module_item
                 syntaxError("label \"%s\" has already been defined", $1);
             else
                 val->data.addr = getInstrLen(&vm->istore);
+        }
+    }
+    | TOK_LINE TOK_INUM TOK_QSTR {
+        set_line_no($2.data.inum);
+        set_file_name($3);
+        if(first_flag) {
+            vm->fname = _copy_str($3);
+            first_flag = false;
         }
     }
     ;
@@ -282,6 +319,7 @@ class5_instr
             val.data.addr = 0;
             val.isAssigned = false;
             idx = addVar(&vm->vstore, val);
+            assignVarName(&vm->vstore, idx, addStr(&vm->sstore, $2));
             addSym($2, idx);
         }
         WRITE_VM_OBJ(VarIdx, idx);
@@ -295,6 +333,7 @@ class5_instr
             val.data.addr = 0;
             val.isAssigned = false;
             idx = addVar(&vm->vstore, val);
+            assignVarName(&vm->vstore, idx, addStr(&vm->sstore, $2));
             addSym($2, idx);
         }
         WRITE_VM_OBJ(VarIdx, idx);
@@ -308,6 +347,7 @@ class5_instr
             val.data.addr = 0;
             val.isAssigned = false;
             idx = addVar(&vm->vstore, val);
+            assignVarName(&vm->vstore, idx, addStr(&vm->sstore, $2));
             addSym($2, idx);
         }
         WRITE_VM_OBJ(VarIdx, idx);
@@ -321,6 +361,7 @@ class5_instr
             val.data.addr = 0;
             val.isAssigned = false;
             idx = addVar(&vm->vstore, val);
+            assignVarName(&vm->vstore, idx, addStr(&vm->sstore, $2));
             addSym($2, idx);
         }
         WRITE_VM_OBJ(VarIdx, idx);
@@ -334,6 +375,7 @@ class5_instr
             val.data.addr = 0;
             val.isAssigned = false;
             idx = addVar(&vm->vstore, val);
+            assignVarName(&vm->vstore, idx, addStr(&vm->sstore, $2));
             addSym($2, idx);
         }
         WRITE_VM_OBJ(VarIdx, idx);
@@ -347,6 +389,7 @@ class5_instr
             val.data.addr = 0;
             val.isAssigned = false;
             idx = addVar(&vm->vstore, val);
+            assignVarName(&vm->vstore, idx, addStr(&vm->sstore, $2));
             addSym($2, idx);
         }
         WRITE_VM_OBJ(VarIdx, idx);
@@ -402,12 +445,12 @@ class7_instr
     : TOK_TRAP TOK_UNUM {
         WRITE_VM_OBJ(uint8_t, OP_TRAP);
         Value v = castValue(UINT, $2, true);
-        WRITE_VM_OBJ(uint32_t, v.data.unum);
+        WRITE_VM_OBJ(uint16_t, v.data.unum);
     }
     | TOK_TRAP TOK_INUM {
         WRITE_VM_OBJ(uint8_t, OP_TRAP);
         Value v = castValue(UINT, $2, true);
-        WRITE_VM_OBJ(uint32_t, v.data.unum);
+        WRITE_VM_OBJ(uint16_t, v.data.unum);
     }
     ;
 
@@ -476,14 +519,18 @@ type_specifier
 
 data_declaration
     : type_specifier TOK_SYMBOL {
-        addSym($2, addVar(&vm->vstore, $1));
-        $$ = $1;
+        VarIdx idx = addVar(&vm->vstore, $1);
+        addSym($2, idx);
+        assignVarName(&vm->vstore, idx, addStr(&vm->sstore, $2));
+        $$ = $2;
     }
     ;
 
 data_definition
     : data_declaration '=' expression {
-
+        Value* val = symToVal($1);
+        Value tmp = castValue(val->type, $3, $3.isConst);
+        copyValue(val, &tmp);
     }
     | data_declaration '=' bool_value {
 

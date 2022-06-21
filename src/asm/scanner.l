@@ -5,7 +5,7 @@
 //#define //_TRACE(...)
 
 #include "system.h"
-//#include "vm_support.h"
+#include "vMachine.h"
 #include "values.h"
 #include "parser.h"
 #include "scanner.h"
@@ -18,8 +18,32 @@
 
 void yyerror(const char* s);
 
-int bidx = 0;
-char buffer[1024*64];
+static int bidx = 0;
+static char buffer[1024*64];
+static int line_no;
+static char* file_name;
+
+// these values are set by the preprocessor rule in the parser
+void set_line_no(int no)
+{
+    // not including the line the directive is on
+    line_no = no-1;
+}
+
+int get_line_no()
+{
+    return line_no;
+}
+
+void set_file_name(const char* fname)
+{
+    file_name = _copy_str(fname);
+}
+
+const char* get_file_name()
+{
+    return file_name;
+}
 
 static void __append_char(char ch)
 {
@@ -46,7 +70,7 @@ static void __append_str(const char* str)
 %%
 
     /* overhead */
-\n              {}
+\n              { line_no++; }
 [ \t\r]         {}
 
     /* keywords */
@@ -107,6 +131,7 @@ static void __append_str(const char* str)
 "R15"           { yylval.reg = REG_15; return TOK_R15; }
 
 "CONST"         { return TOK_CONST; }
+"#line"         { return TOK_LINE; }
 
         /* arithmetic operators */
 "+"             { return '+'; }
@@ -117,7 +142,6 @@ static void __append_str(const char* str)
 "%"             { return '%'; }
 "("             { return '('; }
 ")"             { return ')'; }
-"#"             { return '#'; }
 "{"             { return '{'; }
 "}"             { return '}'; }
 ","             { return ','; }
@@ -161,9 +185,9 @@ static void __append_str(const char* str)
 
 <DQUOTES>\" {
         // TODO: make this a proper USRTYPE
-        yylval.usr = _copy_str(buffer);
+        yylval.qstr = _copy_str(buffer);
         BEGIN(INITIAL);
-        return TOK_USRTYPE;
+        return TOK_QSTR;
     }
 
     /* the short rule matches before the long one does */
@@ -182,7 +206,7 @@ static void __append_str(const char* str)
 <DQUOTES>\\[0-7]{1,3} { __append_char((char)strtol(yytext+1, 0, 8));  }
 <DQUOTES>\\[xX][0-9a-fA-F]{1,3} { __append_char((char)strtol(yytext+2, 0, 16));  }
 <DQUOTES>[^\\\"\n]*  { __append_str(yytext); }
-<DQUOTES>\n     { yylineno++; } /* track line numbers, but strip new line */
+<DQUOTES>\n     { line_no++; } /* track line numbers, but strip new line */
 
 
     /* single quoted strings are absolute literals */
@@ -194,14 +218,14 @@ static void __append_str(const char* str)
 
 <SQUOTES>\' {
         // TODO: make this a proper USRTYPE
-        yylval.usr = _copy_str(buffer);
+        yylval.qstr = _copy_str(buffer);
         BEGIN(INITIAL);
-        return TOK_USRTYPE;
+        return TOK_QSTR;
     }
 
 <SQUOTES>[^\\'\n]*  { __append_str(yytext); }
 <SQUOTES>\\.    { __append_str(yytext); }
-<SQUOTES>\n     { __append_str(yytext); yylineno++; } /* don't strip new lines */
+<SQUOTES>\n     { __append_str(yytext); line_no++; } /* don't strip new lines */
 
 .               { printf("Warning: unrecognized character: %c (0x%02X)", yytext[0], yytext[0]);}
 
@@ -216,5 +240,3 @@ int open_file(const char *fname) {
 
     return 0;
 }
-
-int get_line_no() { return yylineno; }

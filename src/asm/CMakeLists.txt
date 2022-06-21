@@ -28,7 +28,6 @@ add_custom_command(OUTPUT ${YACC_C_SOURCE} ${YACC_H}
 add_executable(${PROJECT_NAME}
     parser.c
     scanner.c
-    listing.c
     symtab.c
     errors.c
     asm.c
@@ -42,16 +41,13 @@ target_include_directories(${PROJECT_NAME}
 
 target_link_libraries(${PROJECT_NAME}
     gc-lib
-    pthread
     vm
     m
 )
 
-target_compile_options(${PROJECT_NAME} PRIVATE "-g" "-DTRACE")
+target_compile_options(${PROJECT_NAME} PRIVATE "-Wall" "-g" "-DTRACE")
 
 set_property(DIRECTORY PROPERTY ADDITIONAL_MAKE_CLEAN_FILES
     "${CMAKE_CURRENT_SOURCE_DIR}/parser.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/parser.output"
 )
-
-#set(LIBRARY_OUTPUT_PATH "${PROJECT_SOURCE_DIR}/../lib")

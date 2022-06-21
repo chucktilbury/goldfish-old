@@ -43,6 +43,7 @@ VarIdx read_idx(InstrStore* store);
 
 unsigned long getInstrIndex(InstrStore* store);
 unsigned long getInstrLen(InstrStore* store);
+unsigned long getLabelAddr(InstrStore* store);
 void setInstrIndex(InstrStore* store, unsigned long idx);
 void incInstrIndex(InstrStore* store, int idx);
 bool isInstrEnded(InstrStore* store);

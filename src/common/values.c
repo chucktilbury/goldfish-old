@@ -132,21 +132,26 @@ Value castValue(ValType type, Value val, bool isConst)
     return retv;
 }
 
-void printVal(Value* val)
+void copyValue(Value* dest, Value* src)
 {
-    printf("%-8s", valTypeToStr(val->type));
+    memcpy(dest, src, sizeof(Value));
+}
+
+void printVal(Value* val, FILE* outf)
+{
+    fprintf(outf, "%-8s", valTypeToStr(val->type));
     switch(val->type) {
-        case ERROR: printf("<ERROR>"); break;
-        case NOTHING: printf("<NOTHING>"); break;
-        case UINT: printf("<0x%02lX>", val->data.unum); break;
-        case INT: printf("<%ld>", val->data.inum); break;
-        case FLOAT: printf("<%0.3f>", val->data.fnum); break;
-        case BOOL: printf("<%s>", val->data.boolean? "true": "false"); break;
-        case ADDRESS: printf("<0x%08X>", val->data.addr); break;
-        case USRTYPE: printf("<defer>"); break;
-        default: printf("UNKNOWN"); break;
+        case ERROR: fprintf(outf, "<ERROR>"); break;
+        case NOTHING: fprintf(outf, "<NOTHING>"); break;
+        case UINT: fprintf(outf, "<0x%02lX>", val->data.unum); break;
+        case INT: fprintf(outf, "<%ld>", val->data.inum); break;
+        case FLOAT: fprintf(outf, "<%0.3f>", val->data.fnum); break;
+        case BOOL: fprintf(outf, "<%s>", val->data.boolean? "true": "false"); break;
+        case ADDRESS: fprintf(outf, "<%d>", val->data.addr); break;
+        case USRTYPE: fprintf(outf, "<defer>"); break;
+        default: fprintf(outf, "UNKNOWN"); break;
     }
-    printf("\n");
+    //fprintf(outf, "\n");
 }
 
 const char* valTypeToStr(ValType type)

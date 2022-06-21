@@ -6,6 +6,7 @@
 #include "values.h"
 #include "varStore.h"
 #include "instrStore.h"
+#include "strStore.h"
 #include "callStack.h"
 #include "valStack.h"
 #include "cmdline.h"
@@ -20,8 +21,10 @@ typedef struct {
     bool nzero;
     VarStore vstore;
     InstrStore istore;
+    StrStore sstore;
     ValStack vstack;
     CallStack cstack;
+    const char* fname;
 } VM;
 
 #endif

@@ -36,7 +36,7 @@ int runLoop(VM* vm)
                     fprintf(stderr, "runtime error: abort instruction: ");
                     VarIdx idx;
                     READ_VM_OBJ(VarIdx, idx);
-                    printVal(getVar(&vm->vstore, idx));
+                    printVal(getVar(&vm->vstore, idx), stderr);
                     fprintf(stderr, "\n");
                     finished = true;
                     retv = -1;
@@ -48,7 +48,7 @@ int runLoop(VM* vm)
                     fprintf(stderr, "runtime error: abort instruction: ");
                     Value val;
                     READ_VM_OBJ(Value, val);
-                    printVal(&val);
+                    printVal(&val, stderr);
                     fprintf(stderr, "\n");
                     finished = true;
                     retv = -1;
@@ -61,7 +61,7 @@ int runLoop(VM* vm)
                     uint8_t reg;
                     READ_VM_OBJ(uint8_t, reg);
                     finished = true;
-                    printVal(&vm->registers[reg]);
+                    printVal(&vm->registers[reg], stderr);
                     fprintf(stderr, "\n");
                     retv = -1;
                 }
@@ -429,6 +429,9 @@ int runLoop(VM* vm)
                 retv = -2;
                 break;
         }
+
+        // exit if there are no more instructions
+        finished = isInstrEnded(&vm->istore);
     }
 
     return retv;

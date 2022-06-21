@@ -5,12 +5,13 @@
 #ifndef _SCANNER_H_
 #  define _SCANNER_H_
 
-char *get_file_name(void);
-int get_line_no(void);
-int get_col_number(void);
+void set_line_no(int no);
+int get_line_no();
+void set_file_name(const char* fname);
+const char* get_file_name();
 int open_file(const char *fname);
-const char *get_tok_str(void);
-int get_token(void);
+// const char *get_tok_str(void);
+// int get_token(void);
 
 /*
  * Defined by flex. Call one time to isolate a symbol and then use the global

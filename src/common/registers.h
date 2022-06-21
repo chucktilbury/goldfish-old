@@ -33,4 +33,6 @@ typedef enum {
 #define NZFLAG vm->nzero
 
 const char* regToStr(Register reg);
+void dumpRegs(VM* vm, FILE* outf);
+
 #endif

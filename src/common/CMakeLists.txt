@@ -7,9 +7,11 @@ add_library(${PROJECT_NAME} STATIC
     cmdline.c
     instrStore.c
     varStore.c
+    strStore.c
     callStack.c
     valStack.c
     traps.c
+    listing.c
     fileIo.c
     registers.c
     errors.c

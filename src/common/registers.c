@@ -1,5 +1,19 @@
 
+#include "system.h"
+#include "vMachine.h"
 #include "registers.h"
+#include "values.h"
+
+void dumpRegs(VM* vm, FILE* outf)
+{
+    fprintf(outf, "-------- Dump Registers ----------\n");
+    for(int i = 0; i < NUM_REGS; i++) {
+        fprintf(outf, "    <R%d>\t", i);
+        printVal(&vm->registers[i], outf);
+        fprintf(outf, "\n");
+    }
+    fprintf(outf, "-------- end dump ----------\n\n");
+}
 
 const char* regToStr(Register reg)
 {

@@ -24,11 +24,11 @@
 
 // Define this to 1 or 0 to turn the excess file functionality off or on
 #ifndef USE_EXCESS
-#define USE_EXCESS 1
+#define USE_EXCESS 0
 #endif
 // Define this to 1 or 0 to require excess file names
 #ifndef EXCESS_REQUIRED
-#define EXCESS_REQUIRED 1
+#define EXCESS_REQUIRED 0
 #endif
 
 typedef struct _cpt_ {
@@ -133,7 +133,7 @@ void add_str_param(cmd_line cptr, const char* name, const char* parm, const char
 }
 
 /*
- * Add a boolean command line parameter to the parser. Acceptible values are
+ * Add a boolean command line parameter to the parser. Acceptable values are
  * 1, 0, true, and false. The parameters are upcased before they are checked
  * for validity.
  */

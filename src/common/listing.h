@@ -3,6 +3,6 @@
 
 #include "vMachine.h"
 
-void showListing(VM* vm);
+void showListing(VM* vm, FILE* outf);
 
 #endif

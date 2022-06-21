@@ -27,6 +27,11 @@ unsigned long getInstrLen(InstrStore* store)
     return store->len;
 }
 
+unsigned long getLabelAddr(InstrStore* store)
+{
+    return store->len; //(store->len == 0)? 0: store->len - 1;
+}
+
 void setInstrIndex(InstrStore* store, unsigned long idx)
 {
     store->index = idx;

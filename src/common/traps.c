@@ -15,20 +15,20 @@
 
 static void print_value(VM* vm)
 {
-    printVal(popValStack(&vm->vstack));
+    printVal(popValStack(&vm->vstack), stdout);
 }
 
 static void print_register(VM* vm)
 {
     Value* val = popValStack(&vm->vstack);
-    printVal(&vm->registers[val->data.unum]);
+    printVal(&vm->registers[val->data.unum], stdout);
 }
 
 static void print_immediate(VM* vm)
 {
     Value val;
     READ_VM_OBJ(Value, val);
-    printVal(&val);
+    printVal(&val, stdout);
 }
 
 void doTrap(VM* vm, TrapNumType tno)

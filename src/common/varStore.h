@@ -3,6 +3,7 @@
 
 #include "system.h"
 #include "values.h"
+#include "strStore.h"
 
 typedef uint32_t VarIdx;
 
@@ -14,6 +15,7 @@ typedef enum {
 typedef struct {
     Value val;
     VarStatus status;
+    StrIdx name;
     //bool isAssigned;
 } Variable;
 
@@ -28,8 +30,10 @@ void initVarStore(VarStore* store);
 
 VarIdx createVar(VarStore* store, ValType type);
 VarIdx assignVar(VarStore* store, VarIdx idx, Value val);
+VarIdx assignVarName(VarStore* store, VarIdx vidx, StrIdx sidx);
 VarIdx addVar(VarStore* store, Value val);
 Value* getVar(VarStore* store, VarIdx idx);
 void delVar(VarStore* store, VarIdx idx);
+void dumpVars(VarStore* store, FILE* outf);
 
 #endif
