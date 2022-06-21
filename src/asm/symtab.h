@@ -5,9 +5,7 @@
 
 void addSym(const char* key, VarIdx idx);
 VarIdx symToIdx(const char* key);
-Value symToVal(const char*key);
-void destroySymTab();
-
+Value* symToVal(const char*key);
 
 void pushContext(const  char* name);
 void popContext();

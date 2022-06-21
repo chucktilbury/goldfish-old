@@ -48,7 +48,7 @@ int runLoop(VM* vm)
                     fprintf(stderr, "runtime error: abort instruction: ");
                     Value val;
                     READ_VM_OBJ(Value, val);
-                    printVal(val);
+                    printVal(&val);
                     fprintf(stderr, "\n");
                     finished = true;
                     retv = -1;
@@ -61,7 +61,7 @@ int runLoop(VM* vm)
                     uint8_t reg;
                     READ_VM_OBJ(uint8_t, reg);
                     finished = true;
-                    printVal(vm->registers[reg]);
+                    printVal(&vm->registers[reg]);
                     fprintf(stderr, "\n");
                     retv = -1;
                 }
@@ -91,7 +91,7 @@ int runLoop(VM* vm)
                     // operand is an immediate Value
                     Value val;
                     READ_VM_OBJ(Value, val);
-                    doCall(vm, val);
+                    doCall(vm, &val);
                 }
                 break;
 
@@ -99,7 +99,7 @@ int runLoop(VM* vm)
                     // operand is a single register
                     uint8_t reg;
                     READ_VM_OBJ(uint8_t, reg);
-                    doCall(vm, vm->registers[reg]);
+                    doCall(vm, &vm->registers[reg]);
                 }
                 break;
 
@@ -115,7 +115,7 @@ int runLoop(VM* vm)
                     // operand is a immediate value
                     Value val;
                     READ_VM_OBJ(Value, val);
-                    doRCall(vm, val);
+                    doRCall(vm, &val);
                 }
                 break;
 
@@ -123,7 +123,7 @@ int runLoop(VM* vm)
                     // operand is a single register
                     RegNumType reg;
                     READ_VM_OBJ(RegNumType, reg);
-                    doRCall(vm, vm->registers[reg]);
+                    doRCall(vm, &vm->registers[reg]);
                 }
                 break;
 
@@ -153,7 +153,7 @@ int runLoop(VM* vm)
                     // operand is an immediate Value
                     Value val;
                     READ_VM_OBJ(Value, val);
-                    doJmp(vm, val);
+                    doJmp(vm, &val);
                 }
                 break;
 
@@ -161,7 +161,7 @@ int runLoop(VM* vm)
                     // operand is a single register
                     RegNumType reg;
                     READ_VM_OBJ(RegNumType, reg);
-                    doJmp(vm, vm->registers[reg]);
+                    doJmp(vm, &vm->registers[reg]);
                 }
                 break;
 
@@ -177,7 +177,7 @@ int runLoop(VM* vm)
                     // operand is an immediate Value
                     Value val;
                     READ_VM_OBJ(Value, val);
-                    doRJmp(vm, val);
+                    doRJmp(vm, &val);
                 }
                 break;
 
@@ -185,7 +185,7 @@ int runLoop(VM* vm)
                     // operand is a single register
                     RegNumType reg;
                     READ_VM_OBJ(RegNumType, reg);
-                    doRJmp(vm, vm->registers[reg]);
+                    doRJmp(vm, &vm->registers[reg]);
                 }
                 break;
 
@@ -201,7 +201,7 @@ int runLoop(VM* vm)
                     // operand is an immediate Value
                     Value val;
                     READ_VM_OBJ(Value, val);
-                    doBr(vm, val);
+                    doBr(vm, &val);
                 }
                 break;
 
@@ -209,7 +209,7 @@ int runLoop(VM* vm)
                     // operand is a single register
                     RegNumType reg;
                     READ_VM_OBJ(RegNumType, reg);
-                    doBr(vm, vm->registers[reg]);
+                    doBr(vm, &vm->registers[reg]);
                 }
                 break;
 
@@ -225,7 +225,7 @@ int runLoop(VM* vm)
                     // operand is an immediate Value
                     Value val;
                     READ_VM_OBJ(Value, val);
-                    doRBr(vm, val);
+                    doRBr(vm, &val);
                 }
                 break;
 
@@ -233,7 +233,7 @@ int runLoop(VM* vm)
                     // operand is a single register
                     RegNumType reg;
                     READ_VM_OBJ(RegNumType, reg);
-                    doRBr(vm, vm->registers[reg]);
+                    doRBr(vm, &vm->registers[reg]);
                 }
                 break;
 
@@ -249,7 +249,7 @@ int runLoop(VM* vm)
                     // operand is an immediate Value
                     Value val;
                     READ_VM_OBJ(Value, val);
-                    pushValStack(&vm->vstack, val);
+                    pushValStack(&vm->vstack, &val);
                 }
                 break;
 
@@ -257,7 +257,7 @@ int runLoop(VM* vm)
                     // operand is a single register
                     RegNumType reg;
                     READ_VM_OBJ(RegNumType, reg);
-                    pushValStack(&vm->vstack, vm->registers[reg]);
+                    pushValStack(&vm->vstack, &vm->registers[reg]);
                 }
                 break;
 
@@ -265,7 +265,7 @@ int runLoop(VM* vm)
                     // operand is a single register
                     uint8_t reg;
                     READ_VM_OBJ(uint8_t, reg);
-                    vm->registers[reg] = popValStack(&vm->vstack);
+                    vm->registers[reg] = *popValStack(&vm->vstack);
                 }
                 break;
 
@@ -274,7 +274,7 @@ int runLoop(VM* vm)
 // TODO: operand is an immediate Value
                     RegNumType reg;
                     READ_VM_OBJ(RegNumType, reg);
-                    vm->registers[reg] = peekValStack(&vm->vstack, 0);
+                    vm->registers[reg] = *peekValStack(&vm->vstack, 0);
                 }
                 break;
 
@@ -285,7 +285,7 @@ int runLoop(VM* vm)
                     READ_VM_OBJ(RegNumType, reg);
                     VarIdx idx;
                     READ_VM_OBJ(VarIdx, idx);
-                    vm->registers[reg] = getVar(&vm->vstore, idx);
+                    vm->registers[reg] = *getVar(&vm->vstore, idx);
                 }
                 break;
 

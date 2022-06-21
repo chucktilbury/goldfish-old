@@ -132,17 +132,17 @@ Value castValue(ValType type, Value val, bool isConst)
     return retv;
 }
 
-void printVal(Value val)
+void printVal(Value* val)
 {
-    printf("%s: ", valTypeToStr(val.type));
-    switch(val.type) {
+    printf("%-8s", valTypeToStr(val->type));
+    switch(val->type) {
         case ERROR: printf("<ERROR>"); break;
         case NOTHING: printf("<NOTHING>"); break;
-        case UINT: printf("<0x%02lX>", val.data.unum); break;
-        case INT: printf("<%ld>", val.data.inum); break;
-        case FLOAT: printf("<%0.3f>", val.data.fnum); break;
-        case BOOL: printf("<%s>", val.data.boolean? "true": "false"); break;
-        case ADDRESS: printf("<0x%08X>", val.data.addr); break;
+        case UINT: printf("<0x%02lX>", val->data.unum); break;
+        case INT: printf("<%ld>", val->data.inum); break;
+        case FLOAT: printf("<%0.3f>", val->data.fnum); break;
+        case BOOL: printf("<%s>", val->data.boolean? "true": "false"); break;
+        case ADDRESS: printf("<0x%08X>", val->data.addr); break;
         case USRTYPE: printf("<defer>"); break;
         default: printf("UNKNOWN"); break;
     }

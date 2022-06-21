@@ -44,7 +44,7 @@ void initVarStore(VarStore* store)
     store->len = 1;
     Variable* var = &store->list[0];
     var->status = ACTIVE;
-    var->isAssigned = true;
+    var->val.isAssigned = true;
     var->val.type = ERROR;
 }
 
@@ -54,7 +54,7 @@ VarIdx createVar(VarStore* store, ValType type)
     VarIdx idx = find_slot(store);
     val.type = type;
     store->list[idx].val = val;
-    store->list[idx].isAssigned = false;
+    store->list[idx].val.isAssigned = false;
     store->list[idx].status = ACTIVE;
 
     return idx;
@@ -66,7 +66,7 @@ VarIdx assignVar(VarStore* store, VarIdx idx, Value val)
         return 0;
     else {
         store->list[idx].val = val;
-        store->list[idx].isAssigned = true;
+        store->list[idx].val.isAssigned = true;
     }
 
     return idx;
@@ -75,19 +75,20 @@ VarIdx assignVar(VarStore* store, VarIdx idx, Value val)
 VarIdx addVar(VarStore* store, Value val)
 {
     VarIdx idx = find_slot(store);
+    //printf("add var slot: %d\n", idx);
     store->list[idx].val = val;
-    store->list[idx].isAssigned = true;
+    //store->list[idx].val.isAssigned = true;
     store->list[idx].status = ACTIVE;
 
     return idx;
 }
 
-Value getVar(VarStore* store, VarIdx idx)
+Value* getVar(VarStore* store, VarIdx idx)
 {
     if(validateIdx(store, idx))
-        return store->list[idx].val;
+        return &store->list[idx].val;
     else
-        return store->list[0].val;
+        return &store->list[0].val;
 }
 
 void delVar(VarStore* store, VarIdx idx)

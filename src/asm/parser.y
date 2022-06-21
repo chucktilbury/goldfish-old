@@ -13,7 +13,7 @@
 #include "vMachine.h"
 
 #include "values.h"
-#include "symbolTable.h"
+#include "symtab.h"
 #include "opcodes.h"
 #include "registers.h"
 #include "scanner.h"
@@ -70,7 +70,7 @@ extern VM* vm;
 %token <reg> TOK_R8 TOK_R9 TOK_R10 TOK_R11 TOK_R12 TOK_R13 TOK_R14 TOK_R15
 %type <reg> register
 
-%token TOK_NAMESPACE TOK_CONST
+%token TOK_CONST
 
 %right '='
 %left '+' '-'
@@ -81,14 +81,12 @@ extern VM* vm;
 program
     :  {
         // Emit stuff at the beginning of the file.
-        pushContext("root");
     } module
     ;
 
 module
     : module_item_list {
         // Emit stuff at the end of the file.
-        popContext();
     }
     ;
 
@@ -98,31 +96,27 @@ module_item_list
     ;
 
 module_item
-    : namespace_definition
-    | instruction_block
-    | data_definition
-    ;
-
-namespace_definition
-    : TOK_NAMESPACE TOK_SYMBOL '{' {
-        pushContext($2);
-    } module_item_list '}' {
-        popContext();
-    }
-
-instruction_block
-    : TOK_SYMBOL {
-        /* define an address var */
-        Value val;
-        val.type = ADDRESS;
-        val.data.addr = getInstrLen(&vm->istore);
-        addVar(&vm->vstore, val);
-    } instruction_list
-    ;
-
-instruction_list
     : instruction
-    | instruction_list instruction
+    | data_definition
+    | TOK_SYMBOL ':' {
+        VarIdx idx = symToIdx($1);
+        if(idx == 0) {
+            Value val;
+            val.type = ADDRESS;
+            val.isAssigned = true;
+            val.data.addr = getInstrLen(&vm->istore);
+            addSym($1, addVar(&vm->vstore, val));
+        }
+        else {
+            Value* val = getVar(&vm->vstore, idx);
+            if(val->type != ADDRESS)
+                syntaxError("symbol \"%s\" has already been defined as a %s", $1, valTypeToStr(val->type));
+            else if(val->isAssigned)
+                syntaxError("label \"%s\" has already been defined", $1);
+            else
+                val->data.addr = getInstrLen(&vm->istore);
+        }
+    }
     ;
 
 instruction
@@ -268,42 +262,94 @@ class5_instr
     : TOK_ABORT TOK_SYMBOL {
         WRITE_VM_OBJ(uint8_t, OP_ABORT);
         VarIdx idx = symToIdx($2);
-        WRITE_VM_OBJ(VarIdx, idx);;
-    }
-    | TOK_CALL TOK_SYMBOL {
-        WRITE_VM_OBJ(uint8_t, OP_CALL);
-        VarIdx idx = symToIdx($2);
-        WRITE_VM_OBJ(VarIdx, idx);;
-    }
-    | TOK_RCALL TOK_SYMBOL {
-        WRITE_VM_OBJ(uint8_t, OP_RCALL);
-        VarIdx idx = symToIdx($2);
-        WRITE_VM_OBJ(VarIdx, idx);;
-    }
-    | TOK_JMP TOK_SYMBOL {
-        WRITE_VM_OBJ(uint8_t, OP_JMP);
-        VarIdx idx = symToIdx($2);
-        WRITE_VM_OBJ(VarIdx, idx);;
-    }
-    | TOK_RJMP TOK_SYMBOL {
-        WRITE_VM_OBJ(uint8_t, OP_RJMP);
-        VarIdx idx = symToIdx($2);
-        WRITE_VM_OBJ(VarIdx, idx);;
-    }
-    | TOK_BR TOK_SYMBOL {
-        WRITE_VM_OBJ(uint8_t, OP_BR);
-        VarIdx idx = symToIdx($2);
-        WRITE_VM_OBJ(VarIdx, idx);;
-    }
-    | TOK_RBR TOK_SYMBOL {
-        WRITE_VM_OBJ(uint8_t, OP_RBR);
-        VarIdx idx = symToIdx($2);
-        WRITE_VM_OBJ(VarIdx, idx);;
+        if(idx == 0)
+            syntaxError("symbol \"%s\" has not been defined", $2);
+        WRITE_VM_OBJ(VarIdx, idx);
     }
     | TOK_PUSH TOK_SYMBOL {
         WRITE_VM_OBJ(uint8_t, OP_PUSH);
         VarIdx idx = symToIdx($2);
-        WRITE_VM_OBJ(VarIdx, idx);;
+        if(idx == 0)
+            syntaxError("symbol \"%s\" has not been defined", $2);
+        WRITE_VM_OBJ(VarIdx, idx);
+    }
+    | TOK_CALL TOK_SYMBOL {
+        WRITE_VM_OBJ(uint8_t, OP_CALL);
+        VarIdx idx = symToIdx($2);
+        if(idx == 0) {
+            Value val;
+            val.type = ADDRESS;
+            val.data.addr = 0;
+            val.isAssigned = false;
+            idx = addVar(&vm->vstore, val);
+            addSym($2, idx);
+        }
+        WRITE_VM_OBJ(VarIdx, idx);
+    }
+    | TOK_RCALL TOK_SYMBOL {
+        WRITE_VM_OBJ(uint8_t, OP_RCALL);
+        VarIdx idx = symToIdx($2);
+        if(idx == 0) {
+            Value val;
+            val.type = ADDRESS;
+            val.data.addr = 0;
+            val.isAssigned = false;
+            idx = addVar(&vm->vstore, val);
+            addSym($2, idx);
+        }
+        WRITE_VM_OBJ(VarIdx, idx);
+    }
+    | TOK_JMP TOK_SYMBOL {
+        WRITE_VM_OBJ(uint8_t, OP_JMP);
+        VarIdx idx = symToIdx($2);
+        if(idx == 0) {
+            Value val;
+            val.type = ADDRESS;
+            val.data.addr = 0;
+            val.isAssigned = false;
+            idx = addVar(&vm->vstore, val);
+            addSym($2, idx);
+        }
+        WRITE_VM_OBJ(VarIdx, idx);
+    }
+    | TOK_RJMP TOK_SYMBOL {
+        WRITE_VM_OBJ(uint8_t, OP_RJMP);
+        VarIdx idx = symToIdx($2);
+        if(idx == 0) {
+            Value val;
+            val.type = ADDRESS;
+            val.data.addr = 0;
+            val.isAssigned = false;
+            idx = addVar(&vm->vstore, val);
+            addSym($2, idx);
+        }
+        WRITE_VM_OBJ(VarIdx, idx);
+    }
+    | TOK_BR TOK_SYMBOL {
+        WRITE_VM_OBJ(uint8_t, OP_BR);
+        VarIdx idx = symToIdx($2);
+        if(idx == 0) {
+            Value val;
+            val.type = ADDRESS;
+            val.data.addr = 0;
+            val.isAssigned = false;
+            idx = addVar(&vm->vstore, val);
+            addSym($2, idx);
+        }
+        WRITE_VM_OBJ(VarIdx, idx);
+    }
+    | TOK_RBR TOK_SYMBOL {
+        WRITE_VM_OBJ(uint8_t, OP_RBR);
+        VarIdx idx = symToIdx($2);
+        if(idx == 0) {
+            Value val;
+            val.type = ADDRESS;
+            val.data.addr = 0;
+            val.isAssigned = false;
+            idx = addVar(&vm->vstore, val);
+            addSym($2, idx);
+        }
+        WRITE_VM_OBJ(VarIdx, idx);
     }
     ;
 

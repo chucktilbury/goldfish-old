@@ -46,7 +46,7 @@ static void __append_str(const char* str)
 %%
 
     /* overhead */
-\n              { yylineno++; }
+\n              {}
 [ \t\r]         {}
 
     /* keywords */
@@ -107,7 +107,6 @@ static void __append_str(const char* str)
 "R15"           { yylval.reg = REG_15; return TOK_R15; }
 
 "CONST"         { return TOK_CONST; }
-"NAMESPACE"     { return TOK_NAMESPACE; }
 
         /* arithmetic operators */
 "+"             { return '+'; }
@@ -122,6 +121,7 @@ static void __append_str(const char* str)
 "{"             { return '{'; }
 "}"             { return '}'; }
 ","             { return ','; }
+":"             { return ':'; }
 
     /* constructed tokens */
 
@@ -211,6 +211,10 @@ static void __append_str(const char* str)
 int open_file(const char *fname) {
 
     yyin = fopen(fname, "r");
+    if(yyin == NULL)
+        fatal("cannot open input file: %s: %s", fname, strerror(errno));
+
     return 0;
 }
 
+int get_line_no() { return yylineno; }

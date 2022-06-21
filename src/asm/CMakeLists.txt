@@ -21,15 +21,16 @@ add_custom_command(OUTPUT ${LEX_C_SOURCE}
 add_custom_command(OUTPUT ${YACC_C_SOURCE} ${YACC_H}
         DEPENDS ${YACC_FILE}
         PRE_BUILD
-        COMMAND bison --report=lookahead -Wcounterexamples -tvdo parser.c parser.y
+        #COMMAND bison --report=lookahead -Wcounterexamples -tvdo parser.c parser.y
+        COMMAND bison --report=lookahead -tvdo parser.c parser.y
         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
 
 add_executable(${PROJECT_NAME}
     parser.c
     scanner.c
     listing.c
-    symbolTable.c
-    asmErrors.c
+    symtab.c
+    errors.c
     asm.c
 )
 
@@ -40,8 +41,9 @@ target_include_directories(${PROJECT_NAME}
 )
 
 target_link_libraries(${PROJECT_NAME}
-    vm
     gc-lib
+    pthread
+    vm
     m
 )
 

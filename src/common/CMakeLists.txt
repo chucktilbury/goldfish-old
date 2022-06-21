@@ -4,6 +4,7 @@ project(vm)
 add_library(${PROJECT_NAME} STATIC
     opcodes.c
     values.c
+    cmdline.c
     instrStore.c
     varStore.c
     callStack.c
@@ -12,6 +13,7 @@ add_library(${PROJECT_NAME} STATIC
     fileIo.c
     registers.c
     errors.c
+    misc.c
 )
 
 target_include_directories(${PROJECT_NAME}

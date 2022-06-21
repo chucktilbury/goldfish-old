@@ -2,11 +2,11 @@
 #include "system.h"
 #include "varStore.h"
 #include "vMachine.h"
-#include "asmErrors.h"
+#include "errors.h"
 #include "memory.h"
 
 extern VM* vm;
-#include "symbolTable.h"
+#include "symtab.h"
 
 typedef struct _symtab_elem {
     const char* key;
@@ -15,55 +15,12 @@ typedef struct _symtab_elem {
     struct _symtab_elem* right;
 } SymTabNode;
 
-typedef struct _context {
-    const char* name;
-    struct _context* next;
-    struct _context* prev;
-} Context;
-
 static SymTabNode* symtab = NULL;
-static Context* first = NULL;
-static Context* last = NULL;
-
-static char name_buffer[1024];
-static void build_name(Context* cont, const char* name)
-{
-    if(cont != NULL) {
-        strcat(name_buffer, cont->name);
-        strcat(name_buffer, ".");
-        build_name(cont->next, name);
-    }
-    else {
-        strcat(name_buffer, name);
-    }
-}
-
-static const char* create_name(const char* name)
-{
-    memset(name_buffer, 0, sizeof(name_buffer));
-    name_buffer[0] = '.';
-    if(first != NULL)
-		build_name(first, name);
-	else
-		strcat(name_buffer, name);
-
-    return name_buffer;
-}
 
 // left is always the value that is being searched for
 static int comp_names(const char* left, const char* right)
 {
-    int llen = strlen(left);
-    int rlen = strlen(right);
-
-    while(left[llen] == right[rlen]) {
-        llen--;
-        rlen--;
-        if(llen == 0 || rlen == 0)
-            return 0;   // match
-    }
-
-    return left[llen] - right[rlen];
+    return strcmp(left, right);
 }
 
 static void dump_table(SymTabNode* node)
@@ -73,9 +30,9 @@ static void dump_table(SymTabNode* node)
     if(node->right != NULL)
         dump_table(node->right);
 
-    printf("    %s <%d> ", node->key, node->idx);
+    printf("    %-12s\t<%d>\t", node->key, node->idx);
     printVal(getVar(&vm->vstore, node->idx));
-    printf("\n");
+    //printf("\n");
 }
 
 static void add_node(SymTabNode* tree, SymTabNode* node)
@@ -129,8 +86,9 @@ static SymTabNode* find_node(SymTabNode* node, const char* key)
 // symbol definition
 void addSym(const char* key, VarIdx idx)
 {
+    //printf("addSym(%s, %d)\n", key, idx);
     SymTabNode* node = _alloc_ds(SymTabNode);
-    node->key = _copy_str(create_name(key));
+    node->key = _copy_str(key);
     node->idx = idx;
 
     if(symtab != NULL)
@@ -142,7 +100,7 @@ void addSym(const char* key, VarIdx idx)
 // symbol reference
 VarIdx symToIdx(const char* key)
 {
-    SymTabNode* node = find_node(symtab, create_name(key));
+    SymTabNode* node = find_node(symtab, key);
 
     if(node != NULL)
         return node->idx;
@@ -151,52 +109,33 @@ VarIdx symToIdx(const char* key)
 }
 
 // symbol reference
-Value symToVal(const char*key)
+Value* symToVal(const char*key)
 {
-    SymTabNode* node = find_node(symtab, create_name(key));
-    Value val;
+    SymTabNode* node = find_node(symtab, key);
+    Value* val;
 
     if(node != NULL)
         val = getVar(&vm->vstore, node->idx);
     else {
-        memset(&val, 0, sizeof(Value));
-        val.type = ERROR;
+        memset(val, 0, sizeof(Value));
+        val->type = ERROR;
     }
 
     return val;
 }
 
+bool symIsDefined(const char* key)
+{
+    return (find_node(symtab, key))? true: false;
+}
+
 void dumpSymtab()
 {
     printf("Dump Symbol Table\n");
-    dump_table(symtab);
+    if(symtab != NULL)
+        dump_table(symtab);
+    else
+        printf("    table is empty\n");
     printf("----------- end dump -----------\n");
 }
 
-void pushContext(const char* name)
-{
-    Context* cont = _alloc_ds(Context);
-	cont->name = _copy_str(name);
-
-	if(first != NULL) {
-		last->next = cont;
-		cont->prev = last;
-		last = cont;
-	}
-	else {
-		last = first = cont;
-	}
-
-}
-
-void popContext()
-{
-    Context* cont = last;
-
-    if(cont != NULL) {
-        last = last->prev;
-        if(last != NULL) {
-			last->next = NULL;
-		}
-    }
-}

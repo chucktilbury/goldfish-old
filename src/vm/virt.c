@@ -20,7 +20,7 @@ int main() {
     Value val;
     val.type = UINT;
     val.data.unum = 0;
-    pushValStack(&vm->vstack, val);
+    pushValStack(&vm->vstack, &val);
 
     WRITE_VM_OBJ(uint8_t, OP_TRAP);
     WRITE_VM_OBJ(TrapNumType, PRINTR); // trap number

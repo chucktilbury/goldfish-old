@@ -8,6 +8,8 @@
 #include "instrStore.h"
 #include "callStack.h"
 #include "valStack.h"
+#include "cmdline.h"
+#include "misc.h"
 
 #define NUM_REGS    16
 

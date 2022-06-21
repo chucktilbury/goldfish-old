@@ -10,18 +10,18 @@ void initValStack(ValStack* store)
     store->list = _alloc_ds_array(Value, store->cap);
 }
 
-void pushValStack(ValStack* store, Value value)
+void pushValStack(ValStack* store, Value* value)
 {
     if(store->cap < store->len+1) {
         store->cap <<= 1;
         store->list = _realloc_ds_array(store->list, Value, store->cap);
     }
 
-    store->list[store->len] = value;
+    store->list[store->len] = *value;
     store->len++;
 }
 
-Value peekValStack(ValStack* store, int index)
+Value* peekValStack(ValStack* store, int index)
 {
     if(index == 0) {
         // peek the top of the stack
@@ -30,7 +30,7 @@ Value peekValStack(ValStack* store, int index)
             exit(1);
         }
 
-        return store->list[store->len-1];
+        return &store->list[store->len-1];
     }
     else if(index < 0) {
         // peek a index relative to the TOS. This is an unsigned compare.
@@ -39,13 +39,13 @@ Value peekValStack(ValStack* store, int index)
             exit(1);
         }
 
-        return store->list[store->len+index];
+        return &store->list[store->len+index];
     }
 
-    return store->list[0]; // return an error
+    return &store->list[0]; // return an error
 }
 
-Value popValStack(ValStack* store)
+Value* popValStack(ValStack* store)
 {
     if(store->len-1 > store->cap) {
         fprintf(stderr, "fatal error: call stack under run\n");
@@ -53,7 +53,7 @@ Value popValStack(ValStack* store)
     }
 
     store->len--;
-    return store->list[store->len];
+    return &store->list[store->len];
 }
 
 uint32_t valStackIndex(ValStack* store)

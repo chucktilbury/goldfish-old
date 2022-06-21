@@ -12,9 +12,9 @@ typedef struct {
 
 void initValStack(ValStack* store);
 
-void pushValStack(ValStack* store, Value value);
-Value peekValStack(ValStack* store, int index);
-Value popValStack(ValStack* store);
+void pushValStack(ValStack* store, Value* value);
+Value* peekValStack(ValStack* store, int index);
+Value* popValStack(ValStack* store);
 uint32_t valStackIndex(ValStack* store);
 
 #endif

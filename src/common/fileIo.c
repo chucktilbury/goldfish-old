@@ -45,10 +45,10 @@ static void save_instr_store(InstrStore* is, FILE* fp)
 
 void initVM(VM* vm)
 {
-    //initInstrStore(&vm->istore);
+    initInstrStore(&vm->istore);
     initCallStack(&vm->cstack);
     initValStack(&vm->vstack);
-    //initVarStore(&vm->vstore);
+    initVarStore(&vm->vstore);
     initRegisters(vm);
 }
 

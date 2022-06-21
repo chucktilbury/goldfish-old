@@ -14,12 +14,12 @@
  * @param vm
  * @param val
  */
-void doCall(VM* vm, Value val)
+void doCall(VM* vm, Value* val)
 {
     int idx;
 
-    switch(val.type) {
-        case ADDRESS:   idx = (int)val.data.addr;   break;
+    switch(val->type) {
+        case ADDRESS:   idx = (int)val->data.addr;   break;
 
         case UINT:
         case INT:
@@ -28,15 +28,15 @@ void doCall(VM* vm, Value val)
         case FLOAT:
         case BOOL:
         case USRTYPE:
-            runtimeError("cannot use type %s as a call address", valTypeToStr(val.type));
+            runtimeError("cannot use type %s as a call address", valTypeToStr(val->type));
             break;
         default:
-            fatalError("invalid address type encountered: 0x%02X", val.type);
+            fatalError("invalid address type encountered: 0x%02X", val->type);
     }
 
     CallStackElem call;
     call.ret_addr = getInstrIndex(&vm->istore);
-    call.arity = popValStack(&vm->vstack);
+    call.arity = *popValStack(&vm->vstack);
 
     if(call.arity.type != UINT)
         fatalError("invalid call arity type: %s", valTypeToStr(call.arity.type));
@@ -44,36 +44,36 @@ void doCall(VM* vm, Value val)
     uint8_t num = (uint8_t)call.arity.data.unum;
     call.parameters = _alloc_ds_array(Value, num);
     for(int i = 0; i < (int)num; i++) {
-        call.parameters[i] = popValStack(&vm->vstack);
+        call.parameters[i] = *popValStack(&vm->vstack);
     }
 
     pushCallStack(&vm->cstack, call);
     setInstrIndex(&vm->istore, idx);
 }
 
-void doRCall(VM* vm, Value val)
+void doRCall(VM* vm, Value* val)
 {
     int idx;
 
-    switch(val.type) {
-        case UINT:     idx = (int)val.data.unum;  break;
-        case INT:      idx = (int)val.data.inum;  break;
-        case ADDRESS:   idx = (int)val.data.addr;   break;
+    switch(val->type) {
+        case UINT:     idx = (int)val->data.unum;  break;
+        case INT:      idx = (int)val->data.inum;  break;
+        case ADDRESS:   idx = (int)val->data.addr;   break;
 
         case ERROR:
         case NOTHING:
         case FLOAT:
         case BOOL:
         case USRTYPE:
-            runtimeError("cannot use type %s as a call address offset", valTypeToStr(val.type));
+            runtimeError("cannot use type %s as a call address offset", valTypeToStr(val->type));
             break;
         default:
-            fatalError("invalid address type encountered: 0x%02X", val.type);
+            fatalError("invalid address type encountered: 0x%02X", val->type);
     }
 
     CallStackElem call;
     call.ret_addr = getInstrIndex(&vm->istore);
-    call.arity = popValStack(&vm->vstack);
+    call.arity = *popValStack(&vm->vstack);
 
     if(call.arity.type != UINT)
         fatalError("invalid call arity type: %s", valTypeToStr(call.arity.type));
@@ -81,19 +81,19 @@ void doRCall(VM* vm, Value val)
     uint8_t num = (uint8_t)call.arity.data.unum;
     call.parameters = _alloc_ds_array(Value, num);
     for(int i = 0; i < (int)num; i++) {
-        call.parameters[i] = popValStack(&vm->vstack);
+        call.parameters[i] = *popValStack(&vm->vstack);
     }
 
     pushCallStack(&vm->cstack, call);
     incInstrIndex(&vm->istore, idx);
 }
 
-void doJmp(VM* vm, Value val)
+void doJmp(VM* vm, Value* val)
 {
     int idx;
 
-    switch(val.type) {
-        case ADDRESS:   idx = (int)val.data.addr;   break;
+    switch(val->type) {
+        case ADDRESS:   idx = (int)val->data.addr;   break;
 
         case UINT:
         case INT:
@@ -102,45 +102,45 @@ void doJmp(VM* vm, Value val)
         case FLOAT:
         case BOOL:
         case USRTYPE:
-            runtimeError("cannot use type %s as a jmp address", valTypeToStr(val.type));
+            runtimeError("cannot use type %s as a jmp address", valTypeToStr(val->type));
             break;
         default:
-            fatalError("invalid address type encountered: 0x%02X", val.type);
+            fatalError("invalid address type encountered: 0x%02X", val->type);
     }
 
     setInstrIndex(&vm->istore, idx);
 }
 
-void doRJmp(VM* vm, Value val)
+void doRJmp(VM* vm, Value* val)
 {
     int idx;
 
-    switch(val.type) {
-        case UINT:     idx = (int)val.data.unum;  break;
-        case INT:      idx = (int)val.data.inum;  break;
-        case ADDRESS:   idx = (int)val.data.addr;   break;
+    switch(val->type) {
+        case UINT:     idx = (int)val->data.unum;  break;
+        case INT:      idx = (int)val->data.inum;  break;
+        case ADDRESS:   idx = (int)val->data.addr;   break;
 
         case ERROR:
         case NOTHING:
         case FLOAT:
         case BOOL:
         case USRTYPE:
-            runtimeError("cannot use type %s as a call address offset", valTypeToStr(val.type));
+            runtimeError("cannot use type %s as a call address offset", valTypeToStr(val->type));
             break;
         default:
-            fatalError("invalid address type encountered: 0x%02X", val.type);
+            fatalError("invalid address type encountered: 0x%02X", val->type);
     }
 
     incInstrIndex(&vm->istore, idx);
 }
 
-void doBr(VM* vm, Value val)
+void doBr(VM* vm, Value* val)
 {
     if(vm->nzero) {
         int idx;
 
-        switch(val.type) {
-            case ADDRESS:   idx = (int)val.data.addr;   break;
+        switch(val->type) {
+            case ADDRESS:   idx = (int)val->data.addr;   break;
 
             case UINT:
             case INT:
@@ -149,35 +149,35 @@ void doBr(VM* vm, Value val)
             case FLOAT:
             case BOOL:
             case USRTYPE:
-                runtimeError("cannot use type %s as a jmp address", valTypeToStr(val.type));
+                runtimeError("cannot use type %s as a jmp address", valTypeToStr(val->type));
                 break;
             default:
-                fatalError("invalid address type encountered: 0x%02X", val.type);
+                fatalError("invalid address type encountered: 0x%02X", val->type);
         }
 
         setInstrIndex(&vm->istore, idx);
     }
 }
 
-void doRBr(VM* vm, Value val)
+void doRBr(VM* vm, Value* val)
 {
     if(vm->nzero) {
         int idx;
 
-        switch(val.type) {
-            case UINT:     idx = (int)val.data.unum;  break;
-            case INT:      idx = (int)val.data.inum;  break;
-            case ADDRESS:   idx = (int)val.data.addr;   break;
+        switch(val->type) {
+            case UINT:     idx = (int)val->data.unum;  break;
+            case INT:      idx = (int)val->data.inum;  break;
+            case ADDRESS:   idx = (int)val->data.addr;   break;
 
             case ERROR:
             case NOTHING:
             case FLOAT:
             case BOOL:
             case USRTYPE:
-                runtimeError("cannot use type %s as a call address offset", valTypeToStr(val.type));
+                runtimeError("cannot use type %s as a call address offset", valTypeToStr(val->type));
                 break;
             default:
-                fatalError("invalid address type encountered: 0x%02X", val.type);
+                fatalError("invalid address type encountered: 0x%02X", val->type);
         }
 
         incInstrIndex(&vm->istore, idx);

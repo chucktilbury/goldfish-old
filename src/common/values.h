@@ -20,6 +20,7 @@ typedef enum {
 typedef struct {
     ValType type;
     bool isConst;
+    bool isAssigned;
     union {
         uint64_t unum;
         int64_t inum;
@@ -34,7 +35,7 @@ typedef struct {
 Value castValue(ValType type, Value val, bool isConst);
 // Convert the type to a string for debugging and error generation.
 const char* valTypeToStr(ValType type);
-void printVal(Value val);
+void printVal(Value* val);
 
 #define VTYPE(v) (v).type
 #define VDATA(v) (v).data

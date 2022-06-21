@@ -14,7 +14,7 @@ typedef enum {
 typedef struct {
     Value val;
     VarStatus status;
-    bool isAssigned;
+    //bool isAssigned;
 } Variable;
 
 typedef struct {
@@ -29,7 +29,7 @@ void initVarStore(VarStore* store);
 VarIdx createVar(VarStore* store, ValType type);
 VarIdx assignVar(VarStore* store, VarIdx idx, Value val);
 VarIdx addVar(VarStore* store, Value val);
-Value getVar(VarStore* store, VarIdx idx);
+Value* getVar(VarStore* store, VarIdx idx);
 void delVar(VarStore* store, VarIdx idx);
 
 #endif

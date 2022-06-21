@@ -5,7 +5,7 @@
 #include "traps.h"
 #include "registers.h"
 #include "values.h"
-#include "asmErrors.h"
+#include "errors.h"
 
 void showListing(VM* vm)
 {
@@ -33,7 +33,7 @@ void showListing(VM* vm)
                     // immediate is a Value
                     Value val;
                     READ_VM_OBJ(Value, val);
-                    printVal(val);
+                    printVal(&val);
                 }
                 break;
 
@@ -41,7 +41,7 @@ void showListing(VM* vm)
                     // immediate is a register
                     uint8_t reg;
                     READ_VM_OBJ(uint8_t, reg);
-                    printVal(vm->registers[reg]);
+                    printVal(&vm->registers[reg]);
                 }
                 break;
 
@@ -50,6 +50,7 @@ void showListing(VM* vm)
             case OP_NOP:
             case OP_RETURN:
                 // no parameters
+                fputc('\n', stdout);
                 break;
 
             case OP_CALL: {
@@ -65,7 +66,7 @@ void showListing(VM* vm)
                     // operand is an immediate Value
                     Value val;
                     READ_VM_OBJ(Value, val);
-                    printVal(val);
+                    printVal(&val);
                 }
                 break;
 
@@ -74,7 +75,7 @@ void showListing(VM* vm)
                     uint8_t reg;
                     READ_VM_OBJ(uint8_t, reg);
                     fprintf(outf, "<%s>\t", regToStr(reg));
-                    printVal(vm->registers[reg]);
+                    printVal(&vm->registers[reg]);
                 }
                 break;
 
@@ -91,7 +92,7 @@ void showListing(VM* vm)
                     // operand is a immediate value
                     Value val;
                     READ_VM_OBJ(Value, val);
-                    printVal(val);
+                    printVal(&val);
                 }
                 break;
 
@@ -100,7 +101,7 @@ void showListing(VM* vm)
                     RegNumType reg;
                     READ_VM_OBJ(RegNumType, reg);
                     fprintf(outf, "<%s>\t", regToStr(reg));
-                    printVal(vm->registers[reg]);
+                    printVal(&vm->registers[reg]);
                 }
                 break;
 
@@ -125,7 +126,7 @@ void showListing(VM* vm)
                     // operand is an immediate Value
                     Value val;
                     READ_VM_OBJ(Value, val);
-                    printVal(val);
+                    printVal(&val);
                 }
                 break;
 
@@ -134,7 +135,7 @@ void showListing(VM* vm)
                     RegNumType reg;
                     READ_VM_OBJ(RegNumType, reg);
                     fprintf(outf, "<%s>\t", regToStr(reg));
-                    printVal(vm->registers[reg]);
+                    printVal(&vm->registers[reg]);
                 }
                 break;
 
@@ -151,7 +152,7 @@ void showListing(VM* vm)
                     // operand is an immediate Value
                     Value val;
                     READ_VM_OBJ(Value, val);
-                    printVal(val);
+                    printVal(&val);
                 }
                 break;
 
@@ -160,7 +161,7 @@ void showListing(VM* vm)
                     RegNumType reg;
                     READ_VM_OBJ(RegNumType, reg);
                     fprintf(outf, "<%s>\t", regToStr(reg));
-                    printVal(vm->registers[reg]);
+                    printVal(&vm->registers[reg]);
                 }
                 break;
 
@@ -177,7 +178,7 @@ void showListing(VM* vm)
                     // operand is an immediate Value
                     Value val;
                     READ_VM_OBJ(Value, val);
-                    printVal(val);
+                    printVal(&val);
                 }
                 break;
 
@@ -186,7 +187,7 @@ void showListing(VM* vm)
                     RegNumType reg;
                     READ_VM_OBJ(RegNumType, reg);
                     fprintf(outf, "<%s>\t", regToStr(reg));
-                    printVal(vm->registers[reg]);
+                    printVal(&vm->registers[reg]);
                 }
                 break;
 
@@ -203,7 +204,7 @@ void showListing(VM* vm)
                     // operand is an immediate Value
                     Value val;
                     READ_VM_OBJ(Value, val);
-                    printVal(val);
+                    printVal(&val);
                 }
                 break;
 
@@ -212,7 +213,7 @@ void showListing(VM* vm)
                     RegNumType reg;
                     READ_VM_OBJ(RegNumType, reg);
                     fprintf(outf, "<%s>\t", regToStr(reg));
-                    printVal(vm->registers[reg]);
+                    printVal(&vm->registers[reg]);
                 }
                 break;
 
@@ -229,7 +230,7 @@ void showListing(VM* vm)
                     // operand is an immediate Value
                     Value val;
                     READ_VM_OBJ(Value, val);
-                    printVal(val);
+                    printVal(&val);
                 }
                 break;
 
@@ -238,7 +239,7 @@ void showListing(VM* vm)
                     RegNumType reg;
                     READ_VM_OBJ(RegNumType, reg);
                     fprintf(outf, "<%s>\t", regToStr(reg));
-                    printVal(vm->registers[reg]);
+                    printVal(&vm->registers[reg]);
                 }
                 break;
 
@@ -246,7 +247,7 @@ void showListing(VM* vm)
                     // operand is a single register
                     uint8_t reg;
                     READ_VM_OBJ(uint8_t, reg);
-                    fprintf(outf, "<%s>\t", regToStr(reg));
+                    fprintf(outf, "<%s>\n", regToStr(reg));
                 }
                 break;
 
@@ -256,7 +257,7 @@ void showListing(VM* vm)
                     RegNumType reg;
                     READ_VM_OBJ(RegNumType, reg);
                     fprintf(outf, "<%s>\t", regToStr(reg));
-                    printVal(vm->registers[reg]);
+                    printVal(&vm->registers[reg]);
                 }
                 break;
 
@@ -265,11 +266,11 @@ void showListing(VM* vm)
                     // operand is a Value index
                     RegNumType reg;
                     READ_VM_OBJ(RegNumType, reg);
-                    fprintf(outf, "<%s> ", regToStr(reg));
-                    printVal(vm->registers[reg]);
                     VarIdx idx;
                     READ_VM_OBJ(VarIdx, idx);
-                    fprintf(outf, ", <%d>\t", idx);
+                    fprintf(outf, "<%s>,<%d>\t", regToStr(reg), idx);
+                    //printVal(&vm->registers[reg]);
+                    //fprintf(outf, "<%d>\t", idx);
                     printVal(getVar(&vm->vstore, idx));
                 }
                 break;
@@ -280,10 +281,10 @@ void showListing(VM* vm)
                     RegNumType reg;
                     READ_VM_OBJ(RegNumType, reg);
                     fprintf(outf, "<%s> ", regToStr(reg));
-                    printVal(vm->registers[reg]);
+                    printVal(&vm->registers[reg]);
                     Value val;
                     READ_VM_OBJ(Value, val);
-                    printVal(val);
+                    printVal(&val);
                 }
                 break;
 
@@ -292,9 +293,9 @@ void showListing(VM* vm)
                     RegNumType regs;
                     READ_VM_OBJ(RegNumType, regs);
                     fprintf(outf, "<%s> ", regToStr((regs >> 4) & 0xF));
-                    printVal(vm->registers[regs]);
+                    printVal(&vm->registers[regs]);
                     fprintf(outf, ", <%s>", regToStr(regs & 0xF));
-                    printVal(vm->registers[regs]);
+                    printVal(&vm->registers[regs]);
                     fprintf(outf, "\t");
                 }
                 break;
@@ -309,7 +310,7 @@ void showListing(VM* vm)
                     RegNumType reg;
                     READ_VM_OBJ(RegNumType, reg);
                     fprintf(outf, "<%s>\t", regToStr(reg));
-                    printVal(vm->registers[reg]);
+                    printVal(&vm->registers[reg]);
                 }
                 break;
 
@@ -318,7 +319,7 @@ void showListing(VM* vm)
                     RegNumType reg;
                     READ_VM_OBJ(RegNumType, reg);
                     fprintf(outf, "<%s>\t", regToStr(reg));
-                    printVal(vm->registers[reg]);
+                    printVal(&vm->registers[reg]);
                 }
                 break;
 
@@ -327,9 +328,9 @@ void showListing(VM* vm)
                     RegNumType regs;
                     READ_VM_OBJ(RegNumType, regs);
                     fprintf(outf, "<%s> ", regToStr((regs >> 4) & 0xF));
-                    printVal(vm->registers[regs]);
+                    printVal(&vm->registers[regs]);
                     fprintf(outf, ", <%s>", regToStr(regs & 0xF));
-                    printVal(vm->registers[regs]);
+                    printVal(&vm->registers[regs]);
                     fprintf(outf, "\t");
                 }
                 break;
@@ -339,9 +340,9 @@ void showListing(VM* vm)
                     RegNumType regs;
                     READ_VM_OBJ(RegNumType, regs);
                     fprintf(outf, "<%s> ", regToStr((regs >> 4) & 0xF));
-                    printVal(vm->registers[regs]);
+                    printVal(&vm->registers[regs]);
                     fprintf(outf, ", <%s>", regToStr(regs & 0xF));
-                    printVal(vm->registers[regs]);
+                    printVal(&vm->registers[regs]);
                     fprintf(outf, "\t");
                 }
                 break;
@@ -351,9 +352,9 @@ void showListing(VM* vm)
                     RegNumType regs;
                     READ_VM_OBJ(RegNumType, regs);
                     fprintf(outf, "<%s> ", regToStr((regs >> 4) & 0xF));
-                    printVal(vm->registers[regs]);
+                    printVal(&vm->registers[regs]);
                     fprintf(outf, ", <%s>", regToStr(regs & 0xF));
-                    printVal(vm->registers[regs]);
+                    printVal(&vm->registers[regs]);
                     fprintf(outf, "\t");
                 }
                 break;
@@ -363,9 +364,9 @@ void showListing(VM* vm)
                     RegNumType regs;
                     READ_VM_OBJ(RegNumType, regs);
                     fprintf(outf, "<%s> ", regToStr((regs >> 4) & 0xF));
-                    printVal(vm->registers[regs]);
+                    printVal(&vm->registers[regs]);
                     fprintf(outf, ", <%s>", regToStr(regs & 0xF));
-                    printVal(vm->registers[regs]);
+                    printVal(&vm->registers[regs]);
                     fprintf(outf, "\t");
                 }
                 break;
@@ -375,9 +376,9 @@ void showListing(VM* vm)
                     RegNumType regs;
                     READ_VM_OBJ(RegNumType, regs);
                     fprintf(outf, "<%s> ", regToStr((regs >> 4) & 0xF));
-                    printVal(vm->registers[regs]);
+                    printVal(&vm->registers[regs]);
                     fprintf(outf, ", <%s>", regToStr(regs & 0xF));
-                    printVal(vm->registers[regs]);
+                    printVal(&vm->registers[regs]);
                     fprintf(outf, "\t");
                 }
                 break;
@@ -387,9 +388,9 @@ void showListing(VM* vm)
                     RegNumType regs;
                     READ_VM_OBJ(RegNumType, regs);
                     fprintf(outf, "<%s> ", regToStr((regs >> 4) & 0xF));
-                    printVal(vm->registers[regs]);
+                    printVal(&vm->registers[regs]);
                     fprintf(outf, ", <%s>", regToStr(regs & 0xF));
-                    printVal(vm->registers[regs]);
+                    printVal(&vm->registers[regs]);
                     fprintf(outf, "\t");
                 }
                 break;
@@ -399,9 +400,9 @@ void showListing(VM* vm)
                     RegNumType regs;
                     READ_VM_OBJ(RegNumType, regs);
                     fprintf(outf, "<%s> ", regToStr((regs >> 4) & 0xF));
-                    printVal(vm->registers[regs]);
+                    printVal(&vm->registers[regs]);
                     fprintf(outf, ", <%s>", regToStr(regs & 0xF));
-                    printVal(vm->registers[regs]);
+                    printVal(&vm->registers[regs]);
                     fprintf(outf, "\t");
                 }
                 break;
@@ -411,11 +412,11 @@ void showListing(VM* vm)
                     uint16_t regs;
                     READ_VM_OBJ(uint16_t, regs);
                     fprintf(outf, "<%s> ", regToStr((regs >> 8) & 0xF));
-                    printVal(vm->registers[regs]);
+                    printVal(&vm->registers[regs]);
                     fprintf(outf, ", <%s>", regToStr((regs >> 4) & 0xF));
-                    printVal(vm->registers[regs]);
+                    printVal(&vm->registers[regs]);
                     fprintf(outf, ", <%s>", regToStr(regs & 0xF));
-                    printVal(vm->registers[regs]);
+                    printVal(&vm->registers[regs]);
                     fprintf(outf, "\t");
                 }
                 break;
@@ -425,11 +426,11 @@ void showListing(VM* vm)
                     uint16_t regs;
                     READ_VM_OBJ(uint16_t, regs);
                     fprintf(outf, "<%s> ", regToStr((regs >> 8) & 0xF));
-                    printVal(vm->registers[regs]);
+                    printVal(&vm->registers[regs]);
                     fprintf(outf, ", <%s>", regToStr((regs >> 4) & 0xF));
-                    printVal(vm->registers[regs]);
+                    printVal(&vm->registers[regs]);
                     fprintf(outf, ", <%s>", regToStr(regs & 0xF));
-                    printVal(vm->registers[regs]);
+                    printVal(&vm->registers[regs]);
                     fprintf(outf, "\t");
                 }
                 break;
@@ -439,11 +440,11 @@ void showListing(VM* vm)
                     uint16_t regs;
                     READ_VM_OBJ(uint16_t, regs);
                     fprintf(outf, "<%s> ", regToStr((regs >> 8) & 0xF));
-                    printVal(vm->registers[regs]);
+                    printVal(&vm->registers[regs]);
                     fprintf(outf, ", <%s>", regToStr((regs >> 4) & 0xF));
-                    printVal(vm->registers[regs]);
+                    printVal(&vm->registers[regs]);
                     fprintf(outf, ", <%s>", regToStr(regs & 0xF));
-                    printVal(vm->registers[regs]);
+                    printVal(&vm->registers[regs]);
                     fprintf(outf, "\t");
                 }
                 break;
@@ -453,11 +454,11 @@ void showListing(VM* vm)
                     uint16_t regs;
                     READ_VM_OBJ(uint16_t, regs);
                     fprintf(outf, "<%s> ", regToStr((regs >> 8) & 0xF));
-                    printVal(vm->registers[regs]);
+                    printVal(&vm->registers[regs]);
                     fprintf(outf, ", <%s>", regToStr((regs >> 4) & 0xF));
-                    printVal(vm->registers[regs]);
+                    printVal(&vm->registers[regs]);
                     fprintf(outf, ", <%s>", regToStr(regs & 0xF));
-                    printVal(vm->registers[regs]);
+                    printVal(&vm->registers[regs]);
                     fprintf(outf, "\t");
                 }
                 break;
@@ -467,11 +468,11 @@ void showListing(VM* vm)
                     uint16_t regs;
                     READ_VM_OBJ(uint16_t, regs);
                     fprintf(outf, "<%s> ", regToStr((regs >> 8) & 0xF));
-                    printVal(vm->registers[regs]);
+                    printVal(&vm->registers[regs]);
                     fprintf(outf, ", <%s>", regToStr((regs >> 4) & 0xF));
-                    printVal(vm->registers[regs]);
+                    printVal(&vm->registers[regs]);
                     fprintf(outf, ", <%s>", regToStr(regs & 0xF));
-                    printVal(vm->registers[regs]);
+                    printVal(&vm->registers[regs]);
                     fprintf(outf, "\t");
                 }
                 break;
@@ -480,7 +481,7 @@ void showListing(VM* vm)
                 fatalError("unknown instruction: 0x%02X\n", op);
                 return;
         }
-        fprintf(outf, "\n");
+        //fprintf(outf, "\n");
         finished = isInstrEnded(&vm->istore);
     }
 }

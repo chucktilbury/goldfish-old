@@ -6,7 +6,7 @@
 #  define _SCANNER_H_
 
 char *get_file_name(void);
-int get_line_number(void);
+int get_line_no(void);
 int get_col_number(void);
 int open_file(const char *fname);
 const char *get_tok_str(void);
