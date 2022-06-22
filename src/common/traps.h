@@ -5,9 +5,7 @@
 
 typedef uint16_t TrapNumType;
 typedef enum {
-    PRINTV,
-    PRINTR,
-    PRINTI,
+    PRINT,
 } TrapNumber;
 
 void doTrap(VM* vm, TrapNumType tno);

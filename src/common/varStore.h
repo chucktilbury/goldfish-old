@@ -2,20 +2,12 @@
 #define VARIABLES_H
 
 #include "system.h"
-#include "values.h"
-#include "strStore.h"
-
-typedef uint32_t VarIdx;
-
-typedef enum {
-    ACTIVE,
-    DELETED,
-} VarStatus;
+#include "store.h"
 
 typedef struct {
     Value val;
-    VarStatus status;
-    StrIdx name;
+    Status status;
+    Index name;
     //bool isAssigned;
 } Variable;
 
@@ -28,12 +20,12 @@ typedef struct {
 
 void initVarStore(VarStore* store);
 
-VarIdx createVar(VarStore* store, ValType type);
-VarIdx assignVar(VarStore* store, VarIdx idx, Value val);
-VarIdx assignVarName(VarStore* store, VarIdx vidx, StrIdx sidx);
-VarIdx addVar(VarStore* store, Value val);
-Value* getVar(VarStore* store, VarIdx idx);
-void delVar(VarStore* store, VarIdx idx);
+Index createVar(VarStore* store, ValType type);
+Index assignVar(VarStore* store, Index idx, Value val);
+Index assignVarName(VarStore* store, Index vidx, Index sidx);
+Index addVar(VarStore* store, Value val);
+Value* getVar(VarStore* store, Index idx);
+void delVar(VarStore* store, Index idx);
 void dumpVars(VarStore* store, FILE* outf);
 
 #endif

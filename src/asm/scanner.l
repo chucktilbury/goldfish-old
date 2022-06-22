@@ -74,11 +74,12 @@ static void __append_str(const char* str)
 [ \t\r]         {}
 
     /* keywords */
-"UINT"         { yylval.type = UINT; return TOK_UINT; }
-"INT"          { yylval.type = INT; return TOK_INT; }
+"UINT"          { yylval.type = UINT; return TOK_UINT; }
+"INT"           { yylval.type = INT; return TOK_INT; }
 "FLOAT"         { yylval.type = FLOAT; return TOK_FLOAT; }
 "ADDRESS"       { yylval.type = ADDRESS; return TOK_ADDR; }
 "BOOL"          { yylval.type = BOOL; return TOK_BOOL; }
+"STRING"        { yylval.type = STRING; return TOK_STRING; }
 
 "TRUE"          { yylval.literal.type = BOOL; yylval.literal.data.boolean = true; return TOK_TRUE; }
 "FALSE"         { yylval.literal.type = BOOL; yylval.literal.data.boolean = false; return TOK_FALSE; }
@@ -96,7 +97,6 @@ static void __append_str(const char* str)
 "RBR"           { yylval.opcode = OP_RBR; return TOK_RBR; }
 "PUSH"          { yylval.opcode = OP_PUSH; return TOK_PUSH; }
 "POP"           { yylval.opcode = OP_POP; return TOK_POP; }
-    /* "PEEK"          { yylval.opcode = OP_PEEK; return TOK_PEEK; } */
 "LOAD"          { yylval.opcode = OP_LOAD; return TOK_LOAD; }
 "STORE"         { yylval.opcode = OP_STORE; return TOK_STORE; }
 "NOT"           { yylval.opcode = OP_NOT; return TOK_NOT; }

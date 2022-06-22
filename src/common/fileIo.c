@@ -34,6 +34,7 @@ static void load_instr_store(InstrStore* is, FILE* fp)
 static void load_str_store(StrStore* ss, FILE* fp)
 {
     fread(&ss->len, sizeof(ss->len), 1, fp);
+    fread(&ss->free_slots, sizeof(ss->free_slots), 1, fp);
 
     ss->cap = 1;
     while(ss->cap <= ss->len)
@@ -43,6 +44,7 @@ static void load_str_store(StrStore* ss, FILE* fp)
     for(uint32_t i = 0; i < ss->len; i++) {
         fread(&ss->list[i].len, sizeof(size_t), 1, fp);
         ss->list[i].str = _alloc(ss->list[i].len);
+        fread(&ss->list[i].status, sizeof(Status), 1, fp);
         fread((void*)ss->list[i].str, sizeof(char), ss->list[i].len, fp);
     }
 }
@@ -62,8 +64,10 @@ static void save_instr_store(InstrStore* is, FILE* fp)
 static void save_str_store(StrStore* ss, FILE* fp)
 {
     fwrite(&ss->len, sizeof(ss->len), 1, fp);
+    fwrite(&ss->free_slots, sizeof(ss->free_slots), 1, fp);
     for(uint32_t i = 0; i < ss->len; i++) {
         fwrite(&ss->list[i].len, sizeof(size_t), 1, fp);
+        fwrite(&ss->list[i].status, sizeof(Status), 1, fp);
         fwrite(ss->list[i].str, sizeof(char), ss->list[i].len, fp);
     }
 }

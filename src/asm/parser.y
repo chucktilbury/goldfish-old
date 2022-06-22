@@ -57,13 +57,13 @@ static bool first_flag = true;
 %token <literal> TOK_FNUM
 %token <literal> TOK_TRUE TOK_FALSE
 %type <literal> expression expression_factor expr_parameter
-%type <literal> type_name type_specifier
+%type <literal> type_name type_specifier bool_value
 %type <symbol> data_declaration data_definition
 
 %token <usr> TOK_USRTYPE
 %token <qstr> TOK_QSTR
 
-%token <type> TOK_INT TOK_FLOAT TOK_UINT
+%token <type> TOK_INT TOK_FLOAT TOK_UINT TOK_STRING
 %token <type> TOK_ADDR TOK_BOOL TOK_LINE
 
 %token <opcode> TOK_ABORT TOK_EXIT TOK_NOP TOK_CALL TOK_RCALL TOK_TRAP
@@ -91,9 +91,9 @@ program
         val.type = ADDRESS;
         val.isAssigned = true;
         val.data.addr = getLabelAddr(&vm->istore);
-        VarIdx vidx = addVar(&vm->vstore, val);
+        Index vidx = addVar(&vm->vstore, val);
         const char* str = "__start_address__";
-        StrIdx sidx = addStr(&vm->sstore, str);
+        Index sidx = addStr(&vm->sstore, str);
         assignVarName(&vm->vstore, vidx, sidx);
         addSym(str, vidx);
     } module
@@ -102,17 +102,16 @@ program
 module
     : module_item_list {
         // Emit stuff at the end of the file.
-        WRITE_VM_OBJ(uint8_t, OP_NOP);
-        WRITE_VM_OBJ(uint8_t, OP_NOP);
         Value val;
         val.type = ADDRESS;
         val.isAssigned = true;
         val.data.addr = getLabelAddr(&vm->istore);
-        VarIdx vidx = addVar(&vm->vstore, val);
+        Index vidx = addVar(&vm->vstore, val);
         const char* str = "__end_address__";
-        StrIdx sidx = addStr(&vm->sstore, str);
+        Index sidx = addStr(&vm->sstore, str);
         assignVarName(&vm->vstore, vidx, sidx);
         addSym(str, vidx);
+
         WRITE_VM_OBJ(uint8_t, OP_NOP);
     }
     ;
@@ -126,13 +125,13 @@ module_item
     : instruction
     | data_definition
     | TOK_SYMBOL ':' {
-        VarIdx idx = symToIdx($1);
+        Index idx = symToIdx($1);
         if(idx == 0) {
             Value val;
             val.type = ADDRESS;
             val.isAssigned = true;
             val.data.addr = getLabelAddr(&vm->istore);
-            VarIdx vidx = addVar(&vm->vstore, val);
+            Index vidx = addVar(&vm->vstore, val);
             assignVarName(&vm->vstore, vidx, addStr(&vm->sstore, $1));
             addSym($1, vidx);
         }
@@ -298,21 +297,21 @@ class4_instr
 class5_instr
     : TOK_ABORT TOK_SYMBOL {
         WRITE_VM_OBJ(uint8_t, OP_ABORT);
-        VarIdx idx = symToIdx($2);
+        Index idx = symToIdx($2);
         if(idx == 0)
             syntaxError("symbol \"%s\" has not been defined", $2);
-        WRITE_VM_OBJ(VarIdx, idx);
+        WRITE_VM_OBJ(Index, idx);
     }
     | TOK_PUSH TOK_SYMBOL {
         WRITE_VM_OBJ(uint8_t, OP_PUSH);
-        VarIdx idx = symToIdx($2);
+        Index idx = symToIdx($2);
         if(idx == 0)
             syntaxError("symbol \"%s\" has not been defined", $2);
-        WRITE_VM_OBJ(VarIdx, idx);
+        WRITE_VM_OBJ(Index, idx);
     }
     | TOK_CALL TOK_SYMBOL {
         WRITE_VM_OBJ(uint8_t, OP_CALL);
-        VarIdx idx = symToIdx($2);
+        Index idx = symToIdx($2);
         if(idx == 0) {
             Value val;
             val.type = ADDRESS;
@@ -322,11 +321,11 @@ class5_instr
             assignVarName(&vm->vstore, idx, addStr(&vm->sstore, $2));
             addSym($2, idx);
         }
-        WRITE_VM_OBJ(VarIdx, idx);
+        WRITE_VM_OBJ(Index, idx);
     }
     | TOK_RCALL TOK_SYMBOL {
         WRITE_VM_OBJ(uint8_t, OP_RCALL);
-        VarIdx idx = symToIdx($2);
+        Index idx = symToIdx($2);
         if(idx == 0) {
             Value val;
             val.type = ADDRESS;
@@ -336,11 +335,11 @@ class5_instr
             assignVarName(&vm->vstore, idx, addStr(&vm->sstore, $2));
             addSym($2, idx);
         }
-        WRITE_VM_OBJ(VarIdx, idx);
+        WRITE_VM_OBJ(Index, idx);
     }
     | TOK_JMP TOK_SYMBOL {
         WRITE_VM_OBJ(uint8_t, OP_JMP);
-        VarIdx idx = symToIdx($2);
+        Index idx = symToIdx($2);
         if(idx == 0) {
             Value val;
             val.type = ADDRESS;
@@ -350,11 +349,11 @@ class5_instr
             assignVarName(&vm->vstore, idx, addStr(&vm->sstore, $2));
             addSym($2, idx);
         }
-        WRITE_VM_OBJ(VarIdx, idx);
+        WRITE_VM_OBJ(Index, idx);
     }
     | TOK_RJMP TOK_SYMBOL {
         WRITE_VM_OBJ(uint8_t, OP_RJMP);
-        VarIdx idx = symToIdx($2);
+        Index idx = symToIdx($2);
         if(idx == 0) {
             Value val;
             val.type = ADDRESS;
@@ -364,11 +363,11 @@ class5_instr
             assignVarName(&vm->vstore, idx, addStr(&vm->sstore, $2));
             addSym($2, idx);
         }
-        WRITE_VM_OBJ(VarIdx, idx);
+        WRITE_VM_OBJ(Index, idx);
     }
     | TOK_BR TOK_SYMBOL {
         WRITE_VM_OBJ(uint8_t, OP_BR);
-        VarIdx idx = symToIdx($2);
+        Index idx = symToIdx($2);
         if(idx == 0) {
             Value val;
             val.type = ADDRESS;
@@ -378,11 +377,11 @@ class5_instr
             assignVarName(&vm->vstore, idx, addStr(&vm->sstore, $2));
             addSym($2, idx);
         }
-        WRITE_VM_OBJ(VarIdx, idx);
+        WRITE_VM_OBJ(Index, idx);
     }
     | TOK_RBR TOK_SYMBOL {
         WRITE_VM_OBJ(uint8_t, OP_RBR);
-        VarIdx idx = symToIdx($2);
+        Index idx = symToIdx($2);
         if(idx == 0) {
             Value val;
             val.type = ADDRESS;
@@ -392,7 +391,7 @@ class5_instr
             assignVarName(&vm->vstore, idx, addStr(&vm->sstore, $2));
             addSym($2, idx);
         }
-        WRITE_VM_OBJ(VarIdx, idx);
+        WRITE_VM_OBJ(Index, idx);
     }
     ;
 
@@ -463,8 +462,8 @@ class8_instr
     | TOK_LOAD register ',' TOK_SYMBOL {
         WRITE_VM_OBJ(uint8_t, OP_LOAD);
         WRITE_VM_OBJ(uint8_t, ($2 & 0xF));
-        VarIdx idx = symToIdx($4);
-        WRITE_VM_OBJ(VarIdx, idx);
+        Index idx = symToIdx($4);
+        WRITE_VM_OBJ(Index, idx);
     }
     | TOK_LOAD register ',' expr_parameter {
         WRITE_VM_OBJ(uint8_t, OP_LOADI);
@@ -473,8 +472,8 @@ class8_instr
     }
     | TOK_STORE TOK_SYMBOL ',' register {
         WRITE_VM_OBJ(uint8_t, OP_STORE);
-        VarIdx idx = symToIdx($2);
-        WRITE_VM_OBJ(VarIdx, idx);
+        Index idx = symToIdx($2);
+        WRITE_VM_OBJ(Index, idx);
         WRITE_VM_OBJ(uint8_t, ($4 & 0xF));
     }
     ;
@@ -483,26 +482,37 @@ type_name
     : TOK_INT {
         Value val;
         val.type = $1;
+        val.isAssigned = false;
         $$ = val;
     }
     | TOK_UINT {
         Value val;
         val.type = $1;
+        val.isAssigned = false;
         $$ = val;
     }
     | TOK_FLOAT {
         Value val;
         val.type = $1;
+        val.isAssigned = false;
         $$ = val;
     }
     | TOK_BOOL {
         Value val;
         val.type = $1;
+        val.isAssigned = false;
         $$ = val;
     }
     | TOK_ADDR {
         Value val;
         val.type = $1;
+        val.isAssigned = false;
+        $$ = val;
+    }
+    | TOK_STRING {
+        Value val;
+        val.type = $1;
+        val.isAssigned = false;
         $$ = val;
     }
     ;
@@ -519,7 +529,7 @@ type_specifier
 
 data_declaration
     : type_specifier TOK_SYMBOL {
-        VarIdx idx = addVar(&vm->vstore, $1);
+        Index idx = addVar(&vm->vstore, $1);
         addSym($2, idx);
         assignVarName(&vm->vstore, idx, addStr(&vm->sstore, $2));
         $$ = $2;
@@ -533,7 +543,18 @@ data_definition
         copyValue(val, &tmp);
     }
     | data_declaration '=' bool_value {
-
+        Value* val = symToVal($1);
+        if(val->type != BOOL)
+            syntaxError("attempt to assign a BOOL value to a %s", valTypeToStr(val->type));
+        else
+            val->data.boolean = $3.data.boolean;
+    }
+    | data_declaration '=' TOK_QSTR {
+        Value* val = symToVal($1);
+        if(val->type != STRING)
+            syntaxError("attempt to assign a STRING value to a %s", valTypeToStr(val->type));
+        else
+            val->data.str = addStr(&vm->sstore, $3);
     }
     ;
 

@@ -17,7 +17,6 @@
 void doCall(VM* vm, Value* val)
 {
     int idx;
-
     switch(val->type) {
         case ADDRESS:   idx = (int)val->data.addr;   break;
 
@@ -28,33 +27,24 @@ void doCall(VM* vm, Value* val)
         case FLOAT:
         case BOOL:
         case USRTYPE:
-            runtimeError("cannot use type %s as a call address", valTypeToStr(val->type));
+            runtimeError("invalid call address type: %s", valTypeToStr(val->type));
             break;
         default:
             fatalError("invalid address type encountered: 0x%02X", val->type);
     }
 
-    CallStackElem call;
-    call.ret_addr = getInstrIndex(&vm->istore);
-    call.arity = *popValStack(&vm->vstack);
+    Value ret;
+    ret.type = ADDRESS;
+    ret.data.addr = getInstrIndex(&vm->istore);
+    ret.isAssigned = true;
 
-    if(call.arity.type != UINT)
-        fatalError("invalid call arity type: %s", valTypeToStr(call.arity.type));
-
-    uint8_t num = (uint8_t)call.arity.data.unum;
-    call.parameters = _alloc_ds_array(Value, num);
-    for(int i = 0; i < (int)num; i++) {
-        call.parameters[i] = *popValStack(&vm->vstack);
-    }
-
-    pushCallStack(&vm->cstack, call);
+    pushValStack(&vm->vstack, &ret);
     setInstrIndex(&vm->istore, idx);
 }
 
 void doRCall(VM* vm, Value* val)
 {
     int idx;
-
     switch(val->type) {
         case UINT:     idx = (int)val->data.unum;  break;
         case INT:      idx = (int)val->data.inum;  break;
@@ -65,26 +55,18 @@ void doRCall(VM* vm, Value* val)
         case FLOAT:
         case BOOL:
         case USRTYPE:
-            runtimeError("cannot use type %s as a call address offset", valTypeToStr(val->type));
+            runtimeError("invalid call index type: %s", valTypeToStr(val->type));
             break;
         default:
             fatalError("invalid address type encountered: 0x%02X", val->type);
     }
 
-    CallStackElem call;
-    call.ret_addr = getInstrIndex(&vm->istore);
-    call.arity = *popValStack(&vm->vstack);
+    Value ret;
+    ret.type = ADDRESS;
+    ret.data.addr = getInstrIndex(&vm->istore);
+    ret.isAssigned = true;
 
-    if(call.arity.type != UINT)
-        fatalError("invalid call arity type: %s", valTypeToStr(call.arity.type));
-
-    uint8_t num = (uint8_t)call.arity.data.unum;
-    call.parameters = _alloc_ds_array(Value, num);
-    for(int i = 0; i < (int)num; i++) {
-        call.parameters[i] = *popValStack(&vm->vstack);
-    }
-
-    pushCallStack(&vm->cstack, call);
+    pushValStack(&vm->vstack, &ret);
     incInstrIndex(&vm->istore, idx);
 }
 
@@ -186,7 +168,28 @@ void doRBr(VM* vm, Value* val)
 
 void doReturn(VM* vm)
 {
-    CallStackElem cse = popCallStack(&vm->cstack);
-    setInstrIndex(&vm->istore, cse.ret_addr);
+    // CallStackElem cse = popCallStack(&vm->cstack);
+    // setInstrIndex(&vm->istore, cse.ret_addr);
+
+    Value* val = popValStack(&vm->vstack);
+
+    int idx;
+    switch(val->type) {
+        case ADDRESS:   idx = (int)val->data.addr;   break;
+
+        case UINT:
+        case INT:
+        case ERROR:
+        case NOTHING:
+        case FLOAT:
+        case BOOL:
+        case USRTYPE:
+            runtimeError("invalid return address type: %s", valTypeToStr(val->type));
+            break;
+        default:
+            fatalError("invalid address type encountered: 0x%02X", val->type);
+    }
+
+    setInstrIndex(&vm->istore, idx);
 }
 

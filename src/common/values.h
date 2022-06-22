@@ -38,7 +38,6 @@ Value castValue(ValType type, Value val, bool isConst);
 void copyValue(Value* dest, Value* src);
 // Convert the type to a string for debugging and error generation.
 const char* valTypeToStr(ValType type);
-void printVal(Value* val, FILE* outf);
 
 #define VTYPE(v) (v).type
 #define VDATA(v) (v).data

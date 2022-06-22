@@ -12,37 +12,18 @@
  */
 #include "vMachine.h"
 #include "traps.h"
+#include "print.h"
 
-static void print_value(VM* vm)
+static void print_trap(VM* vm)
 {
-    printVal(popValStack(&vm->vstack), stdout);
-}
-
-static void print_register(VM* vm)
-{
-    //Value* val = popValStack(&vm->vstack);
-    //printVal(&vm->registers[val->data.unum], stdout);
-    printVal(&vm->registers[0], stdout);
-}
-
-static void print_immediate(VM* vm)
-{
-    Value val;
-    READ_VM_OBJ(Value, val);
-    printVal(&val, stdout);
+    printReg(vm, &vm->registers[0], stdout);
 }
 
 void doTrap(VM* vm, TrapNumType tno)
 {
     switch(tno) {
-        case PRINTV:
-            print_value(vm);
-            break;
-        case PRINTR:
-            print_register(vm);
-            break;
-        case PRINTI:
-            print_immediate(vm);
+        case PRINT:
+            print_trap(vm);
             break;
         default:
             fprintf(stderr, "fatal error: unknown trap number encountered: %d", tno);

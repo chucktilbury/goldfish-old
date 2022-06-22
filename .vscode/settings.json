@@ -11,6 +11,7 @@
         "cstack",
         "CTEST",
         "disasm",
+        "DMEMORY",
         "DOJUMPS",
         "DTRACE",
         "ecap",

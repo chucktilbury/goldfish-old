@@ -3,8 +3,8 @@
 
 #include "varStore.h"
 
-void addSym(const char* key, VarIdx idx);
-VarIdx symToIdx(const char* key);
+void addSym(const char* key, Index idx);
+Index symToIdx(const char* key);
 Value* symToVal(const char*key);
 void dumpSymtab(FILE* outf);
 const char* findLabel(unsigned long addr);

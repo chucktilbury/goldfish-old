@@ -2,25 +2,26 @@
 #define STRSTORE_H
 
 #include "system.h"
-
-typedef uint32_t StrIdx;
+#include "store.h"
 
 typedef struct {
     const char* str;
     size_t len;
+    Status status;
 } String;
 
 typedef struct {
     String* list;
     uint32_t cap;
     uint32_t len;
+    uint32_t free_slots;
 } StrStore;
 
 void initStrStore(StrStore* store);
 
-StrIdx addStr(StrStore* store, const char* str);
-const char* getStr(StrStore* store, StrIdx idx);
+Index addStr(StrStore* store, const char* str);
+const char* getStr(StrStore* store, Index idx);
+void delStr(StrStore* store, Index idx);
 void dumpStrs(StrStore* store, FILE* outf);
-void printStr(StrStore* store, StrIdx idx, FILE* outf);
 
 #endif

@@ -10,7 +10,7 @@ extern VM* vm;
 
 typedef struct _symtab_elem {
     const char* key;
-    VarIdx idx;
+    Index idx;
     struct _symtab_elem* left;
     struct _symtab_elem* right;
 } SymTabNode;
@@ -127,7 +127,7 @@ static SymTabNode* find_node(SymTabNode* node, const char* key)
  */
 
 // symbol definition
-void addSym(const char* key, VarIdx idx)
+void addSym(const char* key, Index idx)
 {
     SymTabNode* node = _alloc_ds(SymTabNode);
     node->key = _copy_str(create_name(key));
@@ -140,7 +140,7 @@ void addSym(const char* key, VarIdx idx)
 }
 
 // symbol reference
-VarIdx symToIdx(const char* key)
+Index symToIdx(const char* key)
 {
     SymTabNode* node = find_node(symtab, create_name(key));
 

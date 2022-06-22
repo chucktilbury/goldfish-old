@@ -4,13 +4,14 @@
 #include "vMachine.h"
 #include "errors.h"
 #include "memory.h"
+#include "print.h"
 
 extern VM* vm;
 #include "symtab.h"
 
 typedef struct _symtab_elem {
     const char* key;
-    VarIdx idx;
+    Index idx;
     struct _symtab_elem* left;
     struct _symtab_elem* right;
 } SymTabNode;
@@ -25,6 +26,7 @@ static int comp_names(const char* left, const char* right)
 
 static void dump_table(SymTabNode* node, FILE* outf)
 {
+    //fprintf(stderr, "dump node: %p\n", node);
     if(node->left != NULL)
         dump_table(node->left, outf);
     if(node->right != NULL)
@@ -84,13 +86,16 @@ static SymTabNode* find_node(SymTabNode* node, const char* key)
  */
 
 // symbol definition
-void addSym(const char* key, VarIdx idx)
+void addSym(const char* key, Index idx)
 {
     //printf("addSym(%s, %d)\n", key, idx);
     SymTabNode* node = _alloc_ds(SymTabNode);
+    node->left = NULL;
+    node->right = NULL;
     node->key = _copy_str(key);
     node->idx = idx;
 
+    //fprintf(stderr, "add node: %p\n", node);
     if(symtab != NULL)
         add_node(symtab, node);
     else
@@ -98,7 +103,7 @@ void addSym(const char* key, VarIdx idx)
 }
 
 // symbol reference
-VarIdx symToIdx(const char* key)
+Index symToIdx(const char* key)
 {
     SymTabNode* node = find_node(symtab, key);
 

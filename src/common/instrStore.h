@@ -25,7 +25,7 @@ void write_s32(InstrStore* store, int32_t val);
 void write_s64(InstrStore* store, int64_t val);
 
 void write_value(InstrStore* store, Value val);
-void write_idx(InstrStore* store, VarIdx idx);
+void write_idx(InstrStore* store, Index idx);
 
 uint8_t read_u8(InstrStore* store);
 uint16_t read_u16(InstrStore* store);
@@ -38,7 +38,7 @@ int32_t read_s32(InstrStore* store);
 int64_t read_s64(InstrStore* store);
 
 Value read_value(InstrStore* store);
-VarIdx read_idx(InstrStore* store);
+Index read_idx(InstrStore* store);
 */
 
 unsigned long getInstrIndex(InstrStore* store);

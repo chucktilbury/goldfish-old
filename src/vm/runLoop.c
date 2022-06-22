@@ -13,6 +13,7 @@
 #include "doJmps.h"
 #include "vmErrors.h"
 #include "traps.h"
+#include "print.h"
 
 int runLoop(VM* vm)
 {
@@ -34,8 +35,8 @@ int runLoop(VM* vm)
             case OP_ABORT: {
                     // Immediate is a VarIdx
                     fprintf(stderr, "runtime error: abort instruction: ");
-                    VarIdx idx;
-                    READ_VM_OBJ(VarIdx, idx);
+                    Index idx;
+                    READ_VM_OBJ(Index, idx);
                     printVal(getVar(&vm->vstore, idx), stderr);
                     fprintf(stderr, "\n");
                     finished = true;
@@ -81,8 +82,8 @@ int runLoop(VM* vm)
 
             case OP_CALL: {
                     // operand is a Value index
-                    VarIdx idx;
-                    READ_VM_OBJ(VarIdx, idx);
+                    Index idx;
+                    READ_VM_OBJ(Index, idx);
                     doCall(vm, getVar(&vm->vstore, idx));
                 }
                 break;
@@ -105,8 +106,8 @@ int runLoop(VM* vm)
 
             case OP_RCALL:{
                     // operand is a Value index
-                    VarIdx idx;
-                    READ_VM_OBJ(VarIdx, idx);
+                    Index idx;
+                    READ_VM_OBJ(Index, idx);
                     doRCall(vm, getVar(&vm->vstore, idx));
                 }
                 break;
@@ -143,8 +144,8 @@ int runLoop(VM* vm)
 
             case OP_JMP:{
                     // operand is a Value index
-                    VarIdx idx;
-                    READ_VM_OBJ(VarIdx, idx);
+                    Index idx;
+                    READ_VM_OBJ(Index, idx);
                     doJmp(vm, getVar(&vm->vstore, idx));
                 }
                 break;
@@ -167,8 +168,8 @@ int runLoop(VM* vm)
 
             case OP_RJMP:{
                     // operand is a Value index
-                    VarIdx idx;
-                    READ_VM_OBJ(VarIdx, idx);
+                    Index idx;
+                    READ_VM_OBJ(Index, idx);
                     doRJmp(vm, getVar(&vm->vstore, idx));
                 }
                 break;
@@ -191,8 +192,8 @@ int runLoop(VM* vm)
 
             case OP_BR:{
                     // operand is a Value Index
-                    VarIdx idx;
-                    READ_VM_OBJ(VarIdx, idx);
+                    Index idx;
+                    READ_VM_OBJ(Index, idx);
                     doBr(vm, getVar(&vm->vstore, idx));
                 }
                 break;
@@ -215,8 +216,8 @@ int runLoop(VM* vm)
 
             case OP_RBR: {
                     // operand is a Value index
-                    VarIdx idx;
-                    READ_VM_OBJ(VarIdx, idx);
+                    Index idx;
+                    READ_VM_OBJ(Index, idx);
                     doRBr(vm, getVar(&vm->vstore, idx));
                 }
                 break;
@@ -239,8 +240,8 @@ int runLoop(VM* vm)
 
             case OP_PUSH: {
                     // operand is a Value index
-                    VarIdx idx;
-                    READ_VM_OBJ(VarIdx, idx);
+                    Index idx;
+                    READ_VM_OBJ(Index, idx);
                     pushValStack(&vm->vstack, getVar(&vm->vstore, idx));
                 }
                 break;
@@ -283,8 +284,8 @@ int runLoop(VM* vm)
                     // operand is a Value index
                     RegNumType reg;
                     READ_VM_OBJ(RegNumType, reg);
-                    VarIdx idx;
-                    READ_VM_OBJ(VarIdx, idx);
+                    Index idx;
+                    READ_VM_OBJ(Index, idx);
                     vm->registers[reg] = *getVar(&vm->vstore, idx);
                 }
                 break;
@@ -311,8 +312,8 @@ int runLoop(VM* vm)
             case OP_STORE: {
                     // operand is a Value index
                     // operand is a single register
-                    VarIdx idx;
-                    READ_VM_OBJ(VarIdx, idx);
+                    Index idx;
+                    READ_VM_OBJ(Index, idx);
                     RegNumType reg;
                     READ_VM_OBJ(RegNumType, reg);
                     assignVar(&vm->vstore, idx, vm->registers[reg]);
@@ -431,7 +432,7 @@ int runLoop(VM* vm)
         }
 
         // exit if there are no more instructions
-        finished = isInstrEnded(&vm->istore);
+        finished = (finished == false)? isInstrEnded(&vm->istore): true;
     }
 
     return retv;

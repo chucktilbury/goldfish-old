@@ -3,6 +3,7 @@
 #include "vMachine.h"
 #include "registers.h"
 #include "values.h"
+#include "print.h"
 
 void dumpRegs(VM* vm, FILE* outf)
 {

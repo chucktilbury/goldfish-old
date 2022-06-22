@@ -137,24 +137,6 @@ void copyValue(Value* dest, Value* src)
     memcpy(dest, src, sizeof(Value));
 }
 
-void printVal(Value* val, FILE* outf)
-{
-    fprintf(outf, "%-8s", valTypeToStr(val->type));
-    switch(val->type) {
-        case ERROR: fprintf(outf, "<ERROR>"); break;
-        case NOTHING: fprintf(outf, "<NOTHING>"); break;
-        case UINT: fprintf(outf, "<0x%02lX>", val->data.unum); break;
-        case INT: fprintf(outf, "<%ld>", val->data.inum); break;
-        case FLOAT: fprintf(outf, "<%0.3f>", val->data.fnum); break;
-        case BOOL: fprintf(outf, "<%s>", val->data.boolean? "true": "false"); break;
-        case ADDRESS: fprintf(outf, "<%d>", val->data.addr); break;
-        case USRTYPE: fprintf(outf, "<defer>"); break;
-        case STRING: fprintf(outf, "<defer>"); break;
-        default: fprintf(outf, "UNKNOWN"); break;
-    }
-    //fprintf(outf, "\n");
-}
-
 const char* valTypeToStr(ValType type)
 {
     return (type == ERROR)? "ERROR":
