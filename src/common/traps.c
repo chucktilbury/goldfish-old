@@ -20,8 +20,9 @@ static void print_value(VM* vm)
 
 static void print_register(VM* vm)
 {
-    Value* val = popValStack(&vm->vstack);
-    printVal(&vm->registers[val->data.unum], stdout);
+    //Value* val = popValStack(&vm->vstack);
+    //printVal(&vm->registers[val->data.unum], stdout);
+    printVal(&vm->registers[0], stdout);
 }
 
 static void print_immediate(VM* vm)
@@ -47,4 +48,5 @@ void doTrap(VM* vm, TrapNumType tno)
             fprintf(stderr, "fatal error: unknown trap number encountered: %d", tno);
             exit(1);
     }
+    printf("\n");
 }

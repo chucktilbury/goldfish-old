@@ -12,7 +12,6 @@ add_executable(${PROJECT_NAME}
 
 target_link_libraries(${PROJECT_NAME}
     vm
-    gc-lib
     m
 )
 
@@ -22,4 +21,4 @@ target_include_directories(${PROJECT_NAME}
         ${PROJECT_SOURCE_DIR}/../common
 )
 
-target_compile_options(${PROJECT_NAME} PRIVATE "-Wall" "-Wextra" "-g" "-DTRACE")
+target_compile_options(${PROJECT_NAME} PRIVATE "-Wall" "-Wextra" "-DMEMORY_DEBUG" "-g" "-DTRACE")

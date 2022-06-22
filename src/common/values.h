@@ -11,6 +11,7 @@ typedef enum {
     FLOAT,
     BOOL,
     ADDRESS,
+    STRING,
     USRTYPE, // user types are accessed using a trap
     DEFER, // used in the tables to mark deferred transformations
     EXTERN, // external function defined in external code
@@ -28,6 +29,7 @@ typedef struct {
         bool boolean;
         uint32_t addr;
         int usrtype;
+        int str;
     } data;
 } __attribute__((packed)) Value;
 

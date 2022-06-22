@@ -21,5 +21,6 @@ void initStrStore(StrStore* store);
 StrIdx addStr(StrStore* store, const char* str);
 const char* getStr(StrStore* store, StrIdx idx);
 void dumpStrs(StrStore* store, FILE* outf);
+void printStr(StrStore* store, StrIdx idx, FILE* outf);
 
 #endif

@@ -5,26 +5,21 @@
 #include "runLoop.h"
 #include "traps.h"
 #include "fileIo.h"
+#include "cmdline.h"
 
 
-int main() {
+int main(int argc, char** argv) {
 
     _init_memory();
 
+    cmd_line cl = create_cmd_line("This is the dis-assembler");
+    add_str_param(cl, "ifile", "-i", "input file name", "output.bin", CF_NONE);
+    add_num_param(cl, "verbose", "-v", "verbosity number from 0 to 10", 0, CF_NONE);
+    parse_cmd_line(cl, argc, argv);
+
     VM* vm = _alloc_ds(VM);
     initVM(vm);
-
-    vm->registers[0].type = UINT;
-    vm->registers[0].data.unum = 0xdeadbeef;
-
-    Value val;
-    val.type = UINT;
-    val.data.unum = 0;
-    pushValStack(&vm->vstack, &val);
-
-    WRITE_VM_OBJ(uint8_t, OP_TRAP);
-    WRITE_VM_OBJ(TrapNumType, PRINTR); // trap number
-    WRITE_VM_OBJ(uint8_t, OP_EXIT);
+    loadVM(vm, get_str_param(cl, "ifile"));
 
     runLoop(vm);
 

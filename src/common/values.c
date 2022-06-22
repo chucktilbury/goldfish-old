@@ -149,6 +149,7 @@ void printVal(Value* val, FILE* outf)
         case BOOL: fprintf(outf, "<%s>", val->data.boolean? "true": "false"); break;
         case ADDRESS: fprintf(outf, "<%d>", val->data.addr); break;
         case USRTYPE: fprintf(outf, "<defer>"); break;
+        case STRING: fprintf(outf, "<defer>"); break;
         default: fprintf(outf, "UNKNOWN"); break;
     }
     //fprintf(outf, "\n");
@@ -163,6 +164,7 @@ const char* valTypeToStr(ValType type)
             (type == FLOAT)? "FLOAT":
             (type == BOOL)? "BOOL":
             (type == ADDRESS)? "ADDRESS":
+            (type == STRING)? "STRING":
             (type == USRTYPE)? "USRTYPE":"UNKNOWN";
 }
 

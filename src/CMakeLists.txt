@@ -1,5 +1,5 @@
 
-add_subdirectory(gc)
+#add_subdirectory(gc)
 add_subdirectory(ucpp)
 add_subdirectory(asm)
 add_subdirectory(disasm)

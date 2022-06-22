@@ -26,7 +26,6 @@ add_custom_command(OUTPUT ${YACC_C_SOURCE} ${YACC_H}
 
 add_executable(${PROJECT_NAME}
 	main.c
-    memory.c
 	symtable.c
     errors.c
     parser.c
@@ -36,11 +35,10 @@ add_executable(${PROJECT_NAME}
 target_include_directories(${PROJECT_NAME}
     PUBLIC
         ${PROJECT_SOURCE_DIR}/../include
-        ${PROJECT_SOURCE_DIR}/../gc/include
+        ${PROJECT_SOURCE_DIR}/../common
 )
 
 target_link_libraries(${PROJECT_NAME}
-	gc-lib
     m
 )
 

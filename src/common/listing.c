@@ -255,7 +255,6 @@ void showListing(VM* vm, FILE* outf)
                     RegNumType reg;
                     READ_VM_OBJ(RegNumType, reg);
                     fprintf(outf, "<%s>\t", regToStr(reg));
-                    printVal(&vm->registers[reg], outf);
                 }
                 break;
 
@@ -285,8 +284,6 @@ void showListing(VM* vm, FILE* outf)
                     VarIdx idx;
                     READ_VM_OBJ(VarIdx, idx);
                     fprintf(outf, "<%s>,<%d>\t", regToStr(reg), idx);
-                    //printVal(&vm->registers[reg]);
-                    //fprintf(outf, "<%d>\t", idx);
                     printVal(getVar(&vm->vstore, idx), outf);
                 }
                 break;
@@ -296,8 +293,7 @@ void showListing(VM* vm, FILE* outf)
                     // operand is an immediate Value
                     RegNumType reg;
                     READ_VM_OBJ(RegNumType, reg);
-                    fprintf(outf, "<%s> ", regToStr(reg));
-                    printVal(&vm->registers[reg], outf);
+                    fprintf(outf, "<%s>\t", regToStr(reg));
                     Value val;
                     READ_VM_OBJ(Value, val);
                     printVal(&val, outf);
@@ -308,8 +304,7 @@ void showListing(VM* vm, FILE* outf)
                     // operand is 2 registers
                     RegNumType regs;
                     READ_VM_OBJ(RegNumType, regs);
-                    fprintf(outf, "<%s> ", regToStr((regs >> 4) & 0xF));
-                    printVal(&vm->registers[regs], outf);
+                    fprintf(outf, "<%s>\t", regToStr((regs >> 4) & 0xF));
                     fprintf(outf, ", <%s>", regToStr(regs & 0xF));
                     printVal(&vm->registers[regs], outf);
                     fprintf(outf, "\t");
@@ -326,7 +321,6 @@ void showListing(VM* vm, FILE* outf)
                     RegNumType reg;
                     READ_VM_OBJ(RegNumType, reg);
                     fprintf(outf, "<%s>\t", regToStr(reg));
-                    printVal(&vm->registers[reg], outf);
                 }
                 break;
 

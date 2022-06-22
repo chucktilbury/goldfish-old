@@ -7,7 +7,6 @@ add_executable(${PROJECT_NAME}
 
 target_link_libraries(${PROJECT_NAME}
     vm
-    gc-lib
 )
 
 target_include_directories(${PROJECT_NAME}
