@@ -2,13 +2,9 @@
 #define VMACHINE_H
 
 #include "system.h"
-#include "memory.h"
 #include "values.h"
 #include "store.h"
-#include "callStack.h"
 #include "valStack.h"
-#include "cmdline.h"
-#include "misc.h"
 
 #define NUM_REGS    16
 
@@ -21,7 +17,7 @@ typedef struct {
     InstrStore istore;
     StrStore sstore;
     ValStack vstack;
-    CallStack cstack;
+    //CallStack cstack;
     const char* fname;
 } VM;
 

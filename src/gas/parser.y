@@ -18,6 +18,7 @@
 #include "registers.h"
 #include "scanner.h"
 #include "errors.h"
+#include "memory.h"
 
 // defined by flex
 extern int yylex(void);

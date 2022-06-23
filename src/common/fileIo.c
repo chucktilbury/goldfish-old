@@ -1,6 +1,7 @@
 
 #include "system.h"
 #include "fileIo.h"
+#include "memory.h"
 
 static void initRegisters(VM* vm)
 {
@@ -75,7 +76,7 @@ static void save_str_store(StrStore* ss, FILE* fp)
 void initVM(VM* vm)
 {
     initInstrStore(&vm->istore);
-    initCallStack(&vm->cstack);
+    //initCallStack(&vm->cstack);
     initValStack(&vm->vstack);
     initVarStore(&vm->vstore);
     initStrStore(&vm->sstore);

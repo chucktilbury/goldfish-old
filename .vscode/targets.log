@@ -1,4 +1,6 @@
 make all --print-data-base --no-builtin-variables --no-builtin-rules --question
+make: *** No rule to make target 'all'.  Stop.
+
 # GNU Make 4.3
 # Built for x86_64-pc-linux-gnu
 # Copyright (C) 1988-2020 Free Software Foundation, Inc.
@@ -6,7 +8,7 @@ make all --print-data-base --no-builtin-variables --no-builtin-rules --question
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
-# Make data base, printed on Sat Jun 18 22:19:10 2022
+# Make data base, printed on Wed Jun 22 16:46:48 2022
 
 # Variables
 
@@ -17,7 +19,7 @@ GDK_BACKEND = x11
 # environment
 LC_ALL = C
 # environment
-VSCODE_IPC_HOOK_EXTHOST = /run/user/1000/vscode-ipc-bb9ba2da-201e-4bf2-8f54-10b62aa1e368.sock
+VSCODE_IPC_HOOK_EXTHOST = /run/user/1000/vscode-ipc-d97f9f24-b47a-49e5-82fb-3fa0f517b5a1.sock
 # environment
 VSCODE_CWD = /home/chuck
 # environment
@@ -45,7 +47,7 @@ VSCODE_LOG_STACK = false
 # automatic
 %F = $(notdir $%)
 # environment
-VSCODE_CODE_CACHE_PATH = /home/chuck/.config/Code/CachedData/4af164ea3a06f701fe3e89a2bcbb421d2026b68f
+VSCODE_CODE_CACHE_PATH = /home/chuck/.config/Code/CachedData/30d9c6cd9483b2cc586687151bcbcd635f373630
 # environment
 XDG_SESSION_PATH = /org/freedesktop/DisplayManager/Session0
 # environment
@@ -69,7 +71,7 @@ APPLICATION_INSIGHTS_NO_DIAGNOSTIC_CHANNEL = 1
 # environment
 MFLAGS = -pqrR
 # environment
-SSH_AUTH_SOCK = /tmp/ssh-oqQ1gVoFBICy/agent.4699
+SSH_AUTH_SOCK = /tmp/ssh-cnOqI8T7p4k9/agent.4597
 # default
 .SHELLFLAGS := -c
 # environment
@@ -87,13 +89,13 @@ QT_PLATFORMTHEME = gtk2
 # environment
 VSCODE_VERBOSE_LOGGING = true
 # environment
-VSCODE_PID = 313338
+VSCODE_PID = 15611
 # environment
 XDG_SESSION_TYPE = x11
 # automatic
 ?D = $(patsubst %/,%,$(dir $?))
 # environment
-SESSION_MANAGER = local/mx:@/tmp/.ICE-unix/4699,unix/mx:/tmp/.ICE-unix/4699
+SESSION_MANAGER = local/mx:@/tmp/.ICE-unix/4597,unix/mx:/tmp/.ICE-unix/4597
 # automatic
 *F = $(notdir $*)
 # environment
@@ -101,7 +103,7 @@ QT_QPA_PLATFORMTHEME = gtk2
 # environment
 CHROME_DESKTOP = code-url-handler.desktop
 # environment
-DBUS_SESSION_BUS_ADDRESS = unix:abstract=/tmp/dbus-Q3m7xZPOlE,guid=5fa3cad76a606282c925645462a73809
+DBUS_SESSION_BUS_ADDRESS = unix:abstract=/tmp/dbus-fcHrl7KETa,guid=19b5ddf4c601e8c75b9658bd62af23db
 # automatic
 <D = $(patsubst %/,%,$(dir $<))
 # environment
@@ -165,7 +167,7 @@ GTK_MODULES = canberra-gtk-module
 # default
 MAKE_VERSION := 4.3
 # environment
-SSH_AGENT_PID = 4867
+SSH_AGENT_PID = 4853
 # environment
 _ = /usr/share/code/code
 # environment
@@ -181,7 +183,7 @@ HOME = /home/chuck
 # environment
 ELECTRON_RUN_AS_NODE = 1
 # environment
-VSCODE_IPC_HOOK = /run/user/1000/vscode-24a696e4-1.68.0-main.sock
+VSCODE_IPC_HOOK = /run/user/1000/vscode-24a696e4-1.68.1-main.sock
 # environment
 XDG_SESSION_ID = 1
 # default
@@ -207,9 +209,9 @@ GDMSESSION = xfce
 
 # Directories
 
-# . (device 2081, inode 239338425): 13 files, no impossibilities.
+# . (device 2081, inode 239338425): 14 files, no impossibilities.
 
-# 13 files, no impossibilities in 1 directories.
+# 14 files, no impossibilities in 1 directories.
 
 # Implicit Rules
 
@@ -259,14 +261,12 @@ GNUmakefile:
 
 # No general ('VPATH' variable) search path.
 
-# strcache buffers: 1 (0) / strings = 21 / storage = 174 B / avg = 8 B
-# current buf: size = 8162 B / used = 174 B / count = 21 / avg = 8 B
+# strcache buffers: 1 (0) / strings = 22 / storage = 180 B / avg = 8 B
+# current buf: size = 8162 B / used = 180 B / count = 22 / avg = 8 B
 
-# strcache performance: lookups = 24 / hit rate = 12%
+# strcache performance: lookups = 25 / hit rate = 12%
 # hash-table stats:
-# Load=21/8192=0%, Rehash=0, Collisions=0/24=0%
-# Finished Make data base on Sat Jun 18 22:19:10 2022
+# Load=22/8192=0%, Rehash=0, Collisions=0/25=0%
+# Finished Make data base on Wed Jun 22 16:46:48 2022
 
  
-make: *** No rule to make target 'all'.  Stop.
-

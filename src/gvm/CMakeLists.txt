@@ -1,5 +1,5 @@
 
-project(virt)
+project(gvm)
 
 add_executable(${PROJECT_NAME}
     runLoop.c
