@@ -7,7 +7,7 @@ add_executable(${PROJECT_NAME}
     doComp.c
     doJmps.c
     vmErrors.c
-    virt.c
+    gvm.c
 )
 
 target_link_libraries(${PROJECT_NAME}

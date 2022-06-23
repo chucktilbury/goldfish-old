@@ -30,7 +30,7 @@ add_executable(${PROJECT_NAME}
     scanner.c
     symtab.c
     errors.c
-    asm.c
+    gas.c
 )
 
 target_include_directories(${PROJECT_NAME}
