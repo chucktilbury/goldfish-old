@@ -39,6 +39,7 @@ typedef struct _cpt_ {
         int ival;
         bool bval;
         const char* sval;
+        cmd_callback ptr;
     } value;
     cmd_flags_t flags;
     cmd_type_t type;
@@ -182,7 +183,7 @@ void add_num_param(cmd_line cptr, const char* name, const char* parm, const char
  * Add a boolean command line parameter to the parser. If this parameter is
  * present, then the value is set to true. Otherwise, it is false.
  */
-void add_none_param(cmd_line cptr, const char* name, const char* parm, const char* help, cmd_flags_t flags) {
+void add_toggle_param(cmd_line cptr, const char* name, const char* parm, const char* help, bool val, cmd_flags_t flags) {
 
     assert(cptr != NULL);
     assert(parm != NULL);
@@ -194,11 +195,31 @@ void add_none_param(cmd_line cptr, const char* name, const char* parm, const cha
     p->help = _copy_str(help);
     p->name = _copy_str(name);
     p->flags = flags;
-    p->type = CT_NONE;
-    p->value.bval = false;
+    p->type = CT_TOGGLE;
+    p->value.bval = val;
 
     add_node(cmd, p);
 }
+
+void add_callback_param(cmd_line cptr, const char* name, const char* parm,
+                        const char* help, cmd_callback val, cmd_flags_t flags) {
+
+    assert(cptr != NULL);
+    assert(parm != NULL);
+    assert(strlen(parm) > 0);
+
+    command_line_t* cmd = (command_line_t*)cptr;
+    cmd_parameter_t* p = _alloc_ds(cmd_parameter_t);
+    p->parm = _copy_str(parm);
+    p->help = _copy_str(help);
+    p->name = _copy_str(name);
+    p->flags = flags;
+    p->type = CT_CALLBACK;
+    p->value.ptr = val;
+
+    add_node(cmd, p);
+}
+
 
 /*
  * Get the value associated with a string command line parameter. Could
@@ -392,9 +413,16 @@ void parse_cmd_line(cmd_line cptr, int argc, char** argv) {
                 }
                 break;
 
-            case CT_NONE: { // has no parameter, AKA a switch
+            case CT_TOGGLE: { // has no parameter, AKA a switch
                     cmd->clist[parm_idx]->flags |= CF_PRESENT;
-                    cmd->clist[parm_idx]->value.bval = true;
+                    cmd->clist[parm_idx]->value.bval = cmd->clist[parm_idx]->value.bval? false: true;
+                }
+                break;
+
+            case CT_CALLBACK: { // just call the callback, no value to update.
+                    cmd->clist[parm_idx]->flags |= CF_PRESENT;
+                    cmd->clist[parm_idx]->value.ptr(argv[args_idx+1]);
+                    args_idx++;
                 }
                 break;
 
@@ -447,7 +475,7 @@ void cmd_use(cmd_line cmd) {
                             p[idx]->parm, p[idx]->help,
                             p[idx]->value.bval? "true": "false");
                 break;
-            case CT_NONE:
+            case CT_TOGGLE:
                 fprintf(stderr, "  %-4s -----  %s (%s)\n",
                             p[idx]->parm, p[idx]->help,
                             p[idx]->value.bval? "true": "false");
@@ -462,6 +490,10 @@ void cmd_use(cmd_line cmd) {
                             p[idx]->parm, p[idx]->help,
                             p[idx]->value.sval);
                 break;
+            case CT_CALLBACK:
+                fprintf(stderr, "  %-4s <str>  %s\n",
+                            p[idx]->parm, p[idx]->help);
+                break;
             default: // unknown type should be impossible.
                 fprintf(stderr, "cmd_err: internal error: invalid parameter type\n");
                 exit(1);
@@ -471,6 +503,10 @@ void cmd_use(cmd_line cmd) {
 
     fprintf(stderr, "  -h   -----  Print this helpful information.\n\n");
     exit(1);
+}
+
+const char* get_cmd(cmd_line cptr) {
+    return ((command_line_t*)cptr)->prog;
 }
 
 #if USE_EXCESS != 0
@@ -523,7 +559,7 @@ void dump_cmd_line(cmd_line cptr) {
                             p[idx]->flags & CF_REQD? "true": "false",
                             p[idx]->value.bval? "true": "false");
                 break;
-            case CT_NONE:
+            case CT_TOGGLE:
                 fprintf(stderr, "  %-4s -----  %s (required=%s) (default=%s)\n",
                             p[idx]->parm, p[idx]->help,
                             p[idx]->flags & CF_REQD? "true": "false",
@@ -540,6 +576,12 @@ void dump_cmd_line(cmd_line cptr) {
                             p[idx]->parm, p[idx]->help,
                             p[idx]->flags & CF_REQD? "true": "false",
                             p[idx]->value.sval);
+                break;
+            case CT_CALLBACK:
+                fprintf(stderr, "  %-4s <str>  %s (required=%s) (fptr=%p)\n",
+                            p[idx]->parm, p[idx]->help,
+                            p[idx]->flags & CF_REQD? "true": "false",
+                            p[idx]->value.ptr);
                 break;
             default: // unknown type should be impossible.
                 fprintf(stderr, "cmd_err: internal error: invalid parameter type\n");

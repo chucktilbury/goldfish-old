@@ -15,8 +15,11 @@
 #ifndef CMDLINE_H
 #define CMDLINE_H
 
+// TODO: Add logic to allow toggle params to be combined into a single clump.
+
 // opaque handle for command line parser
 typedef void* cmd_line;
+typedef void (*cmd_callback)(const char* ptr);
 
 typedef enum {
     CF_NONE = 0x00,
@@ -26,10 +29,11 @@ typedef enum {
 } cmd_flags_t;
 
 typedef enum {
-    CT_NONE,
+    CT_TOGGLE,
     CT_BOOL,
     CT_NUM,
     CT_STR,
+    CT_CALLBACK,
 } cmd_type_t;
 
 // create the command line parser
@@ -59,10 +63,18 @@ void add_num_param(cmd_line cptr,   // pointer to the command line data structur
                 int val,            // default value
                 cmd_flags_t flags); // flags, such as required
 
-void add_none_param(cmd_line cptr,  // pointer to the command line data structure
+void add_toggle_param(cmd_line cptr,  // pointer to the command line data structure
                 const char* name,   // friendly name to use to look it up
                 const char* parm,   // the parameter to recognize. (i.e. "-n")
                 const char* help,   // help string
+                bool val,           // default value
+                cmd_flags_t flags); // flags, such as required
+
+void add_callback_param(cmd_line cptr,  // pointer to the command line data structure
+                const char* name,   // friendly name to use to look it up
+                const char* parm,   // the parameter to recognize. (i.e. "-n")
+                const char* help,   // help string
+                cmd_callback val,   // func to call when this param is seen
                 cmd_flags_t flags); // flags, such as required
 
 // get the value associated with a command line parameter
@@ -75,8 +87,10 @@ bool get_bool_param(cmd_line cptr,  // pointer to the command line data structur
 int get_num_param(cmd_line cptr,    // pointer to the command line data structure
                 const char* name);  // the parameter to recognize. (i.e. "-n")
 
-bool get_none_param(cmd_line cptr,   // pointer to the command line data structure
+bool get_toggle_param(cmd_line cptr,   // pointer to the command line data structure
                 const char* name);  // the parameter to recognize. (i.e. "-n")
+
+const char* get_cmd(cmd_line cptr); // get the command string
 
 void reset_cmd_excess(cmd_line);
 char* iterate_cmd_excess(cmd_line);

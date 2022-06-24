@@ -8,7 +8,7 @@ make: *** No rule to make target 'all'.  Stop.
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
-# Make data base, printed on Wed Jun 22 16:46:48 2022
+# Make data base, printed on Fri Jun 24 08:49:39 2022
 
 # Variables
 
@@ -19,7 +19,7 @@ GDK_BACKEND = x11
 # environment
 LC_ALL = C
 # environment
-VSCODE_IPC_HOOK_EXTHOST = /run/user/1000/vscode-ipc-d97f9f24-b47a-49e5-82fb-3fa0f517b5a1.sock
+VSCODE_IPC_HOOK_EXTHOST = /run/user/1000/vscode-ipc-85e57cfc-175f-45e7-b4f2-eb30603e6550.sock
 # environment
 VSCODE_CWD = /home/chuck
 # environment
@@ -71,7 +71,7 @@ APPLICATION_INSIGHTS_NO_DIAGNOSTIC_CHANNEL = 1
 # environment
 MFLAGS = -pqrR
 # environment
-SSH_AUTH_SOCK = /tmp/ssh-cnOqI8T7p4k9/agent.4597
+SSH_AUTH_SOCK = /tmp/ssh-qyNPDyVvB3oW/agent.4728
 # default
 .SHELLFLAGS := -c
 # environment
@@ -89,13 +89,13 @@ QT_PLATFORMTHEME = gtk2
 # environment
 VSCODE_VERBOSE_LOGGING = true
 # environment
-VSCODE_PID = 15611
+VSCODE_PID = 5648
 # environment
 XDG_SESSION_TYPE = x11
 # automatic
 ?D = $(patsubst %/,%,$(dir $?))
 # environment
-SESSION_MANAGER = local/mx:@/tmp/.ICE-unix/4597,unix/mx:/tmp/.ICE-unix/4597
+SESSION_MANAGER = local/mx:@/tmp/.ICE-unix/4728,unix/mx:/tmp/.ICE-unix/4728
 # automatic
 *F = $(notdir $*)
 # environment
@@ -103,7 +103,7 @@ QT_QPA_PLATFORMTHEME = gtk2
 # environment
 CHROME_DESKTOP = code-url-handler.desktop
 # environment
-DBUS_SESSION_BUS_ADDRESS = unix:abstract=/tmp/dbus-fcHrl7KETa,guid=19b5ddf4c601e8c75b9658bd62af23db
+DBUS_SESSION_BUS_ADDRESS = unix:abstract=/tmp/dbus-l3DHXBNqe6,guid=a069aed6ac780de561c47c5962b5c05d
 # automatic
 <D = $(patsubst %/,%,$(dir $<))
 # environment
@@ -167,7 +167,7 @@ GTK_MODULES = canberra-gtk-module
 # default
 MAKE_VERSION := 4.3
 # environment
-SSH_AGENT_PID = 4853
+SSH_AGENT_PID = 4896
 # environment
 _ = /usr/share/code/code
 # environment
@@ -267,6 +267,6 @@ GNUmakefile:
 # strcache performance: lookups = 25 / hit rate = 12%
 # hash-table stats:
 # Load=22/8192=0%, Rehash=0, Collisions=0/25=0%
-# Finished Make data base on Wed Jun 22 16:46:48 2022
+# Finished Make data base on Fri Jun 24 08:49:39 2022
 
  
