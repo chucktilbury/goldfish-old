@@ -17,7 +17,7 @@ static Index find_slot(StrStore* store)
 
     if(store->len+1 > store->cap) {
         store->cap <<= 1;
-        store->list = _realloc_ds_array(store->list, String, store->cap);
+        store->list = _realloc_ds_array(store->list, sString, store->cap);
     }
 
     Index idx = store->len;
@@ -42,9 +42,9 @@ static Index validate(StrStore* store, Index idx)
 void initStrStore(StrStore* store)
 {
     store->cap = 0x01 << 3;
-    store->list = _alloc_ds_array(String, store->cap);
+    store->list = _alloc_ds_array(sString, store->cap);
 
-    String str;
+    sString str;
     str.str = _copy_str("NONE");
     str.len = 0;
     str.status = ACTIVE;
@@ -57,7 +57,7 @@ Index addStr(StrStore* store, const char* str)
 {
     Index idx = find_slot(store);
 
-    String s;
+    sString s;
     s.str = _copy_str(str);
     s.len = strlen(str)+1;
     s.status = ACTIVE;

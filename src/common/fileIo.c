@@ -41,7 +41,7 @@ static void load_str_store(StrStore* ss, FILE* fp)
     while(ss->cap <= ss->len)
         ss->cap <<= 1;
 
-    ss->list = _alloc_ds_array(String, ss->len);
+    ss->list = _alloc_ds_array(sString, ss->len);
     for(uint32_t i = 0; i < ss->len; i++) {
         fread(&ss->list[i].len, sizeof(size_t), 1, fp);
         ss->list[i].str = _alloc(ss->list[i].len);

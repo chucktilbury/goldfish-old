@@ -7,6 +7,7 @@ add_executable(${PROJECT_NAME}
     doComp.c
     doJmps.c
     vmErrors.c
+    traps.c
     gvm.c
 )
 

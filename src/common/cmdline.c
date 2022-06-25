@@ -264,7 +264,7 @@ int get_num_param(cmd_line cptr, const char* name) {
  * Return a numerical command parameter as an int, which could be a signed
  * value from the command line.
  */
-bool get_none_param(cmd_line cptr, const char* name) {
+bool get_toggle_param(cmd_line cptr, const char* name) {
 
     command_line_t* cmd = (command_line_t*)cptr;
     cmd_parameter_t* p = find_node(cmd, name);
@@ -554,25 +554,25 @@ void dump_cmd_line(cmd_line cptr) {
     for(size_t idx = 0; idx < cmd->len; idx++) {
         switch(p[idx]->type) {
             case CT_BOOL:
-                fprintf(stderr, "  %-4s <bool> %s (required=%s) (default=%s)\n",
+                fprintf(stderr, "  %-4s <bool> %s (required=%s) (value=%s)\n",
                             p[idx]->parm, p[idx]->help,
                             p[idx]->flags & CF_REQD? "true": "false",
                             p[idx]->value.bval? "true": "false");
                 break;
             case CT_TOGGLE:
-                fprintf(stderr, "  %-4s -----  %s (required=%s) (default=%s)\n",
+                fprintf(stderr, "  %-4s -----  %s (required=%s) (value=%s)\n",
                             p[idx]->parm, p[idx]->help,
                             p[idx]->flags & CF_REQD? "true": "false",
                             p[idx]->value.bval? "true": "false");
                 break;
             case CT_NUM:
-                fprintf(stderr, "  %-4s <num>  %s (required=%s) (default=%d)\n",
+                fprintf(stderr, "  %-4s <num>  %s (required=%s) (value=%d)\n",
                             p[idx]->parm, p[idx]->help,
                             p[idx]->flags & CF_REQD? "true": "false",
                             p[idx]->value.ival);
                 break;
             case CT_STR:
-                fprintf(stderr, "  %-4s <str>  %s (required=%s) (default=%s)\n",
+                fprintf(stderr, "  %-4s <str>  %s (required=%s) (value=%s)\n",
                             p[idx]->parm, p[idx]->help,
                             p[idx]->flags & CF_REQD? "true": "false",
                             p[idx]->value.sval);

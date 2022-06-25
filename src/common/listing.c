@@ -2,7 +2,7 @@
 #include "system.h"
 #include "vMachine.h"
 #include "opcodes.h"
-#include "traps.h"
+//#include "traps.h"
 #include "registers.h"
 #include "values.h"
 #include "errors.h"
@@ -124,8 +124,8 @@ void showListing(VM* vm, FILE* outf)
 
             case OP_TRAP: {
                     // operand is a uint16_t
-                    TrapNumType tno;
-                    READ_VM_OBJ(TrapNumType, tno);
+                    uint16_t tno;
+                    READ_VM_OBJ(uint16_t, tno);
                     fprintf(outf, "<%d>\t", tno);
                 }
                 break;

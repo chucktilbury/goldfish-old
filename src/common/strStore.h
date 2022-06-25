@@ -8,10 +8,10 @@ typedef struct {
     const char* str;
     size_t len;
     Status status;
-} String;
+} sString;
 
 typedef struct {
-    String* list;
+    sString* list;
     uint32_t cap;
     uint32_t len;
     uint32_t free_slots;
