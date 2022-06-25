@@ -1,13 +1,12 @@
 
-#include "system.h"
-#include "varStore.h"
-#include "vMachine.h"
-#include "errors.h"
-#include "memory.h"
-#include "print.h"
+// #include "system.h"
+// #include "varStore.h"
+// #include "vMachine.h"
+// #include "errors.h"
+// #include "memory.h"
+// #include "print.h"
 
-extern VM* vm;
-#include "symtab.h"
+#include "gas.h"
 
 typedef struct _symtab_elem {
     const char* key;
@@ -33,7 +32,7 @@ static void dump_table(SymTabNode* node, FILE* outf)
         dump_table(node->right, outf);
 
     fprintf(outf, "    %-12s\t<%d>\t", node->key, node->idx);
-    printVal(getVar(&vm->vstore, node->idx), outf);
+    printVal(getVar(node->idx), outf);
     printf("\n");
 }
 
@@ -120,9 +119,9 @@ Value* symToVal(const char*key)
     Value* val;
 
     if(node != NULL)
-        val = getVar(&vm->vstore, node->idx);
+        val = getVar(node->idx);
     else
-        val = getVar(&vm->vstore, 0);
+        val = getVar(0);
 
     return val;
 }

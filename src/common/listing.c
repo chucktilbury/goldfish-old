@@ -1,40 +1,49 @@
 
-#include "system.h"
-#include "vMachine.h"
-#include "opcodes.h"
-//#include "traps.h"
-#include "registers.h"
-#include "values.h"
-#include "errors.h"
-#include "varStore.h"
-#include "strStore.h"
-#include "print.h"
+// #include "system.h"
+// #include "vMachine.h"
+// #include "opcodes.h"
+// //#include "traps.h"
+// #include "registers.h"
+// #include "values.h"
+// #include "errors.h"
+// #include "varStore.h"
+// #include "strStore.h"
+// #include "print.h"
 
-void show_label(VM* vm, unsigned long addr, FILE* fp)
+#include "common.h"
+
+void show_label(unsigned long addr, FILE* fp)
 {
-    VarStore* vs = &vm->vstore;
-    for(uint32_t i = 0; i < vs->len; i++) {
-        if(vs->list[i].val.type == ADDRESS && vs->list[i].val.data.addr == addr) {
-            fprintf(fp, "\n      %s:\n", getStr(&vm->sstore, vs->list[i].name));
+    for(Value* val = resetVars(); val != NULL; val = iterateVars()) {
+        if(val->type == ADDRESS && val->data.addr == addr) {
+            fprintf(fp, "\n      %s:\n", getStr(val->data.str));
             return;
         }
     }
+    // for(uint32_t i = 0; i < vs->len; i++) {
+    //     Value* val = getVal(i);
+    //     if(vs->list[i].val.type == ADDRESS && vs->list[i].val.data.addr == addr) {
+    //         fprintf(fp, "\n      %s:\n", getStr(vs->list[i].name));
+    //         return;
+    //     }
+    // }
 }
 
-void showListing(VM* vm, FILE* outf)
+void showListing(FILE* outf)
 {
     uint8_t op;
     bool finished = false;
 
-    fprintf(outf, "--------- Listing of %s --------- \n", vm->fname);
+    fprintf(outf, "--------- Listing of %s --------- \n", getVmName());
+    //fprintf(outf, "--------- Listing --------- \n");
 
     while(!finished) {
 
-        unsigned long addr = getInstrIndex(&vm->istore);
-        show_label(vm, addr, outf);
+        unsigned long addr = getInstrIndex();
+        show_label(addr, outf);
         READ_VM_OBJ(uint8_t, op);
         fprintf(outf, "%04ld: %s\t", addr, opToStr(op));
-        finished = isInstrEnded(&vm->istore);
+        finished = isInstrEnded();
 
         switch(op) {
 
@@ -43,7 +52,7 @@ void showListing(VM* vm, FILE* outf)
                     // Immediate is a Index
                     Index idx;
                     READ_VM_OBJ(Index, idx);
-                    printVal(getVar(&vm->vstore, idx), outf);
+                    printVal(getVar(idx), outf);
                 }
                 break;
 
@@ -59,7 +68,7 @@ void showListing(VM* vm, FILE* outf)
                     // immediate is a register
                     uint8_t reg;
                     READ_VM_OBJ(uint8_t, reg);
-                    printVal(&vm->registers[reg], outf);
+                    printVal(getReg(reg), outf);
                 }
                 break;
 
@@ -75,7 +84,7 @@ void showListing(VM* vm, FILE* outf)
                     Index idx;
                     READ_VM_OBJ(Index, idx);
                     fprintf(outf, "<%d>\t", idx);
-                    printVal(getVar(&vm->vstore, idx), outf);
+                    printVal(getVar(idx), outf);
                 }
                 break;
 
@@ -92,7 +101,7 @@ void showListing(VM* vm, FILE* outf)
                     uint8_t reg;
                     READ_VM_OBJ(uint8_t, reg);
                     fprintf(outf, "<%s>\t", regToStr(reg));
-                    printVal(&vm->registers[reg], outf);
+                    printVal(getReg(reg), outf);
                 }
                 break;
 
@@ -101,7 +110,7 @@ void showListing(VM* vm, FILE* outf)
                     Index idx;
                     READ_VM_OBJ(Index, idx);
                     fprintf(outf, "<%d>\t", idx);
-                    printVal(getVar(&vm->vstore, idx), outf);
+                    printVal(getVar(idx), outf);
                 }
                 break;
 
@@ -118,7 +127,7 @@ void showListing(VM* vm, FILE* outf)
                     RegNumType reg;
                     READ_VM_OBJ(RegNumType, reg);
                     fprintf(outf, "<%s>\t", regToStr(reg));
-                    printVal(&vm->registers[reg], outf);
+                    printVal(getReg(reg), outf);
                 }
                 break;
 
@@ -135,7 +144,7 @@ void showListing(VM* vm, FILE* outf)
                     Index idx;
                     READ_VM_OBJ(Index, idx);
                     fprintf(outf, "<%d>\t", idx);
-                    printVal(getVar(&vm->vstore, idx), outf);
+                    printVal(getVar(idx), outf);
                 }
                 break;
 
@@ -152,7 +161,7 @@ void showListing(VM* vm, FILE* outf)
                     RegNumType reg;
                     READ_VM_OBJ(RegNumType, reg);
                     fprintf(outf, "<%s>\t", regToStr(reg));
-                    printVal(&vm->registers[reg], outf);
+                    printVal(getReg(reg), outf);
                 }
                 break;
 
@@ -161,7 +170,7 @@ void showListing(VM* vm, FILE* outf)
                     Index idx;
                     READ_VM_OBJ(Index, idx);
                     fprintf(outf, "<%d>\t", idx);
-                    printVal(getVar(&vm->vstore, idx), outf);
+                    printVal(getVar(idx), outf);
                 }
                 break;
 
@@ -178,7 +187,7 @@ void showListing(VM* vm, FILE* outf)
                     RegNumType reg;
                     READ_VM_OBJ(RegNumType, reg);
                     fprintf(outf, "<%s>\t", regToStr(reg));
-                    printVal(&vm->registers[reg], outf);
+                    printVal(getReg(reg), outf);
                 }
                 break;
 
@@ -187,7 +196,7 @@ void showListing(VM* vm, FILE* outf)
                     Index idx;
                     READ_VM_OBJ(Index, idx);
                     fprintf(outf, "<%d>\t", idx);
-                    printVal(getVar(&vm->vstore, idx), outf);
+                    printVal(getVar(idx), outf);
                 }
                 break;
 
@@ -204,7 +213,7 @@ void showListing(VM* vm, FILE* outf)
                     RegNumType reg;
                     READ_VM_OBJ(RegNumType, reg);
                     fprintf(outf, "<%s>\t", regToStr(reg));
-                    printVal(&vm->registers[reg], outf);
+                    printVal(getReg(reg), outf);
                 }
                 break;
 
@@ -213,7 +222,7 @@ void showListing(VM* vm, FILE* outf)
                     Index idx;
                     READ_VM_OBJ(Index, idx);
                     fprintf(outf, "<%d>\t", idx);
-                    printVal(getVar(&vm->vstore, idx), outf);
+                    printVal(getVar(idx), outf);
                 }
                 break;
 
@@ -230,7 +239,7 @@ void showListing(VM* vm, FILE* outf)
                     RegNumType reg;
                     READ_VM_OBJ(RegNumType, reg);
                     fprintf(outf, "<%s>\t", regToStr(reg));
-                    printVal(&vm->registers[reg], outf);
+                    printVal(getReg(reg), outf);
                 }
                 break;
 
@@ -239,7 +248,7 @@ void showListing(VM* vm, FILE* outf)
                     Index idx;
                     READ_VM_OBJ(Index, idx);
                     fprintf(outf, "<%d>\t", idx);
-                    printVal(getVar(&vm->vstore, idx), outf);
+                    printVal(getVar(idx), outf);
                 }
                 break;
 
@@ -273,7 +282,7 @@ void showListing(VM* vm, FILE* outf)
                     RegNumType reg;
                     READ_VM_OBJ(RegNumType, reg);
                     fprintf(outf, "<%s>\t", regToStr(reg));
-                    printVal(&vm->registers[reg], outf);
+                    printVal(getReg(reg), outf);
                 }
                 break;
 
@@ -286,7 +295,7 @@ void showListing(VM* vm, FILE* outf)
                     READ_VM_OBJ(Index, idx);
                     fprintf(outf, "<%s>,<%d>\t", regToStr(reg), idx);
                     //printVal(getVar(&vm->vstore, idx), outf);
-                    printObj(vm, idx, outf);
+                    printObj(idx, outf);
                 }
                 break;
 
@@ -319,7 +328,7 @@ void showListing(VM* vm, FILE* outf)
                     Index idx;
                     READ_VM_OBJ(Index, idx);
                     fprintf(outf, "<%d>\t", idx);
-                    printVal(getVar(&vm->vstore, idx), outf);
+                    printVal(getVar(idx), outf);
                     RegNumType reg;
                     READ_VM_OBJ(RegNumType, reg);
                     fprintf(outf, "<%s>\t", regToStr(reg));

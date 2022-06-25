@@ -1,7 +1,9 @@
 
-#include "system.h"
-#include "fileIo.h"
-#include "memory.h"
+// #include "system.h"
+// #include "fileIo.h"
+// #include "memory.h"
+
+#include "common.h"
 
 static void initRegisters(VM* vm)
 {

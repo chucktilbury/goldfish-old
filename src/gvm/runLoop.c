@@ -1,21 +1,22 @@
 
-#include "system.h"
-#include "runLoop.h"
-#include "opcodes.h"
-//#include "vMachine.h"
-#include "values.h"
-#include "varStore.h"
-#include "instrStore.h"
-#include "valStack.h"
-#include "memory.h"
-#include "doArith.h"
-#include "doComp.h"
-#include "doJmps.h"
-#include "vmErrors.h"
-#include "traps.h"
-#include "print.h"
+// #include "system.h"
+// #include "runLoop.h"
+// #include "opcodes.h"
+// //#include "vMachine.h"
+// #include "values.h"
+// #include "varStore.h"
+// #include "instrStore.h"
+// #include "valStack.h"
+// #include "memory.h"
+// #include "doArith.h"
+// #include "doComp.h"
+// #include "doJmps.h"
+// #include "vmErrors.h"
+// #include "print.h"
 
-int runLoop(VM* vm)
+#include "gvm.h"
+
+int runLoop()
 {
     bool finished = false;
     uint8_t op;
@@ -37,7 +38,7 @@ int runLoop(VM* vm)
                     fprintf(stderr, "runtime error: abort instruction: ");
                     Index idx;
                     READ_VM_OBJ(Index, idx);
-                    printVal(getVar(&vm->vstore, idx), stderr);
+                    printVal(getVar(idx), stderr);
                     fprintf(stderr, "\n");
                     finished = true;
                     retv = -1;
@@ -62,7 +63,7 @@ int runLoop(VM* vm)
                     uint8_t reg;
                     READ_VM_OBJ(uint8_t, reg);
                     finished = true;
-                    printVal(&vm->registers[reg], stderr);
+                    printVal(getReg(reg), stderr);
                     fprintf(stderr, "\n");
                     retv = -1;
                 }
@@ -84,7 +85,7 @@ int runLoop(VM* vm)
                     // operand is a Value index
                     Index idx;
                     READ_VM_OBJ(Index, idx);
-                    doCall(vm, getVar(&vm->vstore, idx));
+                    doCall(getVar(idx));
                 }
                 break;
 
@@ -92,7 +93,7 @@ int runLoop(VM* vm)
                     // operand is an immediate Value
                     Value val;
                     READ_VM_OBJ(Value, val);
-                    doCall(vm, &val);
+                    doCall(&val);
                 }
                 break;
 
@@ -100,31 +101,7 @@ int runLoop(VM* vm)
                     // operand is a single register
                     uint8_t reg;
                     READ_VM_OBJ(uint8_t, reg);
-                    doCall(vm, &vm->registers[reg]);
-                }
-                break;
-
-            case OP_RCALL:{
-                    // operand is a Value index
-                    Index idx;
-                    READ_VM_OBJ(Index, idx);
-                    doRCall(vm, getVar(&vm->vstore, idx));
-                }
-                break;
-
-            case OP_RCALLI:{
-                    // operand is a immediate value
-                    Value val;
-                    READ_VM_OBJ(Value, val);
-                    doRCall(vm, &val);
-                }
-                break;
-
-            case OP_RCALLR:{
-                    // operand is a single register
-                    RegNumType reg;
-                    READ_VM_OBJ(RegNumType, reg);
-                    doRCall(vm, &vm->registers[reg]);
+                    doCall(getReg(reg));
                 }
                 break;
 
@@ -132,13 +109,13 @@ int runLoop(VM* vm)
                     // operand is a uint16_t
                     TrapNumType tno;
                     READ_VM_OBJ(TrapNumType, tno);
-                    doTrap(vm, tno);
+                    doTrap(tno);
                 }
                 break;
 
             case OP_RETURN: {
                     // no operands
-                    doReturn(vm);
+                    doReturn();
                 }
                 break;
 
@@ -146,7 +123,7 @@ int runLoop(VM* vm)
                     // operand is a Value index
                     Index idx;
                     READ_VM_OBJ(Index, idx);
-                    doJmp(vm, getVar(&vm->vstore, idx));
+                    doJmp(getVar(idx));
                 }
                 break;
 
@@ -154,7 +131,7 @@ int runLoop(VM* vm)
                     // operand is an immediate Value
                     Value val;
                     READ_VM_OBJ(Value, val);
-                    doJmp(vm, &val);
+                    doJmp(&val);
                 }
                 break;
 
@@ -162,31 +139,7 @@ int runLoop(VM* vm)
                     // operand is a single register
                     RegNumType reg;
                     READ_VM_OBJ(RegNumType, reg);
-                    doJmp(vm, &vm->registers[reg]);
-                }
-                break;
-
-            case OP_RJMP:{
-                    // operand is a Value index
-                    Index idx;
-                    READ_VM_OBJ(Index, idx);
-                    doRJmp(vm, getVar(&vm->vstore, idx));
-                }
-                break;
-
-            case OP_RJMPI:{
-                    // operand is an immediate Value
-                    Value val;
-                    READ_VM_OBJ(Value, val);
-                    doRJmp(vm, &val);
-                }
-                break;
-
-            case OP_RJMPR:{
-                    // operand is a single register
-                    RegNumType reg;
-                    READ_VM_OBJ(RegNumType, reg);
-                    doRJmp(vm, &vm->registers[reg]);
+                    doJmp(getReg(reg));
                 }
                 break;
 
@@ -194,7 +147,7 @@ int runLoop(VM* vm)
                     // operand is a Value Index
                     Index idx;
                     READ_VM_OBJ(Index, idx);
-                    doBr(vm, getVar(&vm->vstore, idx));
+                    doBr(getVar(idx));
                 }
                 break;
 
@@ -202,7 +155,7 @@ int runLoop(VM* vm)
                     // operand is an immediate Value
                     Value val;
                     READ_VM_OBJ(Value, val);
-                    doBr(vm, &val);
+                    doBr(&val);
                 }
                 break;
 
@@ -210,31 +163,7 @@ int runLoop(VM* vm)
                     // operand is a single register
                     RegNumType reg;
                     READ_VM_OBJ(RegNumType, reg);
-                    doBr(vm, &vm->registers[reg]);
-                }
-                break;
-
-            case OP_RBR: {
-                    // operand is a Value index
-                    Index idx;
-                    READ_VM_OBJ(Index, idx);
-                    doRBr(vm, getVar(&vm->vstore, idx));
-                }
-                break;
-
-            case OP_RBRI: {
-                    // operand is an immediate Value
-                    Value val;
-                    READ_VM_OBJ(Value, val);
-                    doRBr(vm, &val);
-                }
-                break;
-
-            case OP_RBRR: {
-                    // operand is a single register
-                    RegNumType reg;
-                    READ_VM_OBJ(RegNumType, reg);
-                    doRBr(vm, &vm->registers[reg]);
+                    doBr(getReg(reg));
                 }
                 break;
 
@@ -242,7 +171,7 @@ int runLoop(VM* vm)
                     // operand is a Value index
                     Index idx;
                     READ_VM_OBJ(Index, idx);
-                    pushValStack(&vm->vstack, getVar(&vm->vstore, idx));
+                    pushValStack(getVar(idx));
                 }
                 break;
 
@@ -250,7 +179,7 @@ int runLoop(VM* vm)
                     // operand is an immediate Value
                     Value val;
                     READ_VM_OBJ(Value, val);
-                    pushValStack(&vm->vstack, &val);
+                    pushValStack(&val);
                 }
                 break;
 
@@ -258,7 +187,7 @@ int runLoop(VM* vm)
                     // operand is a single register
                     RegNumType reg;
                     READ_VM_OBJ(RegNumType, reg);
-                    pushValStack(&vm->vstack, &vm->registers[reg]);
+                    pushValStack(getReg(reg));
                 }
                 break;
 
@@ -266,16 +195,7 @@ int runLoop(VM* vm)
                     // operand is a single register
                     uint8_t reg;
                     READ_VM_OBJ(uint8_t, reg);
-                    vm->registers[reg] = *popValStack(&vm->vstack);
-                }
-                break;
-
-            case OP_PEEK: {
-                    // operand is a single register
-// TODO: operand is an immediate Value
-                    RegNumType reg;
-                    READ_VM_OBJ(RegNumType, reg);
-                    vm->registers[reg] = *peekValStack(&vm->vstack, 0);
+                    setReg(reg, popValStack());
                 }
                 break;
 
@@ -286,7 +206,7 @@ int runLoop(VM* vm)
                     READ_VM_OBJ(RegNumType, reg);
                     Index idx;
                     READ_VM_OBJ(Index, idx);
-                    vm->registers[reg] = *getVar(&vm->vstore, idx);
+                    setReg(reg, getVar(idx));
                 }
                 break;
 
@@ -297,7 +217,7 @@ int runLoop(VM* vm)
                     READ_VM_OBJ(RegNumType, reg);
                     Value val;
                     READ_VM_OBJ(Value, val);
-                    vm->registers[reg] = val;
+                    setReg(reg, &val);
                 }
                 break;
 
@@ -305,7 +225,8 @@ int runLoop(VM* vm)
                     // operand is 2 registers
                     RegNumType regs;
                     READ_VM_OBJ(RegNumType, regs);
-                    vm->registers[(regs >> 4) & 0xF] = vm->registers[regs & 0xF];
+                    //vm->registers[(regs >> 4) & 0xF] = vm->registers[regs & 0xF];
+                    setReg((regs >> 4) & 0xF, getReg(regs & 0xF));
                 }
                 break;
 
@@ -316,7 +237,7 @@ int runLoop(VM* vm)
                     READ_VM_OBJ(Index, idx);
                     RegNumType reg;
                     READ_VM_OBJ(RegNumType, reg);
-                    assignVar(&vm->vstore, idx, vm->registers[reg]);
+                    assignVar(idx, getReg(reg)); //vm->registers[reg]);
                 }
                 break;
 
@@ -324,7 +245,7 @@ int runLoop(VM* vm)
                     // operand is single register (result in zero flag)
                     RegNumType reg;
                     READ_VM_OBJ(RegNumType, reg);
-                    doNot(vm, reg);
+                    doNot(reg);
                 }
                 break;
 
@@ -332,7 +253,7 @@ int runLoop(VM* vm)
                     // operand is 2 registers (result in zero flag)
                     RegNumType regs;
                     READ_VM_OBJ(RegNumType, regs);
-                    doEq(vm, regs);
+                    doEq(regs);
                 }
                 break;
 
@@ -340,7 +261,7 @@ int runLoop(VM* vm)
                     // operand is 2 registers (result in zero flag)
                     RegNumType regs;
                     READ_VM_OBJ(RegNumType, regs);
-                    doNEq(vm, regs);
+                    doNEq(regs);
                 }
                 break;
 
@@ -348,7 +269,7 @@ int runLoop(VM* vm)
                     // operand is 2 registers (result in zero flag)
                     RegNumType regs;
                     READ_VM_OBJ(RegNumType, regs);
-                    doLeq(vm, regs);
+                    doLeq(regs);
                 }
                 break;
 
@@ -356,7 +277,7 @@ int runLoop(VM* vm)
                     // operand is 2 registers (result in zero flag)
                     RegNumType regs;
                     READ_VM_OBJ(RegNumType, regs);
-                    doGeq(vm, regs);
+                    doGeq(regs);
                 }
                 break;
 
@@ -364,7 +285,7 @@ int runLoop(VM* vm)
                     // operand is 2 registers (result in zero flag)
                     RegNumType regs;
                     READ_VM_OBJ(RegNumType, regs);
-                    doLess(vm, regs);
+                    doLess(regs);
                 }
                 break;
 
@@ -372,7 +293,7 @@ int runLoop(VM* vm)
                     // operand is 2 registers (result in zero flag)
                     RegNumType regs;
                     READ_VM_OBJ(RegNumType, regs);
-                    doGtr(vm, regs);
+                    doGtr(regs);
                 }
                 break;
 
@@ -380,7 +301,7 @@ int runLoop(VM* vm)
                     // operand is 2 registers
                     RegNumType regs;
                     READ_VM_OBJ(RegNumType, regs);
-                    doNeg(vm, regs);
+                    doNeg(regs);
                 }
                 break;
 
@@ -388,7 +309,7 @@ int runLoop(VM* vm)
                     // operand is 3 registers
                     uint16_t regs;
                     READ_VM_OBJ(uint16_t, regs);
-                    doAdd(vm, regs);
+                    doAdd(regs);
                 }
                 break;
 
@@ -396,7 +317,7 @@ int runLoop(VM* vm)
                     // operand is 3 registers
                     uint16_t regs;
                     READ_VM_OBJ(uint16_t, regs);
-                    doSub(vm, regs);
+                    doSub(regs);
                 }
                 break;
 
@@ -404,7 +325,7 @@ int runLoop(VM* vm)
                     // operand is 3 registers
                     uint16_t regs;
                     READ_VM_OBJ(uint16_t, regs);
-                    doMul(vm, regs);
+                    doMul(regs);
                 }
                 break;
 
@@ -412,7 +333,7 @@ int runLoop(VM* vm)
                     // operand is 3 registers
                     uint16_t regs;
                     READ_VM_OBJ(uint16_t, regs);
-                    doDiv(vm, regs);
+                    doDiv(regs);
                 }
                 break;
 
@@ -420,7 +341,7 @@ int runLoop(VM* vm)
                     // operand is 3 registers
                     uint16_t regs;
                     READ_VM_OBJ(uint16_t, regs);
-                    doMod(vm, regs);
+                    doMod(regs);
                 }
                 break;
 
@@ -432,7 +353,7 @@ int runLoop(VM* vm)
         }
 
         // exit if there are no more instructions
-        finished = (finished == false)? isInstrEnded(&vm->istore): true;
+        finished = (finished == false)? isInstrEnded(): true;
     }
 
     return retv;

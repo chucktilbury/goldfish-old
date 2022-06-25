@@ -1,10 +1,12 @@
 
-#include "system.h"
-#include "vMachine.h"
-#include "fileIo.h"
-#include "cmdline.h"
-#include "memory.h"
-#include "listing.h"
+// #include "system.h"
+// #include "vMachine.h"
+// #include "fileIo.h"
+// #include "cmdline.h"
+// #include "memory.h"
+// #include "listing.h"
+
+#include "common.h"
 
 int main(int argc, char** argv) {
 
@@ -14,14 +16,13 @@ int main(int argc, char** argv) {
     add_num_param(cl, "verbose", "-v", "verbosity number from 0 to 10", 0, CF_NONE);
     parse_cmd_line(cl, argc, argv);
 
-    VM* vm = _alloc_ds(VM);
-    initVM(vm);
-    loadVM(vm, get_str_param(cl, "ifile"));
+    initVM();
+    loadVM(get_str_param(cl, "ifile"));
 
-    showListing(vm, stdout);
+    showListing(stdout);
     if(get_num_param(cl, "verbose") >= 1) {
-        dumpVars(&vm->vstore, stdout);
-        dumpStrs(&vm->sstore, stdout);
+        dumpVars(stdout);
+        dumpStrs(stdout);
     }
 
     _uninit_memory();

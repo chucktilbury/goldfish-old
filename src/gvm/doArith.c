@@ -1,8 +1,10 @@
 
 #include <math.h>
-#include "doArith.h"
-#include "vmErrors.h"
-#include "registers.h"
+// #include "doArith.h"
+// #include "vmErrors.h"
+// #include "registers.h"
+
+#include "gvm.h"
 
 #define _verify(v) do { \
     switch(RTYPE(v)) { \
@@ -24,7 +26,7 @@
 } while(0)
 
 //static inline void operation(VM* vm, const char* op, UINT_t dest, UINT_t left, UINT_t right)
-#define _operation(vm, op, dest, left, right) do { \
+#define _operation(op, dest, left, right) do { \
     switch(RTYPE(left)) { \
         case UINT: { \
                 switch(RTYPE(right)) { \
@@ -162,7 +164,7 @@
     } \
 } while(0)
 
-void doNeg(VM* vm, uint8_t regs)
+void doNeg(uint8_t regs)
 {
     int dest = (regs >> 4) & 0x0F,
         src = regs & 0x0F;
@@ -194,44 +196,44 @@ void doNeg(VM* vm, uint8_t regs)
     }
 }
 
-void doAdd(VM* vm, uint16_t regs)
+void doAdd(uint16_t regs)
 {
     int dest = (regs >> 8) & 0x0F,
         left = (regs >> 4) & 0x0F,
         right = regs & 0x0f;
 
-    _operation(vm, +, dest, left, right);
+    _operation(+, dest, left, right);
 }
 
-void doSub(VM* vm, uint16_t regs)
+void doSub(uint16_t regs)
 {
     int dest = (regs >> 8) & 0x0F,
         left = (regs >> 4) & 0x0F,
         right = regs & 0x0f;
 
-    _operation(vm, -, dest, left, right);
+    _operation(-, dest, left, right);
 }
 
-void doMul(VM* vm, uint16_t regs)
+void doMul(uint16_t regs)
 {
     int dest = (regs >> 8) & 0x0F,
         left = (regs >> 4) & 0x0F,
         right = regs & 0x0f;
 
-    _operation(vm, *, dest, left, right);
+    _operation(*, dest, left, right);
 }
 
-void doDiv(VM* vm, uint16_t regs)
+void doDiv(uint16_t regs)
 {
     int dest = (regs >> 8) & 0x0F,
         left = (regs >> 4) & 0x0F,
         right = regs & 0x0f;
 
     _verify(right);
-    _operation(vm, /, dest, left, right);
+    _operation(/, dest, left, right);
 }
 
-void doMod(VM* vm, uint16_t regs)
+void doMod(uint16_t regs)
 {
     int dest = (regs >> 8) & 0x0F,
         left = (regs >> 4) & 0x0F,

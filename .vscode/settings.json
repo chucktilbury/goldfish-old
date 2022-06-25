@@ -75,6 +75,7 @@
         "vidx",
         "virt",
         "VMACHINE",
+        "VMERRORS",
         "vstack",
         "vstore",
         "Wcounterexamples",

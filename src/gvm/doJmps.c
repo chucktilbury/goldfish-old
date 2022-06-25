@@ -1,6 +1,8 @@
 
-#include "doJmps.h"
-#include "vmErrors.h"
+// #include "doJmps.h"
+// #include "vmErrors.h"
+
+#include "gvm.h"
 
 /**
  * @brief A call has stack elements expected. The address is delivered in
@@ -14,7 +16,7 @@
  * @param vm
  * @param val
  */
-void doCall(VM* vm, Value* val)
+void doCall(Value* val)
 {
     int idx;
     switch(val->type) {
@@ -35,42 +37,14 @@ void doCall(VM* vm, Value* val)
 
     Value ret;
     ret.type = ADDRESS;
-    ret.data.addr = getInstrIndex(&vm->istore);
+    ret.data.addr = getInstrIndex();
     ret.isAssigned = true;
 
-    pushValStack(&vm->vstack, &ret);
-    setInstrIndex(&vm->istore, idx);
+    pushValStack(&ret);
+    setInstrIndex(idx);
 }
 
-void doRCall(VM* vm, Value* val)
-{
-    int idx;
-    switch(val->type) {
-        case UINT:     idx = (int)val->data.unum;  break;
-        case INT:      idx = (int)val->data.inum;  break;
-        case ADDRESS:   idx = (int)val->data.addr;   break;
-
-        case ERROR:
-        case NOTHING:
-        case FLOAT:
-        case BOOL:
-        case USRTYPE:
-            runtimeError("invalid call index type: %s", valTypeToStr(val->type));
-            break;
-        default:
-            fatalError("invalid address type encountered: 0x%02X", val->type);
-    }
-
-    Value ret;
-    ret.type = ADDRESS;
-    ret.data.addr = getInstrIndex(&vm->istore);
-    ret.isAssigned = true;
-
-    pushValStack(&vm->vstack, &ret);
-    incInstrIndex(&vm->istore, idx);
-}
-
-void doJmp(VM* vm, Value* val)
+void doJmp(Value* val)
 {
     int idx;
 
@@ -90,35 +64,12 @@ void doJmp(VM* vm, Value* val)
             fatalError("invalid address type encountered: 0x%02X", val->type);
     }
 
-    setInstrIndex(&vm->istore, idx);
+    setInstrIndex(idx);
 }
 
-void doRJmp(VM* vm, Value* val)
+void doBr(Value* val)
 {
-    int idx;
-
-    switch(val->type) {
-        case UINT:     idx = (int)val->data.unum;  break;
-        case INT:      idx = (int)val->data.inum;  break;
-        case ADDRESS:   idx = (int)val->data.addr;   break;
-
-        case ERROR:
-        case NOTHING:
-        case FLOAT:
-        case BOOL:
-        case USRTYPE:
-            runtimeError("cannot use type %s as a call address offset", valTypeToStr(val->type));
-            break;
-        default:
-            fatalError("invalid address type encountered: 0x%02X", val->type);
-    }
-
-    incInstrIndex(&vm->istore, idx);
-}
-
-void doBr(VM* vm, Value* val)
-{
-    if(vm->nzero) {
+    if(getFlag()) {
         int idx;
 
         switch(val->type) {
@@ -137,41 +88,13 @@ void doBr(VM* vm, Value* val)
                 fatalError("invalid address type encountered: 0x%02X", val->type);
         }
 
-        setInstrIndex(&vm->istore, idx);
+        setInstrIndex(idx);
     }
 }
 
-void doRBr(VM* vm, Value* val)
+void doReturn()
 {
-    if(vm->nzero) {
-        int idx;
-
-        switch(val->type) {
-            case UINT:     idx = (int)val->data.unum;  break;
-            case INT:      idx = (int)val->data.inum;  break;
-            case ADDRESS:   idx = (int)val->data.addr;   break;
-
-            case ERROR:
-            case NOTHING:
-            case FLOAT:
-            case BOOL:
-            case USRTYPE:
-                runtimeError("cannot use type %s as a call address offset", valTypeToStr(val->type));
-                break;
-            default:
-                fatalError("invalid address type encountered: 0x%02X", val->type);
-        }
-
-        incInstrIndex(&vm->istore, idx);
-    }
-}
-
-void doReturn(VM* vm)
-{
-    // CallStackElem cse = popCallStack(&vm->cstack);
-    // setInstrIndex(&vm->istore, cse.ret_addr);
-
-    Value* val = popValStack(&vm->vstack);
+    Value* val = popValStack();
 
     int idx;
     switch(val->type) {
@@ -190,6 +113,6 @@ void doReturn(VM* vm)
             fatalError("invalid address type encountered: 0x%02X", val->type);
     }
 
-    setInstrIndex(&vm->istore, idx);
+    setInstrIndex(idx);
 }
 

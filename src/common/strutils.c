@@ -1,8 +1,24 @@
 
-#include "strutils.h"
-#include "memory.h"
-#include "vMachine.h"
-#include "values.h"
+// #include "strutils.h"
+// #include "memory.h"
+// #include "vMachine.h"
+// #include "values.h"
+#include "common.h"
+#include <stdarg.h>
+
+String* createStrFmt(const char* fmt, ...)
+{
+    String* str = createStr(NULL);
+    char buf[255];
+
+    va_list args;
+    va_start(args, fmt);
+    vsnprintf(buf, sizeof(buf), fmt, args);
+    va_end(args);
+
+    addStrStr(str, buf);
+    return str;
+}
 
 String* createStr(const char* str)
 {
@@ -35,6 +51,18 @@ void addStrStr(String* s, const char* str)
     s->len += len;
 }
 
+void addStrFmt(String* s, const char* fmt, ...)
+{
+    char buf[255];
+    va_list args;
+
+    va_start(args, fmt);
+    vsnprintf(buf, sizeof(buf), fmt, args);
+    va_end(args);
+
+    addStrStr(s, buf);
+}
+
 void addStrChar(String* s, char ch)
 {
     if(s->len+1 > s->cap) {
@@ -53,15 +81,15 @@ String* copyStr(String* str)
 }
 
 /**
- * @brief Format a string that is found in R0 where variable names are
- * enclosed in "{}". The value of the variable is substituted for the name
- * and the resulting string is placed in R0. If there are any variables that
- * cannot be substituted, then the variable is copied out without modification.
+ * @brief When this is called, the string that is format expected is the index
+ * of a variable in the varStore. The value that is in the var is substituted
+ * into the string and a new String is created and stored in the String table.
  *
  * @param vm
- *
+ * @param str
+ * @return const char*
  */
-const char* format_str(VM* vm, const char* str)
+const char* format_str(const char* str)
 {
     bool finished = false;
     String* s = createStr(NULL);
@@ -96,15 +124,15 @@ const char* format_str(VM* vm, const char* str)
                             state = 255;
                             break;
                         case '{': // cannot be a variable
-                            addStrChar(s, '{');
-                            addStrStr(s, tmp->list);
-                            addStrChar(s, '{');
-                            state = 1; // go back to copying chars
+                            state = 2;
+                            addStrChar(tmp, str[idx]);
                             break;
                         case '}': // tmp has a potential variable
-                            state = 2;
+                            state = 3;
                             break;
                         default:
+                            if(!isdigit(str[idx]) && isspace(str[idx]))
+                                state = 2;
                             addStrChar(tmp, str[idx]);
                             break;
                     }
@@ -112,10 +140,26 @@ const char* format_str(VM* vm, const char* str)
                 break;
 
             case 2: {
+                    // aborting the variable read
+                    addStrChar(s, '{');
+                    addStrStr(s, tmp->list);
+                    state = 1; // go back to copying chars
+                }
+                break;
+
+            case 3: {
                     // have a potential variable
                     // if it's not a var name, then we need the original
-                    String* tmp1 = copyStr(tmp);
-
+                    Index idx = strtol(tmp->list, NULL, 10);
+                    Value* val = getVar(idx);
+                    if(val->type != ERROR) {
+                        String* str = valToStr(val);
+                        addStrStr(s, str->list);
+                    }
+                    else {
+                        addStrFmt(s, "{%s}", tmp->list);
+                    }
+                    state = 1;
                 }
                 break;
 

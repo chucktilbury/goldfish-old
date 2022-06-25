@@ -2,7 +2,11 @@
  * @file values.c
  * @brief Implement values and all of the operations required for them.
  */
-#include "values.h"
+// #include "vMachine.h"
+// #include "values.h"
+// #include "errors.h"
+// #include "strutils.h"
+#include "common.h"
 #include "errors.h"
 
 Value castValue(ValType type, Value val, bool isConst)
@@ -150,3 +154,18 @@ const char* valTypeToStr(ValType type)
             (type == USRTYPE)? "USRTYPE":"UNKNOWN";
 }
 
+String* valToStr(Value* val)
+{
+    switch(val->type) {
+        case ERROR: return createStrFmt("%s", "ERROR");
+        case NOTHING: return createStrFmt("%s", "NOTHING");
+        case UINT: return createStrFmt("0x%02lX", val->data.unum);
+        case INT: return createStrFmt("%ld", val->data.inum);
+        case FLOAT: return createStrFmt("%0.3f", val->data.fnum);
+        case BOOL: return createStrFmt("%s", val->data.boolean? "true": "false");
+        case ADDRESS: return createStrFmt("%d", val->data.addr);
+        case STRING: return createStrFmt("%s", getStr(val->data.str));
+        case USRTYPE: return createStrFmt("defer");
+        default: return createStrFmt("UNKNOWN");
+    }
+}

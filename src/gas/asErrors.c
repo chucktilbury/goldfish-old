@@ -1,7 +1,5 @@
-#include "system.h"
-#include "errors.h"
+#include "gas.h"
 #include <stdarg.h>
-#include "scanner.h"
 
 static int errors = 0;
 static int warnings = 0;

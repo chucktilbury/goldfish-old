@@ -1,68 +1,30 @@
 #ifndef INSTRUCTIONS_H
 #define INSTRUCTIONS_H
 
-#include "system.h"
-#include "values.h"
+void initInstrStore();
 
-typedef struct {
-    unsigned char* buffer;
-    unsigned long cap;
-    unsigned long len;
-    unsigned long index;
-} InstrStore;
+void loadInstrStore(FILE* fp);
+void saveInstrStore(FILE* fp);
 
-void initInstrStore(InstrStore* store);
+unsigned long getInstrIndex();
+unsigned long getInstrLen();
+unsigned long getLabelAddr();
+void setInstrIndex(unsigned long idx);
+void incInstrIndex(int idx);
+bool isInstrEnded();
+void write_instr_obj(void* ptr, size_t size);
+void write_instr_8(uint8_t v);
+void write_instr_16(uint16_t v);
+void read_instr_obj(void* ptr, size_t size);
+void read_instr_8(uint8_t* v);
+void read_instr_16(uint16_t* v);
 
-/*
-void write_u8(InstrStore* store, uint8_t val);
-void write_u16(InstrStore* store, uint16_t val);
-void write_u32(InstrStore* store, uint32_t val);
-void write_u64(InstrStore* store, uint64_t val);
+#define WRITE_VM_OBJ(t, v) write_instr_obj(&(v), sizeof(t))
+#define WRITE_VM_8(v) write_instr_8(v)
+#define WRITE_VM_16(v) write_instr_16(v)
 
-void write_s8(InstrStore* store, int8_t val);
-void write_s16(InstrStore* store, int16_t val);
-void write_s32(InstrStore* store, int32_t val);
-void write_s64(InstrStore* store, int64_t val);
-
-void write_value(InstrStore* store, Value val);
-void write_idx(InstrStore* store, Index idx);
-
-uint8_t read_u8(InstrStore* store);
-uint16_t read_u16(InstrStore* store);
-uint32_t read_u32(InstrStore* store);
-uint64_t read_u64(InstrStore* store);
-
-int8_t read_s8(InstrStore* store);
-int16_t read_s16(InstrStore* store);
-int32_t read_s32(InstrStore* store);
-int64_t read_s64(InstrStore* store);
-
-Value read_value(InstrStore* store);
-Index read_idx(InstrStore* store);
-*/
-
-unsigned long getInstrIndex(InstrStore* store);
-unsigned long getInstrLen(InstrStore* store);
-unsigned long getLabelAddr(InstrStore* store);
-void setInstrIndex(InstrStore* store, unsigned long idx);
-void incInstrIndex(InstrStore* store, int idx);
-bool isInstrEnded(InstrStore* store);
-
-#define WRITE(s, t, v) do { \
-        while(s.cap < s.len + sizeof(t)) { \
-            s.cap <<= 1; \
-            s.buffer = _realloc(s.buffer, s.cap); \
-        } \
-        *((t*)&s.buffer[s.len]) = v; \
-        s.len += sizeof(t); \
-    } while(0)
-
-#define READ(s, t, v) do { \
-        v = *((t*)&s.buffer[s.index]); \
-        s.index += sizeof(t); \
-    } while(0)
-
-#define WRITE_VM_OBJ(t, v) WRITE(vm->istore, t, v)
-#define READ_VM_OBJ(t, v) READ(vm->istore, t, v)
+#define READ_VM_OBJ(t, v) read_instr_obj(&(v), sizeof(t))
+#define READ_VM_8(v) read_instr_8(&(v))
+#define READ_VM_16(v) read_instr_16(&(v))
 
 #endif

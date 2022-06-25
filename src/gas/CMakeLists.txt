@@ -29,7 +29,7 @@ add_executable(${PROJECT_NAME}
     parser.c
     scanner.c
     symtab.c
-    errors.c
+    asErrors.c
     gas.c
 )
 

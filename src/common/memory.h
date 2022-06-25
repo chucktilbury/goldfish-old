@@ -2,7 +2,7 @@
 #define MEMORY_H
 
 #if 1
-#include "gc.h"
+//#include "gc.h"
 
 //#ifdef MEMORY_DEBUG
 #define _init_memory()

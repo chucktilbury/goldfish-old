@@ -10,12 +10,12 @@ add_library(${PROJECT_NAME} STATIC
     strStore.c
     valStack.c
     listing.c
-    fileIo.c
     registers.c
     errors.c
     misc.c
     print.c
     strutils.c
+    vm.c
 )
 
 target_include_directories(${PROJECT_NAME}

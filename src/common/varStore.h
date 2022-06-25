@@ -1,31 +1,21 @@
 #ifndef VARIABLES_H
 #define VARIABLES_H
 
-#include "system.h"
-#include "store.h"
+void initVarStore();
 
-typedef struct {
-    Value val;
-    Status status;
-    Index name;
-    //bool isAssigned;
-} Variable;
+void loadVarStore(FILE* fp);
+void saveVarStore(FILE* fp);
 
-typedef struct {
-    Variable* list;
-    uint32_t cap;
-    uint32_t len;
-    uint32_t free_slots;
-} VarStore;
+Index createVar(ValType type);
+Index assignVar(Index idx, Value* val);
+Index assignVarName(Index vidx, Index sidx);
+Index addVar(Value val);
+Value* getVar(Index idx);
+void delVar(Index idx);
+const char* getVarName(Index idx);
+void dumpVars(FILE* outf);
 
-void initVarStore(VarStore* store);
-
-Index createVar(VarStore* store, ValType type);
-Index assignVar(VarStore* store, Index idx, Value val);
-Index assignVarName(VarStore* store, Index vidx, Index sidx);
-Index addVar(VarStore* store, Value val);
-Value* getVar(VarStore* store, Index idx);
-void delVar(VarStore* store, Index idx);
-void dumpVars(VarStore* store, FILE* outf);
+Value* resetVars();
+Value* iterateVars();
 
 #endif

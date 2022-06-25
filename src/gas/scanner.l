@@ -4,14 +4,7 @@
 //#undef //_TRACE
 //#define //_TRACE(...)
 
-#include "system.h"
-#include "vMachine.h"
-#include "values.h"
-#include "parser.h"
-#include "scanner.h"
-#include "opcodes.h"
-#include "registers.h"
-#include "memory.h"
+#include "gas.h"
 
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wimplicit-function-declaration"

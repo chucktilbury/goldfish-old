@@ -10,6 +10,6 @@ typedef enum {
     GET_TIME,
 } TrapNumber;
 
-void doTrap(VM* vm, TrapNumType tno);
+void doTrap(TrapNumType tno);
 
 #endif

@@ -1,18 +1,20 @@
 
-#include <unistd.h> // this is io.h for winders
-#include "vMachine.h"
-#include "fileIo.h"
+// #include <unistd.h> // this is io.h for winders
+// #include "vMachine.h"
+// #include "fileIo.h"
+// #include "scanner.h"
+// #include "listing.h"
+// #include "symtab.h"
+// #include "errors.h"
+// #include "registers.h"
+// #include "cmdline.h"
+// #include "memory.h"
+
+#include "common.h"
 #include "scanner.h"
-#include "listing.h"
-#include "symtab.h"
-#include "errors.h"
-#include "registers.h"
-#include "cmdline.h"
-#include "memory.h"
+#include "asErrors.h"
 
 extern void dumpSymtab();
-
-VM* vm;
 
 int main(int argc, char** argv)
 {
@@ -23,8 +25,7 @@ int main(int argc, char** argv)
     add_num_param(cl, "verbose", "-v", "verbosity number from 0 to 10", 0, CF_NONE);
     parse_cmd_line(cl, argc, argv);
 
-    vm = _alloc_ds(VM);
-    initVM(vm);
+    initVM();
 
     if(isatty(fileno(stdin))) {
         const char* name = get_str_param(cl, "ifile");
@@ -39,16 +40,16 @@ int main(int argc, char** argv)
 
     if(!getErrors()) {
         if(get_num_param(cl, "verbose") >= 1)
-            showListing(vm, stdout);
+            showListing(stdout);
 
         if(get_num_param(cl, "verbose") >= 5) {
             //dumpRegs(vm, stdout);
             dumpSymtab(stdout);
-            dumpVars(&vm->vstore, stdout);
-            dumpStrs(&vm->sstore, stdout);
+            dumpVars(stdout);
+            dumpStrs(stdout);
         }
 
-        saveVM(vm, get_str_param(cl, "ofile"));
+        saveVM(get_str_param(cl, "ofile"));
     }
     _uninit_memory();
 

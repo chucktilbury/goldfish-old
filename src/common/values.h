@@ -1,7 +1,6 @@
 #ifndef VALUES_H
 #define VALUES_H
 
-#include "system.h"
 
 typedef enum {
     ERROR,      // union data is undefined
@@ -38,6 +37,7 @@ Value castValue(ValType type, Value val, bool isConst);
 void copyValue(Value* dest, Value* src);
 // Convert the type to a string for debugging and error generation.
 const char* valTypeToStr(ValType type);
+String* valToStr(Value* val);
 
 #define VTYPE(v) (v).type
 #define VDATA(v) (v).data

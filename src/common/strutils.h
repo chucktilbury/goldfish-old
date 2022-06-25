@@ -10,9 +10,11 @@ typedef struct {
 } String;
 
 String* createStr(const char* str);
+String* createStrFmt(const char* fmt, ...);
 const char* getStrStr(String* s);
 void addStrStr(String* s, const char* str);
+void addStrFmt(String* s, const char* fmt, ...);
 void addStrChar(String* s, char ch);
-const char* format_str(VM* vm, const char* str);
+const char* format_str(const char* str);
 
 #endif

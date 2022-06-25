@@ -10,10 +10,12 @@
  * traps should be used carefully and mindful of the documentation.
  *
  */
-#include "vMachine.h"
-#include "traps.h"
-#include "print.h"
-#include "strutils.h"
+// #include "vMachine.h"
+// #include "traps.h"
+// #include "print.h"
+// #include "strutils.h"
+
+#include "gvm.h"
 
 /**
  * @brief The value to print is in R0. There is no return value.
@@ -21,45 +23,47 @@
  * @param vm
  *
  */
-static void print_trap(VM* vm)
+static void print_trap()
 {
-    printReg(vm, &vm->registers[0], stdout);
+    printReg(getReg(0), stdout);
 }
 
-static void format_str_trap(VM* vm)
+static void format_str_trap()
 {
     // get the string to manipulate
-    Value val = vm->registers[0];
-    if(val.type != STRING) {
+    Value* val = getReg(0);
+    if(val->type != STRING) {
         fprintf(stderr, "trap error: R0 does not contain a string");
         exit(1);
     }
-    const char* src = getStr(&vm->sstore, val.data.str);
+    const char* src = getStr(val->data.str);
 
     // do the manipulation
-    String* dest = format_str(vm, src);
+    const char* dest = format_str(src);
+
+    Index idx = addStr(dest);
 
     // store the result in R0
-    val.type = STRING;
-    val.data.str = 0; //dest;
-    val.isConst = true;
-    val.isAssigned = true;
-    vm->registers[0] = val;
+    val->type = STRING;
+    val->data.str = idx; //dest;
+    val->isConst = true;
+    val->isAssigned = true;
+    setReg(0, val);
 }
 
-static void get_time_trap(VM* vm)
+static void get_time_trap()
 {
     // read the time from the system
 
     // save it in R0
 }
 
-void doTrap(VM* vm, TrapNumType tno)
+void doTrap(TrapNumType tno)
 {
     switch(tno) {
-        case PRINT:     print_trap(vm); break;
-        case FMT_STR:   format_str_trap(vm); break;
-        case GET_TIME:  get_time_trap(vm); break;
+        case PRINT:     print_trap(); break;
+        case FMT_STR:   format_str_trap(); break;
+        case GET_TIME:  get_time_trap(); break;
         default:
             fprintf(stderr, "fatal error: unknown trap number encountered: %d", tno);
             exit(1);

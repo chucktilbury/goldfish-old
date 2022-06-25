@@ -4,24 +4,14 @@
 #include "system.h"
 #include "store.h"
 
-typedef struct {
-    const char* str;
-    size_t len;
-    Status status;
-} sString;
+void initStrStore();
 
-typedef struct {
-    sString* list;
-    uint32_t cap;
-    uint32_t len;
-    uint32_t free_slots;
-} StrStore;
+void loadStrStore(FILE* fp);
+void saveStrStore(FILE* fp);
 
-void initStrStore(StrStore* store);
-
-Index addStr(StrStore* store, const char* str);
-const char* getStr(StrStore* store, Index idx);
-void delStr(StrStore* store, Index idx);
-void dumpStrs(StrStore* store, FILE* outf);
+Index addStr(const char* str);
+const char* getStr(Index idx);
+void delStr(Index idx);
+void dumpStrs(FILE* outf);
 
 #endif

@@ -6,7 +6,7 @@
 #include "store.h"
 
 void printVal(Value* val, FILE* fp);
-void printVar(VarStore* store, Index idx, FILE* fp);
-void printObj(VM* vm, Index idx, FILE* fp);
-void printReg(VM* vm, Value* val, FILE* fp);
+void printVar(Index idx, FILE* fp);
+void printObj(Index idx, FILE* fp);
+void printReg(Value* val, FILE* fp);
 #endif
