@@ -123,7 +123,9 @@ module_item
             val.isAssigned = true;
             val.data.addr = getLabelAddr();
             Index vidx = addVar(val);
-            assignVarName(vidx, addStr($1));
+            Index sidx = addStr($1);
+            //fprintf(stderr, "sidx: %d\n", sidx);
+            assignVarName(vidx, sidx);
             addSym($1, vidx);
         }
         else {

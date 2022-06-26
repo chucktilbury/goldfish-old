@@ -34,4 +34,4 @@ else
     cd build
 fi
 
-cmake -D CMAKE_C_COMPILER=gcc-10 -D CMAKE_CXX_COMPILER=g++-10 ..
+cmake -D CMAKE_C_COMPILER=gcc-10 -D CMAKE_CXX_COMPILER=g++-10 -G "Kate - Unix Makefiles" ..

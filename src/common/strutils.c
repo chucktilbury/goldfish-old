@@ -1,8 +1,3 @@
-
-// #include "strutils.h"
-// #include "memory.h"
-// #include "vMachine.h"
-// #include "values.h"
 #include "common.h"
 #include <stdarg.h>
 
@@ -41,13 +36,13 @@ const char* getStrStr(String* s)
 void addStrStr(String* s, const char* str)
 {
     size_t len = strlen(str);
-    if(s->len+len+1 > s->cap) {
-        while(s->len+len+1 > s->cap)
+    if(s->len + len + 1 > s->cap) {
+        while(s->len + len + 1 > s->cap)
             s->cap <<= 1;
         s->list = _realloc_ds_array(s->list, char, s->cap);
     }
 
-    memcpy(&s->list[s->len], str, len+1);
+    memcpy(&s->list[s->len], str, len + 1);
     s->len += len;
 }
 
@@ -65,7 +60,7 @@ void addStrFmt(String* s, const char* fmt, ...)
 
 void addStrChar(String* s, char ch)
 {
-    if(s->len+1 > s->cap) {
+    if(s->len + 1 > s->cap) {
         s->cap <<= 1;
         s->list = _realloc_ds_array(s->list, char, s->cap);
     }
@@ -74,6 +69,7 @@ void addStrChar(String* s, char ch)
 
     s->len++;
 }
+
 
 String* copyStr(String* str)
 {
@@ -155,8 +151,7 @@ const char* format_str(const char* str)
                     if(val->type != ERROR) {
                         String* str = valToStr(val);
                         addStrStr(s, str->list);
-                    }
-                    else {
+                    } else {
                         addStrFmt(s, "{%s}", tmp->list);
                     }
                     state = 1;

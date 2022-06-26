@@ -159,7 +159,7 @@ void dumpVars(FILE* outf)
 
 Value* resetVars()
 {
-    store.index = 1;
+    store.index = 0;
     return &store.list[store.index++].val;
 }
 
@@ -173,16 +173,12 @@ Value* iterateVars()
         if(store.index > store.len)
             return NULL;
     }
-
-    return &store.list[store.index].val;
+    //fprintf(stderr, "index:: %d\n", store.index);
+    return &store.list[store.index++].val;
 }
 
-const char* getVarName(Index idx)
+Index getVarName()
 {
-    if(validateIdx(idx)) {
-        return getStr(store.list[idx].name);
-    }
-    else
-        return NULL;
+    return store.list[store.index-1].name;
 }
 

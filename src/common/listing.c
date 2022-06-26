@@ -1,22 +1,13 @@
 
-// #include "system.h"
-// #include "vMachine.h"
-// #include "opcodes.h"
-// //#include "traps.h"
-// #include "registers.h"
-// #include "values.h"
-// #include "errors.h"
-// #include "varStore.h"
-// #include "strStore.h"
-// #include "print.h"
-
 #include "common.h"
 
 void show_label(unsigned long addr, FILE* fp)
 {
     for(Value* val = resetVars(); val != NULL; val = iterateVars()) {
         if(val->type == ADDRESS && val->data.addr == addr) {
-            fprintf(fp, "\n      %s:\n", getStr(val->data.str));
+            Index idx = getVarName();
+            //fprintf(stderr, "index: %d\n", idx);
+            fprintf(fp, "\n      %s:\n", getStr(idx));
             return;
         }
     }

@@ -8,6 +8,7 @@ parser.c
 parser.h
 parser.output
 scanner.c
+*-swp
 
 # Prerequisites
 *.d

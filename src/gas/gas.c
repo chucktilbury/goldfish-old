@@ -1,15 +1,4 @@
 
-// #include <unistd.h> // this is io.h for winders
-// #include "vMachine.h"
-// #include "fileIo.h"
-// #include "scanner.h"
-// #include "listing.h"
-// #include "symtab.h"
-// #include "errors.h"
-// #include "registers.h"
-// #include "cmdline.h"
-// #include "memory.h"
-
 #include "common.h"
 #include "scanner.h"
 #include "asErrors.h"

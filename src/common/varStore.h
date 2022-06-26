@@ -12,7 +12,7 @@ Index assignVarName(Index vidx, Index sidx);
 Index addVar(Value val);
 Value* getVar(Index idx);
 void delVar(Index idx);
-const char* getVarName(Index idx);
+Index getVarName();
 void dumpVars(FILE* outf);
 
 Value* resetVars();
