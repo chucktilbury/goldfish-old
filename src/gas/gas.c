@@ -1,9 +1,96 @@
 
-#include "common.h"
-#include "scanner.h"
-#include "asErrors.h"
+#include "gas.h"
 
 extern void dumpSymtab();
+
+/*
+ * Find all of the format markers in the string with the format {name} and
+ * replace them with the index number of the variable. If the name does not
+ * name a varaible, then leave the sequence in the string unchanged.
+ */
+const char* preformat_str(const char* str)
+{
+    String* sptr = createStr(NULL);
+    String* tmp;
+    int sidx = 0;
+    int state = 0;
+    bool finished = false;
+
+    while(!finished) {
+        switch(state) {
+            case 0: // initial state: copy characters.
+                switch(str[sidx]) {
+                    case '\0':
+                        // string ends, terminate normally
+                        state = 255;
+                        break;
+                    case '{':
+                        // potential format marker
+                        tmp = createStr(NULL);
+                        state = 1;
+                        break;
+                    default:
+                        addStrChar(sptr, str[sidx]);
+                        break;
+                }
+                break;
+
+            case 1: // have a potential marker
+                switch(str[sidx]) {
+                    case '\0':
+                        // string ends, abort the marker and end
+                        state = 3;
+                        break;
+                    case '{':
+                        // cannot be a marker. abort it and continue
+                        addStrChar(tmp, '{');
+                        state = 4;
+                        break;
+                    case '}':
+                        // marker end found, try to resolve it
+                        state = 2;
+                        break;
+                    default:
+                        // add character to the tmp buffer
+                        addStrChar(tmp, str[sidx]);
+                        break;
+                }
+                break;
+
+            case 2: { // try to resolve a found marker symbol
+                    Index idx = symToIdx(tmp->list);
+                    if(idx != 0)
+                        addStrFmt(sptr, "{%d}", idx);
+                    else
+                        addStrFmt(sptr, "{%s}", tmp->list);
+                    sidx--;
+                    state = 0;
+                }
+                break;
+
+            case 3: // abort marker and end
+                addStrChar(sptr, '{');
+                addStrStr(sptr, tmp->list);
+                state = 255;
+                break;
+
+            case 4: // abort marker and continue
+                addStrChar(sptr, '{');
+                addStrStr(sptr, tmp->list);
+                state = 0;
+                break;
+
+            case 255:
+                // terminate the loop
+                finished = true;
+                break;
+        }
+
+        sidx++;
+    }
+
+    return sptr->list;
+}
 
 int main(int argc, char** argv)
 {

@@ -4,7 +4,7 @@
  */
 #include "traps.inc"
 
-int the_value = 123
+string the_value = "this is a string"
 float test_value = 143.3487
 
 _start:

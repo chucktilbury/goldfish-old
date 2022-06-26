@@ -8,4 +8,6 @@
 #include "parser.h"
 #include "symtab.h"
 
+const char* preformat_str(const char* str);
+
 #endif

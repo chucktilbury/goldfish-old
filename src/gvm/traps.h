@@ -1,14 +1,18 @@
 #ifndef TRAPS_H
 #define TRAPS_H
 
-#include "vMachine.h"
+#include "vm.h"
 
 typedef uint16_t TrapNumType;
-typedef enum {
-    PRINT,
-    FMT_STR,
-    GET_TIME,
-} TrapNumber;
+// typedef enum {
+//     PRINT,
+//     DBG_PRINT,
+//     FMT_STR,
+//     GET_TIME,
+//     STR_TIME,
+// } TrapNumber;
+
+#include "../runtime/traps.inc"
 
 void doTrap(TrapNumType tno);
 

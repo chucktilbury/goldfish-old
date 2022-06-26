@@ -1,20 +1,5 @@
 
-// #include "system.h"
-// #include "runLoop.h"
-// #include "opcodes.h"
-// //#include "vMachine.h"
-// #include "values.h"
-// #include "varStore.h"
-// #include "instrStore.h"
-// #include "valStack.h"
-// #include "memory.h"
-// #include "doArith.h"
-// #include "doComp.h"
-// #include "doJmps.h"
-// #include "vmErrors.h"
-// #include "print.h"
-
-#include "gvm.h"
+S#include "gvm.h"
 
 int runLoop()
 {
@@ -72,7 +57,7 @@ int runLoop()
 
             case OP_EXIT:
                 // exit with no error
-                printf("exiting\n");
+                //printf("exiting\n");
                 finished = true;
                 retv = 0;
                 break;

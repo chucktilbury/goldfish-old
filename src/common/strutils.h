@@ -15,6 +15,7 @@ const char* getStrStr(String* s);
 void addStrStr(String* s, const char* str);
 void addStrFmt(String* s, const char* fmt, ...);
 void addStrChar(String* s, char ch);
-const char* format_str(const char* str);
+const char* formatStr(const char* str);
+void stripStr(String* str);
 
 #endif

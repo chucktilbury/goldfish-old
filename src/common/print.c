@@ -15,19 +15,6 @@ void printVal(Value* val, FILE* outf)
 {
     fprintf(outf, "%-8s", valTypeToStr(val->type));
     fprintf(outf, "<%s>", valToStr(val)->list);
-    // switch(val->type) {
-    //     case ERROR: fprintf(outf, "<ERROR>"); break;
-    //     case NOTHING: fprintf(outf, "<NOTHING>"); break;
-    //     case UINT: fprintf(outf, "<0x%02lX>", val->data.unum); break;
-    //     case INT: fprintf(outf, "<%ld>", val->data.inum); break;
-    //     case FLOAT: fprintf(outf, "<%0.3f>", val->data.fnum); break;
-    //     case BOOL: fprintf(outf, "<%s>", val->data.boolean? "true": "false"); break;
-    //     case ADDRESS: fprintf(outf, "<%d>", val->data.addr); break;
-    //     case USRTYPE: fprintf(outf, "<defer>"); break;
-    //     case STRING: fprintf(outf, "<defer>"); break;
-    //     default: fprintf(outf, "UNKNOWN"); break;
-    // }
-    // //fprintf(outf, "\n");
 }
 
 /**
@@ -68,35 +55,7 @@ void printObj(Index idx, FILE* fp)
 {
     Value* val = getVar(idx);
     fprintf(fp, "%-8s<%s>", valTypeToStr(val->type), valToStr(val)->list);
-    // Value* val = getVar(&vm->vstore, idx);
-
-    // switch(val->type) {
-    //     case ERROR:
-    //     case NOTHING:
-    //     case UINT:
-    //     case INT:
-    //     case FLOAT:
-    //     case BOOL:
-    //     case ADDRESS:
-    //         printVal(val, fp);
-    //         break;
-
-    //     case STRING:
-    //         fprintf(fp, "%-8s", valTypeToStr(val->type));
-    //         printStr(&vm->sstore, val->data.str, fp);
-    //         break;
-
-    //     case USRTYPE:
-    //         // user type figures out what to print and how
-    //         fprintf(fp, "%-8s", valTypeToStr(val->type));
-    //         fprintf(fp, "<defer>");
-    //         break;
-
-    //     default:
-    //         fprintf(fp, "UNKNOWN");
-    //         break;
-    // }
-
+    fprintf(fp, "%s", valToStr(val)->list);
 }
 
 /**
@@ -121,14 +80,13 @@ void printReg(Value* val, FILE* fp)
             break;
 
         case STRING:
-            //fprintf(stderr, "string index: %d\n", val->data.str);
-            fprintf(fp, "%-8s", valTypeToStr(val->type));
+            //fprintf(fp, "%-8s", valTypeToStr(val->type));
             printStr(val->data.str, fp);
             break;
 
         case USRTYPE:
             // user type figures out what to print and how
-            fprintf(fp, "%-8s", valTypeToStr(val->type));
+            //fprintf(fp, "%-8s", valTypeToStr(val->type));
             fprintf(fp, "<defer>");
             break;
 

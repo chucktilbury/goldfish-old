@@ -212,7 +212,7 @@ int main(int argc, char** argv)
     parse_cmd_line(cl, argc, argv);
     int verbo = get_num_param(cl, "verbose");
 
-    if(verbo > 7)
+    if(verbo > 9)
         dump_cmd_line(cl);
 
     const char* cmd = actual_dir(get_cmd(cl));
@@ -223,7 +223,7 @@ int main(int argc, char** argv)
     const char* ifn = append_str(path, "/%s.i", name);
     const char* outfn = append_str(path, "/%s", get_str_param(cl, "ofile"));
 
-    if(verbo > 5) {
+    if(verbo > 9) {
         printf("command: %s\n", cmd);
         printf("cmd path: %s\n", cmdpath);
         printf("cmd name: %s\n", extract_name(cmd));
@@ -242,7 +242,7 @@ int main(int argc, char** argv)
     const char* cmd2 = NULL;
     cmd1 = append_str(NULL, "%s/cpp %s %s %s -o %s %s", cmdpath, defstr, incbstr, incastr, ifn, infn);
     cmd2 = append_str(NULL, "%s/gas -v %d -i %s -o %s", cmdpath, verbo, ifn, outfn);
-    if(verbo > 2) {
+    if(verbo > 9) {
         printf("%s\n", cmd1);
         printf("%s\n\n", cmd2);
     }

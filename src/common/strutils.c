@@ -44,6 +44,7 @@ void addStrStr(String* s, const char* str)
 
     memcpy(&s->list[s->len], str, len + 1);
     s->len += len;
+    s->list[s->len] = '\0';
 }
 
 void addStrFmt(String* s, const char* fmt, ...)
@@ -60,7 +61,7 @@ void addStrFmt(String* s, const char* fmt, ...)
 
 void addStrChar(String* s, char ch)
 {
-    if(s->len + 1 > s->cap) {
+    if(s->len + 2 > s->cap) {
         s->cap <<= 1;
         s->list = _realloc_ds_array(s->list, char, s->cap);
     }
@@ -68,6 +69,7 @@ void addStrChar(String* s, char ch)
     s->list[s->len] = ch;
 
     s->len++;
+    s->list[s->len] = '\0';
 }
 
 
@@ -85,11 +87,11 @@ String* copyStr(String* str)
  * @param str
  * @return const char*
  */
-const char* format_str(const char* str)
+const char* formatStr(const char* str)
 {
     bool finished = false;
     String* s = createStr(NULL);
-    String* tmp = createStr(NULL);
+    String* tmp;
     int state = 0;
     int idx = 0;
 
@@ -102,6 +104,7 @@ const char* format_str(const char* str)
                             state = 255;
                             break;
                         case '{':
+                            tmp = createStr(NULL);
                             state = 1;
                             break;
                         default:
@@ -139,22 +142,24 @@ const char* format_str(const char* str)
                     // aborting the variable read
                     addStrChar(s, '{');
                     addStrStr(s, tmp->list);
-                    state = 1; // go back to copying chars
+                    state = 0; // go back to copying chars
                 }
                 break;
 
             case 3: {
                     // have a potential variable
                     // if it's not a var name, then we need the original
-                    Index idx = strtol(tmp->list, NULL, 10);
-                    Value* val = getVar(idx);
+                    Index sidx = strtol(tmp->list, NULL, 10);
+                    //printf("index: %d\n", sidx);
+                    Value* val = getVar(sidx);
                     if(val->type != ERROR) {
                         String* str = valToStr(val);
                         addStrStr(s, str->list);
                     } else {
                         addStrFmt(s, "{%s}", tmp->list);
                     }
-                    state = 1;
+                    idx--;
+                    state = 0;
                 }
                 break;
 
@@ -163,7 +168,20 @@ const char* format_str(const char* str)
                     finished = true;
                 }
         }
+        idx++;
     }
 
     return s->list;
+}
+
+void stripStr(String* str)
+{
+    int idx = 0;
+    for(idx = 0; isspace(str->list[idx]); idx++) {}
+    if(idx > 0)
+        memmove(str->list, &str->list[idx], strlen(&str->list[idx]));
+    for(idx = strlen(str->list)-1; idx > 0 && isspace(str->list[idx]); idx--) {}
+    idx++;
+    str->list[idx] = '\0';
+    str->len = strlen(str->list);
 }

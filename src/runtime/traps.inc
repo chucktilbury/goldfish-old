@@ -5,5 +5,7 @@
  */
 
 #define PRINT       0
-#define FMT_STR     1
-#define GET_TIME    2
+#define DBG_PRINT   1
+#define FMT_STR     2
+#define GET_TIME    3
+#define STR_TIME    4

@@ -548,7 +548,7 @@ data_definition
         if(val->type != STRING)
             syntaxError("attempt to assign a STRING value to a %s", valTypeToStr(val->type));
         else
-            val->data.str = addStr($3);
+            val->data.str = addStr(preformat_str($3));
     }
     ;
 
