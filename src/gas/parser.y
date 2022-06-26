@@ -261,24 +261,12 @@ class4_instr
         WRITE_VM_8(OP_CALLR);
         WRITE_VM_8(($2 & 0xF));
     }
-    | TOK_RCALL register {
-        WRITE_VM_8(OP_RCALLR);
-        WRITE_VM_8(($2 & 0xF));
-    }
     | TOK_JMP register {
         WRITE_VM_8(OP_JMPR);
         WRITE_VM_8(($2 & 0xF));
     }
-    | TOK_RJMP register {
-        WRITE_VM_8(OP_RJMPR);
-        WRITE_VM_8(($2 & 0xF));
-    }
     | TOK_BR register {
         WRITE_VM_8(OP_BRR);
-        WRITE_VM_8(($2 & 0xF));
-    }
-    | TOK_RBR register {
-        WRITE_VM_8(OP_RBRR);
         WRITE_VM_8(($2 & 0xF));
     }
     | TOK_PUSH register {
@@ -317,20 +305,6 @@ class5_instr
         }
         WRITE_VM_OBJ(Index, idx);
     }
-    | TOK_RCALL TOK_SYMBOL {
-        WRITE_VM_8(OP_RCALL);
-        Index idx = symToIdx($2);
-        if(idx == 0) {
-            Value val;
-            val.type = ADDRESS;
-            val.data.addr = 0;
-            val.isAssigned = false;
-            idx = addVar(val);
-            assignVarName(idx, addStr($2));
-            addSym($2, idx);
-        }
-        WRITE_VM_OBJ(Index, idx);
-    }
     | TOK_JMP TOK_SYMBOL {
         WRITE_VM_8(OP_JMP);
         Index idx = symToIdx($2);
@@ -345,36 +319,8 @@ class5_instr
         }
         WRITE_VM_OBJ(Index, idx);
     }
-    | TOK_RJMP TOK_SYMBOL {
-        WRITE_VM_8(OP_RJMP);
-        Index idx = symToIdx($2);
-        if(idx == 0) {
-            Value val;
-            val.type = ADDRESS;
-            val.data.addr = 0;
-            val.isAssigned = false;
-            idx = addVar(val);
-            assignVarName(idx, addStr($2));
-            addSym($2, idx);
-        }
-        WRITE_VM_OBJ(Index, idx);
-    }
     | TOK_BR TOK_SYMBOL {
         WRITE_VM_8(OP_BR);
-        Index idx = symToIdx($2);
-        if(idx == 0) {
-            Value val;
-            val.type = ADDRESS;
-            val.data.addr = 0;
-            val.isAssigned = false;
-            idx = addVar(val);
-            assignVarName(idx, addStr($2));
-            addSym($2, idx);
-        }
-        WRITE_VM_OBJ(Index, idx);
-    }
-    | TOK_RBR TOK_SYMBOL {
-        WRITE_VM_8(OP_RBR);
         Index idx = symToIdx($2);
         if(idx == 0) {
             Value val;
@@ -407,24 +353,12 @@ class6_instr
         WRITE_VM_8(OP_CALLI);
         WRITE_VM_OBJ(Value, $2);
     }
-    | TOK_RCALL expr_parameter {
-        WRITE_VM_8(OP_RCALLI);
-        WRITE_VM_OBJ(Value, $2);
-    }
     | TOK_JMP expr_parameter {
         WRITE_VM_8(OP_JMPI);
         WRITE_VM_OBJ(Value, $2);
     }
-    | TOK_RJMP expr_parameter {
-        WRITE_VM_8(OP_RJMPI);
-        WRITE_VM_OBJ(Value, $2);
-    }
     | TOK_BR expr_parameter {
         WRITE_VM_8(OP_BRI);
-        WRITE_VM_OBJ(Value, $2);
-    }
-    | TOK_RBR expr_parameter {
-        WRITE_VM_8(OP_RBRI);
         WRITE_VM_OBJ(Value, $2);
     }
     | TOK_PUSH expr_parameter {

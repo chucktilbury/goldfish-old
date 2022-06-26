@@ -81,13 +81,10 @@ static void __append_str(const char* str)
 "EXIT"          { yylval.opcode = OP_EXIT; return TOK_EXIT; }
 "NOP"           { yylval.opcode = OP_NOP; return TOK_NOP; }
 "CALL"          { yylval.opcode = OP_CALL; return TOK_CALL; }
-"RCALL"         { yylval.opcode = OP_RCALL; return TOK_RCALL; }
 "TRAP"          { yylval.opcode = OP_TRAP; return TOK_TRAP; }
 "RETURN"        { yylval.opcode = OP_RETURN; return TOK_RETURN; }
 "JMP"           { yylval.opcode = OP_JMP; return TOK_JMP; }
-"RJMP"          { yylval.opcode = OP_RJMP; return TOK_RJMP; }
 "BR"            { yylval.opcode = OP_BR; return TOK_BR; }
-"RBR"           { yylval.opcode = OP_RBR; return TOK_RBR; }
 "PUSH"          { yylval.opcode = OP_PUSH; return TOK_PUSH; }
 "POP"           { yylval.opcode = OP_POP; return TOK_POP; }
 "LOAD"          { yylval.opcode = OP_LOAD; return TOK_LOAD; }

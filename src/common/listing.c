@@ -96,32 +96,6 @@ void showListing(FILE* outf)
                 }
                 break;
 
-            case OP_RCALL:{
-                    // operand is a Value index
-                    Index idx;
-                    READ_VM_OBJ(Index, idx);
-                    fprintf(outf, "<%d>\t", idx);
-                    printVal(getVar(idx), outf);
-                }
-                break;
-
-            case OP_RCALLI:{
-                    // operand is a immediate value
-                    Value val;
-                    READ_VM_OBJ(Value, val);
-                    printVal(&val, outf);
-                }
-                break;
-
-            case OP_RCALLR:{
-                    // operand is a single register
-                    RegNumType reg;
-                    READ_VM_OBJ(RegNumType, reg);
-                    fprintf(outf, "<%s>\t", regToStr(reg));
-                    printVal(getReg(reg), outf);
-                }
-                break;
-
             case OP_TRAP: {
                     // operand is a uint16_t
                     uint16_t tno;
@@ -156,32 +130,6 @@ void showListing(FILE* outf)
                 }
                 break;
 
-            case OP_RJMP:{
-                    // operand is a Value index
-                    Index idx;
-                    READ_VM_OBJ(Index, idx);
-                    fprintf(outf, "<%d>\t", idx);
-                    printVal(getVar(idx), outf);
-                }
-                break;
-
-            case OP_RJMPI:{
-                    // operand is an immediate Value
-                    Value val;
-                    READ_VM_OBJ(Value, val);
-                    printVal(&val, outf);
-                }
-                break;
-
-            case OP_RJMPR:{
-                    // operand is a single register
-                    RegNumType reg;
-                    READ_VM_OBJ(RegNumType, reg);
-                    fprintf(outf, "<%s>\t", regToStr(reg));
-                    printVal(getReg(reg), outf);
-                }
-                break;
-
             case OP_BR:{
                     // operand is a Value Index
                     Index idx;
@@ -200,32 +148,6 @@ void showListing(FILE* outf)
                 break;
 
             case OP_BRR: {
-                    // operand is a single register
-                    RegNumType reg;
-                    READ_VM_OBJ(RegNumType, reg);
-                    fprintf(outf, "<%s>\t", regToStr(reg));
-                    printVal(getReg(reg), outf);
-                }
-                break;
-
-            case OP_RBR: {
-                    // operand is a Value index
-                    Index idx;
-                    READ_VM_OBJ(Index, idx);
-                    fprintf(outf, "<%d>\t", idx);
-                    printVal(getVar(idx), outf);
-                }
-                break;
-
-            case OP_RBRI: {
-                    // operand is an immediate Value
-                    Value val;
-                    READ_VM_OBJ(Value, val);
-                    printVal(&val, outf);
-                }
-                break;
-
-            case OP_RBRR: {
                     // operand is a single register
                     RegNumType reg;
                     READ_VM_OBJ(RegNumType, reg);
@@ -264,16 +186,6 @@ void showListing(FILE* outf)
                     uint8_t reg;
                     READ_VM_OBJ(uint8_t, reg);
                     fprintf(outf, "<%s>\t", regToStr(reg));
-                }
-                break;
-
-            case OP_PEEK: {
-                    // operand is a single register
-// TODO: operand is an immediate Value
-                    RegNumType reg;
-                    READ_VM_OBJ(RegNumType, reg);
-                    fprintf(outf, "<%s>\t", regToStr(reg));
-                    printVal(getReg(reg), outf);
                 }
                 break;
 
