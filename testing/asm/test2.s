@@ -1,6 +1,6 @@
 
 /*
- * This test requires the preprocessor
+ * Test the preprocessor and the ASM shell program.
  */
 #include "traps.inc"
 

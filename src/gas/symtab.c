@@ -87,7 +87,7 @@ static SymTabNode* find_node(SymTabNode* node, const char* key)
 // symbol definition
 void addSym(const char* key, Index idx)
 {
-    //printf("addSym(%s, %d)\n", key, idx);
+    fprintf(stderr, "addSym(%s, %d)\n", key, idx);
     SymTabNode* node = _alloc_ds(SymTabNode);
     node->left = NULL;
     node->right = NULL;

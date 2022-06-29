@@ -1,4 +1,7 @@
 
+/*
+ * Test the parser and scanner. DO NOT RUN THIS TEST.
+ */
 uint flarp = 0x123
 bool eggs = true
 

@@ -121,10 +121,11 @@ module_item
             Value val;
             val.type = ADDRESS;
             val.isAssigned = true;
+            val.isConst = true;
             val.data.addr = getLabelAddr();
             Index vidx = addVar(val);
             Index sidx = addStr($1);
-            //fprintf(stderr, "sidx: %d\n", sidx);
+            fprintf(stderr, "define new label: %s:%d: sidx: %d\n", $1, vidx, sidx);
             assignVarName(vidx, sidx);
             addSym($1, vidx);
         }
@@ -133,9 +134,16 @@ module_item
             if(val->type != ADDRESS)
                 syntaxError("symbol \"%s\" has already been defined as a %s", $1, valTypeToStr(val->type));
             else if(val->isAssigned)
-                syntaxError("label \"%s\" has already been defined", $1);
-            else
-                val->data.addr = getInstrLen();
+                syntaxError("label \"%s\" has already been assigned", $1);
+            else {
+                Value v;
+                v.type = ADDRESS;
+                v.data.addr = getInstrLen();
+                v.isConst = true;
+                assignVar(idx, &v); // isAssigned = true...
+            }
+
+            fprintf(stderr, "define existing label: %s:%d: addr: %d\n", $1, idx, val->data.addr);
         }
     }
     | TOK_LINE TOK_INUM TOK_QSTR {
@@ -300,6 +308,7 @@ class5_instr
             val.data.addr = 0;
             val.isAssigned = false;
             idx = addVar(val);
+            fprintf(stderr, "pre-add call symbol: %s:%d\n", $2, idx);
             assignVarName(idx, addStr($2));
             addSym($2, idx);
         }
@@ -314,6 +323,7 @@ class5_instr
             val.data.addr = 0;
             val.isAssigned = false;
             idx = addVar(val);
+            fprintf(stderr, "pre-add jmp symbol: %s:%d\n", $2, idx);
             assignVarName(idx, addStr($2));
             addSym($2, idx);
         }
@@ -328,6 +338,7 @@ class5_instr
             val.data.addr = 0;
             val.isAssigned = false;
             idx = addVar(val);
+            fprintf(stderr, "pre-add br symbol: %s:%d\n", $2, idx);
             assignVarName(idx, addStr($2));
             addSym($2, idx);
         }
@@ -388,10 +399,15 @@ class8_instr
         WRITE_VM_8((($2 & 0xF) << 4)|($4 & 0xF));
     }
     | TOK_LOAD register ',' TOK_SYMBOL {
-        WRITE_VM_8(OP_LOAD);
-        WRITE_VM_8(($2 & 0xF));
         Index idx = symToIdx($4);
-        WRITE_VM_OBJ(Index, idx);
+        fprintf(stderr, "reference to load symbol: %s:%d\n", $4, idx);
+        if(idx == 0)
+            syntaxError("symbol \"%s\" has not been defined", $4);
+        else {
+            WRITE_VM_8(OP_LOAD);
+            WRITE_VM_8(($2 & 0xF));
+            WRITE_VM_OBJ(Index, idx);
+        }
     }
     | TOK_LOAD register ',' expr_parameter {
         WRITE_VM_8(OP_LOADI);
@@ -399,10 +415,15 @@ class8_instr
         WRITE_VM_OBJ(Value, $4);
     }
     | TOK_STORE TOK_SYMBOL ',' register {
-        WRITE_VM_8(OP_STORE);
         Index idx = symToIdx($2);
-        WRITE_VM_OBJ(Index, idx);
-        WRITE_VM_8(($4 & 0xF));
+        fprintf(stderr, "reference to store symbol: %s:%d\n", $2, idx);
+        if(idx == 0)
+            syntaxError("symbol \"%s\" has not been defined", $4);
+        else {
+            WRITE_VM_8(OP_STORE);
+            WRITE_VM_OBJ(Index, idx);
+            WRITE_VM_8(($4 & 0xF));
+        }
     }
     ;
 
@@ -458,6 +479,7 @@ type_specifier
 data_declaration
     : type_specifier TOK_SYMBOL {
         Index idx = addVar($1);
+        fprintf(stderr, "adding symbol: %s:%d\n", $2, idx);
         addSym($2, idx);
         assignVarName(idx, addStr($2));
         $$ = $2;

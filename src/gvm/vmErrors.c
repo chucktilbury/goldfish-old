@@ -8,7 +8,7 @@ static int num_warnings = 0;
 void runtimeError(const char* fmt, ...)
 {
     va_list args;
-    fprintf(stderr, "runtime error: ");
+    fprintf(stderr, "runtime error: %04ld: ", getInstrIndex());
 
     va_start(args, fmt);
     vfprintf(stderr, fmt, args);

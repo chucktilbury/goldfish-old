@@ -1,5 +1,8 @@
 /*
- * Test the time traps.
+ * Test the
+ * - print and format traps
+ * - time traps
+ * - load and store
  */
 #include "traps.inc"
 
@@ -16,5 +19,5 @@ _start:
     store time_str, R0
     load r0, str
     trap FMT_STR
-    trap PRINT
+    trap PRINT      // print the time in a formatted string
     exit

@@ -43,11 +43,15 @@ static Index find_slot()
 
 static bool validateIdx(Index idx)
 {
+    //fprintf(stderr, "validating index: %d: ", idx);
     if(idx < store.len) {
-        if(store.list[idx].status != DELETED)
+        if(store.list[idx].status != DELETED) {
+            //fprintf(stderr, "index is VALID\n");
             return true;
+        }
     }
 
+    //fprintf(stderr, "index is NOT VALID\n");
     return false;
 }
 
@@ -97,11 +101,14 @@ Index createVar(ValType type)
 
 Index assignVar(Index idx, Value* val)
 {
+    fprintf(stderr, "assign var: type:%s idx:%d\n", valTypeToStr(val->type), idx);
     if(!validateIdx(idx))
         return 0;
     else {
-        store.list[idx].val = *val;
-        store.list[idx].val.isAssigned = true;
+        memcpy(&store.list[idx].val, val, sizeof(Value));
+        //store.list[idx].val = *val;
+        //store.list[idx].val.isAssigned = true;
+        store.list[idx].status = ACTIVE;
     }
 
     return idx;
@@ -120,7 +127,7 @@ Index assignVarName(Index vidx, Index sidx)
 Index addVar(Value val)
 {
     Index idx = find_slot();
-    //printf("add var slot: %d\n", idx);
+    fprintf(stderr, "add var slot: %d\n", idx);
     store.list[idx].val = val;
     //store.list[idx].val.isAssigned = true;
     store.list[idx].status = ACTIVE;

@@ -138,6 +138,8 @@ Value castValue(ValType type, Value val, bool isConst)
 
 void copyValue(Value* dest, Value* src)
 {
+//     fprintf(stderr, "copy value: %s\n", valTypeToStr(src->type));
+//     printVal(src, stderr);
     memcpy(dest, src, sizeof(Value));
 }
 

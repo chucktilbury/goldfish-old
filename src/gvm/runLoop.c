@@ -92,8 +92,8 @@ int runLoop()
 
             case OP_TRAP: {
                     // operand is a uint16_t
-                    TrapNumType tno;
-                    READ_VM_OBJ(TrapNumType, tno);
+                    uint16_t tno;
+                    READ_VM_OBJ(uint16_t, tno);
                     doTrap(tno);
                 }
                 break;
