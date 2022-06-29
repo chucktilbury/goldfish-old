@@ -30,7 +30,7 @@ scanner.c
 
 # Libraries
 *.lib
-*.a
+#*.a
 *.la
 *.lo
 
